@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login — Indian Commoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<div class="loginwrap">
+  <div class="lg-form">
+    <div class="lg-inner">
+      <a class="brand" href="index.html">
+        <span class="mk"><i data-lucide="sprout"></i></span>
+        <span class="bt">Indian Commoner<em>Community Forum</em></span>
+      </a>
+      <h1 class="lg-h1">Welcome back</h1>
+      <p class="lg-sub">Sign in to start a topic, reply to fellow commoners, or add a resource to the library.</p>
+
+      <div class="lgf">
+        <label for="lg-email">Email or username</label>
+        <div class="lg-input">
+          <span class="lg-ic"><i data-lucide="mail"></i></span>
+          <input id="lg-email" type="text" placeholder="you@example.com" autocomplete="username">
+        </div>
+      </div>
+      <div class="lgf">
+        <label for="lg-pass">Password</label>
+        <div class="lg-input">
+          <span class="lg-ic"><i data-lucide="lock"></i></span>
+          <input id="lg-pass" type="password" placeholder="Enter your password" autocomplete="current-password">
+          <button class="lg-eye" type="button" aria-label="Show password"><i data-lucide="eye"></i></button>
+        </div>
+      </div>
+      <div class="between lg-forgot">
+        <label style="display:flex;align-items:center;gap:.5rem;font-size:.87rem;color:var(--muted)">
+          <input type="checkbox" style="accent-color:var(--green)"> Remember me
+        </label>
+        <a href="#" style="font-size:.87rem;font-weight:700;color:var(--green-d)">Forgot password?</a>
+      </div>
+      <button class="btn btn-primary block lg-btn">Sign in</button>
+      <p class="lg-foot">New to Indian Commoner? <a href="#" style="color:var(--green-d);font-weight:700">Create an account</a></p>
+    </div>
+  </div>
+
+  <div class="lg-panel">
+    <div class="lg-panel-in">
+      <h2>Join commoners from <em>17 states</em> already sharing their knowledge</h2>
+      <p>Indian Commoner is a place to document the customary names, rules and practices that keep India's forests, pastures, water bodies, coasts and cultural commons alive.</p>
+      <div class="lg-chips">
+        <span class="lg-chip on"><i data-lucide="message-square"></i> Forum</span>
+        <span class="lg-chip"><i data-lucide="video"></i> Resources</span>
+        <span class="lg-chip"><i data-lucide="users"></i> Activities</span>
+      </div>
+      <div class="lg-card">
+        <div class="lgc-head">
+          <span class="pw-av">A</span>
+          <b>anjali</b>
+          <span class="lgc-badge">Commoner</span>
+        </div>
+        <div class="lgc-row"><span class="ic-tile green" style="width:1.9rem;height:1.9rem"><i data-lucide="message-square"></i></span><span>Cultural traditions linked with Sustainable harvesting principles among Santhals</span></div>
+        <div class="lgc-row"><span class="ic-tile blue" style="width:1.9rem;height:1.9rem"><i data-lucide="map-pin"></i></span><span>Customary Tenure and land management of the Khasi people in Meghalaya</span></div>
+        <div class="lgc-foot"><span>2 topics this week</span><b>+128 replies</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
