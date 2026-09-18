@@ -13,14 +13,24 @@
 </head>
 <body>
 
-<div class="loginwrap">
-  <div class="lg-form">
-    <div class="lg-inner">
-      <a class="brand" href="index.html">
-        <span class="mk"><i data-lucide="sprout"></i></span>
-        <span class="bt">Indian Commoner<em>Community Forum</em></span>
-      </a>
-      <h1 class="lg-h1">Log In With Your Credentials</h1>
+<div class="ssowrap">
+  <div class="ssocard">
+    <div class="sso-left">
+      <h2>Indian Commoner<br>Community Forum</h2>
+      <p>Indian Commoner is a forum to which individuals and organisations interested in the current state of common pool resources, from India and other parts of the world, may contribute.</p>
+    </div>
+
+    <div class="sso-right">
+      <div class="sso-top">
+        <div>
+          <span class="kicker" style="color:var(--green-d)">Secure Access</span>
+          <h1 class="lg-h1" style="margin-top:.3rem">Sign in</h1>
+        </div>
+        <a class="brand" href="index.html" style="flex-direction:column;align-items:flex-end;gap:.3rem">
+          <span class="mk"><i data-lucide="sprout"></i></span>
+        </a>
+      </div>
+      <p style="color:var(--muted);margin:-.6rem 0 1.5rem;font-size:.92rem">Enter your account credentials to continue.</p>
 
       <div class="lgf">
         <label for="lg-email">Username or Email</label>
@@ -37,29 +47,28 @@
           <button class="lg-eye" type="button" aria-label="Show password"><i data-lucide="eye"></i></button>
         </div>
       </div>
+      <div class="field selw">
+        <label for="lg-role">Sign in as (role)</label>
+        <select id="lg-role">
+          <option>Registered User</option>
+          <option>Admin User</option>
+        </select>
+      </div>
       <div class="between lg-forgot">
         <label style="display:flex;align-items:center;gap:.5rem;font-size:.87rem;color:var(--muted)">
           <input type="checkbox" style="accent-color:var(--green)"> Remember me
         </label>
-        <a href="#" style="font-size:.87rem;font-weight:700;color:var(--green-d)">Forgot password?</a>
       </div>
       <a class="btn btn-primary block lg-btn" href="member-profile.html">Sign in</a>
-      <p class="lg-foot">New to Indian Commoner? <a href="#" style="color:var(--green-d);font-weight:700">Create an account</a></p>
+
+      <div class="sso-links">
+        <a href="#">Create account</a>
+        <a href="#">Forgot password?</a>
+      </div>
     </div>
   </div>
 
-  <div class="lg-panel">
-    <div class="lg-panel-in">
-      <div class="lg-card">
-        <div class="lgc-head">
-          <span class="pw-av">A</span>
-          <b>anjali</b>
-        </div>
-        <div class="lgc-row"><span class="ic-tile green" style="width:1.9rem;height:1.9rem"><i data-lucide="message-square"></i></span><span>Cultural traditions linked with Sustainable harvesting principles among Santhals</span></div>
-        <div class="lgc-row"><span class="ic-tile blue" style="width:1.9rem;height:1.9rem"><i data-lucide="map-pin"></i></span><span>Customary Tenure and land management of the Khasi people in Meghalaya</span></div>
-      </div>
-    </div>
-  </div>
+  <p class="sso-foot">Indian Commoner is a <b>Centre for Social Ecology (CenSE)</b> &amp; <b>Foundation for Ecological Security (FES)</b> initiative.</p>
 </div>
 
 <script src="assets/js/site.js"></script>

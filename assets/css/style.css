@@ -1338,6 +1338,21 @@ table.admin th:last-child,table.admin td:last-child{padding-right:1.25rem}
 .stpill.off{background:var(--chip);color:var(--muted-2)}
 .ur-mail{color:var(--muted-2);text-decoration:none}
 .ur-mail:hover{color:var(--green-d);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:760px){
+  .scrollx{overflow-x:visible;border:0;box-shadow:none;background:transparent}
+  table.admin,table.admin thead,table.admin tbody,table.admin th,table.admin td,table.admin tr{display:block}
+  table.admin thead{display:none}
+  table.admin tbody tr{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);
+    margin-bottom:1rem;padding:0 1.1rem}
+  table.admin td{border-top:1px solid var(--line);padding:.7rem 0;display:flex;align-items:center;
+    justify-content:space-between;gap:1rem;font-size:.88rem}
+  table.admin td:first-child{border-top:0;padding-top:.95rem}
+  table.admin td[data-label]::before{content:attr(data-label);font-size:.68rem;font-weight:800;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--faint);flex:none}
+  table.admin td:last-child{padding-bottom:.95rem}
+  table.admin th:first-child,table.admin td:first-child,table.admin th:last-child,table.admin td:last-child{padding-left:0;padding-right:0}
+  .set-act{justify-content:flex-end;flex:1}
+}
 
 /* ---- permission matrix ---- */
 .permhead{font-size:.72rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
@@ -1606,3 +1621,26 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .pw-meter span.ok{background:var(--amber-d,#a15b12)}
 .pw-meter span.good{background:var(--green)}
 .pw-meter span.strong{background:var(--green-d)}
+
+/* ---- centered-card login (Single Sign-On style) ---- */
+.ssowrap{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:3rem 1.5rem;background:linear-gradient(160deg,#eef4fb,#f6f8fc 45%,#fff)}
+.ssocard{width:100%;max-width:58rem;background:#fff;box-shadow:0 30px 70px -30px rgba(20,30,60,.28);
+  display:grid;grid-template-columns:1fr 1.2fr}
+.sso-left{background:linear-gradient(160deg,#33513b 0%,#3f6549 60%,#46704f 100%);color:#fff;
+  padding:2.75rem 2.25rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.sso-left::before{content:'';position:absolute;right:-70px;bottom:-90px;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(255,255,255,.12),transparent 68%);pointer-events:none}
+.sso-left>*{position:relative;z-index:1}
+.sso-left h2{color:#fff;font-size:1.55rem;line-height:1.3;margin:0 0 .9rem}
+.sso-left p{color:rgba(255,255,255,.88);line-height:1.7;font-size:.92rem;margin:0}
+.sso-right{padding:2.75rem clamp(1.5rem,4vw,2.75rem)}
+.sso-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.5rem}
+.sso-top .brand{margin:0}
+.sso-links{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  margin-top:1.35rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.87rem}
+.sso-links a{font-weight:700;color:var(--green-d)}
+.sso-foot{max-width:58rem;width:100%;text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--muted)}
+.sso-foot b{color:var(--ink)}
+@media(max-width:760px){.ssocard{grid-template-columns:1fr}.sso-left{padding:2rem 1.75rem}
+  .sso-left h2{font-size:1.35rem}}
