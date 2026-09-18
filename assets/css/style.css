@@ -1526,7 +1526,9 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
 .cb-ic i,.cb-ic svg.lucide{width:1.2rem;height:1.2rem}
 .cb-panel h3{color:#fff;font-size:1.15rem;letter-spacing:.02em;text-transform:uppercase;font-weight:800}
 .cb-panel p{color:rgba(255,255,255,.88);font-size:.92rem;line-height:1.7;max-width:22rem}
-.cb-more{color:#fff;font-size:.85rem;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.cb-more{color:#fff;font-size:.85rem;font-weight:700;text-decoration:underline;text-underline-offset:3px;
+  display:inline-flex;align-items:center;gap:.35rem}
+.cb-more i,.cb-more svg.lucide{width:.85rem;height:.85rem}
 .cb-panel:hover .cb-more{color:var(--cta)}
 @media(max-width:860px){.commonsband{grid-template-columns:1fr}
   .cb-panel{border-left:0;border-top:1px solid rgba(255,255,255,.14);min-height:20rem}
@@ -1566,4 +1568,13 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
   display:grid;place-items:center;color:var(--faint);flex:none}
 .tt-avatar i,.tt-avatar svg.lucide{width:1.05rem;height:1.05rem}
 .tt-by-in b{font-weight:700;color:var(--ink);font-size:.88rem}
+@media(max-width:640px){
+  .topictable thead{display:none}
+  .topictable,.topictable tbody,.topictable tr,.topictable td{display:block;width:100%}
+  .topictable tbody tr{padding:.95rem 1.1rem;border-top:1px solid var(--line)}
+  .topictable tbody tr:first-child{border-top:0}
+  .topictable tbody td{padding:0;border-top:0}
+  .topictable a.tt-title{display:block;margin-bottom:.55rem}
+  .tt-by,.tt-by-in{text-align:left;justify-content:flex-start}
+}
 .podcastcard .tag{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22)}
