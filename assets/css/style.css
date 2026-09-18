@@ -1496,4 +1496,21 @@ footer.site.light .partner-logo span{color:var(--muted-2)}
 .podcastcard .pc-ic i,.podcastcard .pc-ic svg.lucide{width:1.3rem;height:1.3rem}
 .podcastcard h3{color:#fff;font-size:1rem}
 .podcastcard .tags{margin-top:auto;padding-top:.35rem}
+
+/* ---- topic table (Recent Topics): Topics / Posted By columns ---- */
+.topictable{width:100%;border-collapse:collapse;overflow:hidden;border-radius:.9rem;border:1px solid var(--line-2)}
+.topictable thead th{background:var(--green-d);color:#fff;text-align:left;font-size:.85rem;font-weight:700;
+  padding:.85rem 1.25rem}
+.topictable thead th.tt-by{text-align:right}
+.topictable tbody td{padding:1rem 1.25rem;border-top:1px solid var(--line);vertical-align:middle}
+.topictable tbody tr:first-child td{border-top:0}
+.topictable tbody tr:hover{background:var(--bg-soft)}
+.topictable a.tt-title{color:var(--ink);font-weight:700;font-size:.95rem;text-decoration:none}
+.topictable tbody tr:hover a.tt-title{color:var(--green-d)}
+.tt-by{text-align:right;white-space:nowrap}
+.tt-by-in{display:inline-flex;align-items:center;gap:.55rem;justify-content:flex-end}
+.tt-avatar{width:1.9rem;height:1.9rem;border-radius:999px;background:var(--chip);border:1px solid var(--line-2);
+  display:grid;place-items:center;color:var(--faint);flex:none}
+.tt-avatar i,.tt-avatar svg.lucide{width:1.05rem;height:1.05rem}
+.tt-by-in b{font-weight:700;color:var(--ink);font-size:.88rem}
 .podcastcard .tag{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22)}
