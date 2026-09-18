@@ -1489,6 +1489,59 @@ footer.site.light .footer-partners{border-top-color:var(--line-2)}
 footer.site.light .partner-logo img{filter:none}
 footer.site.light .partner-logo span{color:var(--muted-2)}
 
+/* ---- simplified footer: CenSE logo / two link columns / FES logo ---- */
+footer.site.simple{background:var(--green-d);color:rgba(255,255,255,.85)}
+footer.site.simple .cols{max-width:90rem;margin:0 auto;padding:3.25rem 2rem;display:flex;
+  align-items:center;justify-content:space-between;gap:2.5rem;flex-wrap:wrap}
+footer.site.simple .flogo{display:inline-flex;align-items:center;flex:none;opacity:.96;transition:opacity .15s}
+footer.site.simple .flogo:hover{opacity:1}
+footer.site.simple .flogo img{height:2.5rem;width:auto;display:block}
+footer.site.simple .flinks{display:flex;gap:3.5rem;flex-wrap:wrap}
+footer.site.simple .flinks ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.65rem}
+footer.site.simple .flinks a{color:rgba(255,255,255,.88);font-size:.95rem;font-weight:600;text-decoration:none;transition:color .15s}
+footer.site.simple .flinks a:hover{color:#fff}
+footer.site.simple .bar{max-width:90rem;margin:0 auto;padding:1.5rem 2rem 2.25rem;border-top:1px solid rgba(255,255,255,.18)}
+footer.site.simple .social{display:flex;align-items:center;justify-content:center;gap:1.25rem}
+footer.site.simple .social a{color:#fff;opacity:.92;border:0;background:none;padding:0;cursor:pointer;transition:opacity .15s}
+footer.site.simple .social a:hover{opacity:1}
+footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
+@media(max-width:760px){
+  footer.site.simple .cols{flex-direction:column;text-align:center;padding:2.5rem 1.15rem}
+  footer.site.simple .flinks{justify-content:center;gap:2.25rem}
+  footer.site.simple .flinks ul{align-items:center}
+}
+
+/* ---- commons band: What Are Commons / Who Is a Commoner / Purpose ---- */
+.commonsband{display:grid;grid-template-columns:repeat(3,1fr)}
+.cb-panel{position:relative;display:flex;align-items:flex-end;min-height:26rem;padding:2.5rem 2rem;
+  color:#fff;text-align:center;overflow:hidden;border-left:1px solid rgba(255,255,255,.14)}
+.cb-panel:first-child{border-left:0}
+.cb-panel::before{content:'';position:absolute;inset:0;background-size:cover;background-position:center;
+  background-image:var(--cb-img);transition:transform .5s ease}
+.cb-panel::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(20,20,18,.86),rgba(20,20,18,.45) 55%,rgba(20,20,18,.55))}
+.cb-panel:hover::before{transform:scale(1.05)}
+.cb-in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%}
+.cb-ic{width:2.6rem;height:2.6rem;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
+  display:grid;place-items:center;color:#fff}
+.cb-ic i,.cb-ic svg.lucide{width:1.2rem;height:1.2rem}
+.cb-panel h3{color:#fff;font-size:1.15rem;letter-spacing:.02em;text-transform:uppercase;font-weight:800}
+.cb-panel p{color:rgba(255,255,255,.88);font-size:.92rem;line-height:1.7;max-width:22rem}
+.cb-more{color:#fff;font-size:.85rem;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.cb-panel:hover .cb-more{color:var(--cta)}
+@media(max-width:860px){.commonsband{grid-template-columns:1fr}
+  .cb-panel{border-left:0;border-top:1px solid rgba(255,255,255,.14);min-height:20rem}
+  .cb-panel:first-child{border-top:0}}
+
+/* ---- state tag cloud (Meet Commoners): font-size scaled by topic count ---- */
+.tagcloud{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;row-gap:.6rem}
+.tagcloud a{color:#fff;font-weight:700;text-decoration:none;line-height:1.2;opacity:.92;transition:opacity .15s,color .15s}
+.tagcloud a:hover{color:var(--cta);opacity:1}
+.tc-1{font-size:.95rem;font-weight:600}
+.tc-2{font-size:1.15rem}
+.tc-3{font-size:1.5rem}
+.tc-4{font-size:1.9rem}
+.tc-5{font-size:2.4rem}
+
 /* ---- podcast tile (Resources > Podcasts): solid-colour block, no thumbnail ---- */
 .podcastcard{background:var(--green-d);color:#fff;border:none;justify-content:flex-start;min-height:11rem}
 .podcastcard .pc-ic{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:.8rem;
