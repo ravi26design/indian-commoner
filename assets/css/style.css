@@ -1280,8 +1280,9 @@ main{min-height:60vh;animation:fade .3s ease}
 .lc-desc{display:block;font-size:.8rem;line-height:1.6;color:var(--muted);font-weight:500;letter-spacing:0}
 
 /* ---- success modal ---- */
-.modal-back{position:fixed;inset:0;background:rgba(20,28,60,.58);z-index:95;display:flex;
+.modal-back{position:fixed;inset:0;background:rgba(20,28,60,.58);z-index:95;display:none;
   align-items:center;justify-content:center;padding:1.5rem}
+.modal-back.open{display:flex}
 .modal-card{background:#fff;border-radius:0;box-shadow:0 30px 70px -20px rgba(20,30,80,.55);width:min(31rem,100%);
   padding:2.5rem 2.25rem 2rem;text-align:center;position:relative}
 .modal-x{position:absolute;top:.85rem;right:.85rem;width:2rem;height:2rem;border-radius:.55rem;border:1px solid var(--line-2);
@@ -1578,3 +1579,30 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
   .tt-by,.tt-by-in{text-align:left;justify-content:flex-start}
 }
 .podcastcard .tag{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22)}
+
+/* ---- account pages: green accents over the base blue defaults ---- */
+.id-role{color:var(--green-d);background:var(--green-soft);border-color:var(--green-line)}
+.prefcard .switch.on,.field-modal .switch.on{background:var(--green-d)}
+.acct-item.active{background:var(--green-d);border-color:var(--green-d);box-shadow:0 8px 18px -10px rgba(63,101,73,.55)}
+.id-edit{color:var(--green-d)}
+.id-edit:hover{background:var(--green-d);color:#fff;border-color:var(--green-d)}
+.prefcard h3 i,.prefcard h3 svg.lucide{color:var(--green-d)}
+table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);background:var(--green-soft)}
+.tab-c.active{background:var(--green-d);border-color:var(--green-d)}
+.tab-c.active .cnt{background:rgba(255,255,255,.22);color:#fff}
+.fm-head .kicker{display:block;margin-bottom:.3rem}
+
+/* ---- avatar colour variants for admin tables ---- */
+.av-1{background:linear-gradient(135deg,#8a6a2f,#6f5424)}
+.av-2{background:linear-gradient(135deg,#3f6549,#2e4d38)}
+.av-3{background:linear-gradient(135deg,#4e7c59,#3a5c43)}
+.av-4{background:linear-gradient(135deg,#a2543a,#823f2a)}
+.av-5{background:linear-gradient(135deg,#3b3531,#26211e)}
+
+/* ---- password strength meter (Change Password) ---- */
+.pw-meter{height:.35rem;border-radius:999px;background:var(--line-2);margin-top:.6rem;overflow:hidden}
+.pw-meter span{display:block;height:100%;width:0;border-radius:999px;background:var(--line-2);transition:width .25s ease,background .25s ease}
+.pw-meter span.weak{background:var(--red)}
+.pw-meter span.ok{background:var(--amber-d,#a15b12)}
+.pw-meter span.good{background:var(--green)}
+.pw-meter span.strong{background:var(--green-d)}
