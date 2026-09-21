@@ -392,11 +392,11 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .v-meta i,.v-meta svg.lucide{width:.95rem;height:.95rem;color:#D93025}
 
 /* photo-topped card (home · six areas) */
+.ic-photo{position:relative;aspect-ratio:16/9;background:var(--bg-soft);overflow:hidden;flex:none}
+.ic-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}
+.ic-photo .ph{background:var(--bg-soft)}
 .imgcard{padding:0;overflow:hidden;gap:0;border-radius:0}
-.imgcard .ic-photo{position:relative;aspect-ratio:16/9;background:var(--bg-soft);overflow:hidden;flex:none}
-.imgcard .ic-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}
 .imgcard:hover .ic-photo img{transform:scale(1.045)}
-.imgcard .ic-photo .ph{background:var(--bg-soft)}
 .imgcard .ic-body{padding:1.2rem 1.35rem 1.35rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
 
 /* type card (five families) */
