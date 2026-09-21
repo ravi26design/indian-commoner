@@ -212,6 +212,9 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .btn-primary:hover{background:var(--green);color:#fff;transform:translateY(-1px);box-shadow:var(--sh-green-h)}
 .btn-green{background:var(--green);color:#fff;box-shadow:0 8px 18px -8px rgba(78,124,89,.55)}
 .btn-green:hover{background:var(--green-d);transform:translateY(-1px)}
+.btn-teal{background:var(--green-d);color:#fff;text-transform:uppercase;letter-spacing:.06em;
+  font-size:.8rem;padding:.75rem 1.6rem;border-radius:.35rem}
+.btn-teal:hover{background:var(--ink-3);transform:translateY(-1px)}
 .btn-outline{background:#fff;border-color:var(--line-2);color:var(--green-d)}
 .btn-outline:hover{background:var(--green);color:#fff;border-color:var(--green)}
 .btn-ghost{background:transparent;color:var(--muted);padding:.55rem .8rem}
@@ -992,6 +995,9 @@ main{min-height:60vh;animation:fade .3s ease}
 }
 @media(max-width:560px){.ehero .in{padding:2rem 1.15rem 1.75rem}}
 .ehero.plain .in{padding-bottom:3rem}
+
+.meetband h2{font-size:1.75rem;margin:0}
+.meetband h2 em{font-style:normal;color:var(--green-d)}
 
 /* ---- portrait grid — the "faces of the commons" band on the homepage hero ---- */
 .pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:#111}
