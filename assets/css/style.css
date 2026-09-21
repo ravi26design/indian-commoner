@@ -1561,6 +1561,14 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
 @media(max-width:860px){.commonsband{grid-template-columns:1fr}
   .cb-panel{border-left:0;border-top:1px solid rgba(255,255,255,.14);min-height:20rem}
   .cb-panel:first-child{border-top:0}}
+/* Touch devices have no real :hover, so content gated behind it must default open */
+@media(hover:none){
+  .cb-in{transform:none}
+  .cb-ic{background:var(--cta);border-color:var(--cta)}
+  .cb-panel::after{background:linear-gradient(to top,rgba(15,15,14,.92),rgba(15,15,14,.35) 58%,rgba(15,15,14,.25))}
+  .cb-panel p{opacity:1;max-height:8rem;margin-top:.1rem}
+  .cb-more{color:var(--cta)}
+}
 
 /* ---- state tag cloud (Meet Commoners): font-size scaled by topic count ---- */
 .tagcloud{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1.1rem;row-gap:.6rem}
