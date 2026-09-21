@@ -991,6 +991,26 @@ main{min-height:60vh;animation:fade .3s ease}
   .ehero h1{max-width:none}
 }
 @media(max-width:560px){.ehero .in{padding:2rem 1.15rem 1.75rem}}
+.ehero.plain .in{padding-bottom:0}
+
+/* ---- portrait grid — the "faces of the commons" band on the homepage hero ---- */
+.pgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:#111}
+.pg-cell{position:relative;display:block;aspect-ratio:1/1;overflow:hidden;cursor:pointer}
+.pg-cell img{width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;filter:grayscale(1) contrast(1.05);transition:transform .35s ease}
+.pg-cell:hover img{transform:scale(1.06)}
+.pg-cap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;gap:.2rem;
+  padding:1rem;background:linear-gradient(to top,rgba(10,10,10,.88),rgba(10,10,10,.15) 60%,transparent);
+  opacity:0;transition:opacity .2s ease;color:#fff}
+.pg-cell:hover .pg-cap,.pg-cell:focus-visible .pg-cap{opacity:1}
+.pg-cap b{font-size:.88rem;font-weight:800;line-height:1.25}
+.pg-cap em{font-style:normal;font-size:.72rem;line-height:1.4;color:rgba(255,255,255,.85)}
+@media(hover:none){
+  .pg-cap{opacity:1;background:linear-gradient(to top,rgba(10,10,10,.85),rgba(10,10,10,.05) 70%,transparent);justify-content:flex-end}
+  .pg-cap em{display:none}
+  .pg-cap b{font-size:.7rem}
+}
+@media(max-width:900px){.pgrid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.pgrid{grid-template-columns:repeat(3,1fr)}.pg-cap{padding:.6rem}.pg-cap b{font-size:.68rem}}
 
 /* ============================================================
    v2 COMPONENTS — apps launcher, file cards, document viewer,
