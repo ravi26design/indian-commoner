@@ -62,9 +62,9 @@ nav.top .bar{display:flex;align-items:center;gap:1.75rem;height:5rem;max-width:9
 .brand .bt{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
 .brand .bt em{display:block;font-size:.62rem;font-weight:700;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase;margin-top:2px}
 nav.top .links{display:flex;align-items:center;gap:2rem;flex:1;justify-content:flex-end;min-width:0}
-nav.top .links a{color:var(--muted);font-size:.95rem;font-weight:500;padding:.35rem 0;
+nav.top .links a{color:var(--ink-2);font-size:.95rem;font-weight:600;padding:.35rem 0;
   white-space:nowrap;transition:color .15s}
-nav.top .links a:hover{color:var(--ink);background:none}
+nav.top .links a:hover{color:var(--ink-3);background:none}
 nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .navright{display:flex;align-items:center;gap:1rem;flex:none}
 .navdiv{width:1px;height:1.6rem;background:var(--line-2);flex:none}
@@ -1416,7 +1416,8 @@ nav.top .links{gap:.35rem}
 nav.top .links>.navgroup{position:relative}
 nav.top .links a.navlink{display:inline-flex;align-items:center;gap:.3rem;padding:.6rem .7rem;border-radius:.5rem}
 nav.top .links a.navlink:hover{background:var(--chip)}
-nav.top .links a.navlink i,nav.top .links a.navlink svg.lucide{width:.85rem;height:.85rem;color:var(--faint);transition:transform .15s}
+nav.top .links a.navlink i,nav.top .links a.navlink svg.lucide{width:.85rem;height:.85rem;color:var(--muted-2);transition:transform .15s,color .15s}
+nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color:var(--ink-3)}
 .navgroup:hover a.navlink i,.navgroup:hover a.navlink svg.lucide{transform:rotate(180deg);color:var(--green-d)}
 .navdrop{position:absolute;left:0;top:100%;padding-top:.6rem;display:none;z-index:70}
 .navgroup:hover .navdrop,.navgroup:focus-within .navdrop{display:block}
