@@ -610,13 +610,17 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 /* resource section switcher — underline style, sits above the difficulty pills */
 .restabs-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
   border-bottom:1px solid var(--line);margin-bottom:1.75rem}
-.restabs{display:flex;flex-wrap:wrap;gap:2rem;background:none;border-radius:0;padding:0}
-.restabs .tab{padding:.4rem .1rem 1rem;border-radius:0;border-bottom:2px solid transparent;
-  color:var(--muted);font-weight:600;transition:color .15s,border-color .15s}
-.restabs .tab i,.restabs .tab svg.lucide{color:var(--faint);transition:color .15s}
+.restabs{display:flex;flex-wrap:wrap;gap:2.25rem;background:none;border-radius:0;padding:0}
+.restabs .tab{padding:.5rem .1rem 1.1rem;border-radius:0;border-bottom:3px solid transparent;
+  color:var(--muted);font-weight:700;font-size:.92rem;gap:.65rem;transition:color .15s,border-color .15s}
+.restabs .tab i,.restabs .tab svg.lucide{display:none}
+.restabs .tab .rt-ic{width:2rem;height:2rem;border-radius:.6rem;background:var(--bg-soft);color:var(--muted-2);
+  display:grid;place-items:center;flex:none;transition:background .15s,color .15s}
+.restabs .tab .rt-ic i,.restabs .tab .rt-ic svg.lucide{display:block;width:1.05rem;height:1.05rem}
 .restabs .tab:hover{background:none;color:var(--ink);border-bottom-color:var(--line-2)}
-.restabs .tab.active{background:none;box-shadow:none;color:var(--green-d);font-weight:800;border-bottom-color:var(--green-d)}
-.restabs .tab.active i,.restabs .tab.active svg.lucide,.restabs .tab:hover i,.restabs .tab:hover svg.lucide{color:var(--green-d)}
+.restabs .tab:hover .rt-ic{background:var(--green-soft);color:var(--green-d)}
+.restabs .tab.active{background:none;box-shadow:none;color:var(--green-d);border-bottom-color:var(--green-d)}
+.restabs .tab.active .rt-ic{background:var(--green);color:#fff}
 .restabs-row .dd{margin-bottom:.85rem;flex:none}
 @media(max-width:760px){.restabs-row{flex-direction:column;align-items:stretch;gap:1rem}
   .restabs-row .dd{margin-bottom:1rem}}
