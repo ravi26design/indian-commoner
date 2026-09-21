@@ -1701,7 +1701,12 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .ssocard{width:100%;max-width:58rem;background:#fff;box-shadow:0 30px 70px -30px rgba(20,30,60,.28);
   display:grid;grid-template-columns:1fr 1.2fr}
 .sso-left{background:linear-gradient(160deg,#33513b 0%,#3f6549 60%,#46704f 100%);color:#fff;
-  padding:2.75rem 2.25rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  padding:2.75rem 2.25rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
+.sso-close{position:fixed;top:1.5rem;right:1.5rem;width:2.5rem;height:2.5rem;border-radius:50%;
+  background:#fff;border:1px solid var(--line-2);color:var(--muted);display:grid;place-items:center;
+  box-shadow:0 10px 24px -12px rgba(20,30,50,.3);transition:.15s;z-index:5}
+.sso-close:hover{color:var(--ink);transform:translateY(-1px)}
+.sso-close i,.sso-close svg.lucide{width:1.15rem;height:1.15rem}
 .sso-left::before{content:'';position:absolute;right:-70px;bottom:-90px;width:280px;height:280px;
   background:radial-gradient(circle,rgba(255,255,255,.12),transparent 68%);pointer-events:none}
 .sso-left>*{position:relative;z-index:1}
