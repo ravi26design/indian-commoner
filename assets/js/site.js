@@ -2,6 +2,14 @@
 document.addEventListener('DOMContentLoaded', function () {
   if (window.lucide) lucide.createIcons();
 
+  var signinBtn = document.getElementById('lg-signin');
+  if (signinBtn) {
+    var ref = document.referrer;
+    if (ref && ref.indexOf(location.origin) === 0 && !/\/(login|register)\.html([?#].*)?$/.test(ref)) {
+      signinBtn.href = ref;
+    }
+  }
+
   var navToggle = document.querySelector('.navtoggle');
   var mobnav = document.getElementById('mobnav');
   if (navToggle && mobnav) {
