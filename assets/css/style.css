@@ -608,12 +608,18 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .tabbar .tab.active{background:var(--green);color:#fff;box-shadow:0 3px 10px -3px rgba(46,133,64,.5)}
 
 /* resource section switcher — underline style, sits above the difficulty pills */
-.restabs{display:flex;flex-wrap:wrap;gap:1.75rem;background:none;border-radius:0;padding:0;
-  border-bottom:1px solid var(--line);width:100%}
-.restabs .tab{padding:.3rem .1rem .9rem;border-radius:0;border-bottom:2px solid transparent;
-  color:var(--muted)}
-.restabs .tab:hover{background:none;color:var(--ink)}
-.restabs .tab.active{background:none;box-shadow:none;color:var(--green-d);border-bottom-color:var(--green-d)}
+.restabs-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);margin-bottom:1.75rem}
+.restabs{display:flex;flex-wrap:wrap;gap:2rem;background:none;border-radius:0;padding:0}
+.restabs .tab{padding:.4rem .1rem 1rem;border-radius:0;border-bottom:2px solid transparent;
+  color:var(--muted);font-weight:600;transition:color .15s,border-color .15s}
+.restabs .tab i,.restabs .tab svg.lucide{color:var(--faint);transition:color .15s}
+.restabs .tab:hover{background:none;color:var(--ink);border-bottom-color:var(--line-2)}
+.restabs .tab.active{background:none;box-shadow:none;color:var(--green-d);font-weight:800;border-bottom-color:var(--green-d)}
+.restabs .tab.active i,.restabs .tab.active svg.lucide,.restabs .tab:hover i,.restabs .tab:hover svg.lucide{color:var(--green-d)}
+.restabs-row .dd{margin-bottom:.85rem;flex:none}
+@media(max-width:760px){.restabs-row{flex-direction:column;align-items:stretch;gap:1rem}
+  .restabs-row .dd{margin-bottom:1rem}}
 
 /* stat tiles */
 .stat{background:#fff;border:1px solid var(--line);border-radius:0;padding:1.15rem 1.25rem;box-shadow:var(--shadow-card)}
