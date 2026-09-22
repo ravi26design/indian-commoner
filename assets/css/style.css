@@ -897,6 +897,18 @@ button.dd-btn.lg-input{justify-content:space-between;font-weight:600;text-align:
   border-radius:0;padding:3rem 2rem;box-shadow:var(--shadow-card)}
 .gatebox .ic-tile{margin:0 auto 1.1rem}
 
+/* ---- newsfeed list ---- */
+.newslist{display:flex;flex-direction:column}
+.newsitem{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
+  padding:1.75rem 0;border-bottom:1px solid var(--line)}
+.newsitem:first-child{padding-top:0}
+.newsitem-tx h3{font-size:1.1rem;margin:0 0 .5rem;line-height:1.4}
+.newsitem-tx h3 a{color:var(--ink);transition:color .15s}
+.newsitem-tx h3 a:hover{color:var(--green-d)}
+.newsitem-date{font-size:.83rem;color:var(--faint);font-weight:600}
+.newsitem .btn{flex:none}
+@media(max-width:640px){.newsitem{flex-direction:column;align-items:flex-start;gap:1rem}}
+
 /* overlay + modal */
 .overlay{position:fixed;inset:0;background:rgba(20,28,60,.55);z-index:90;display:none;
   align-items:flex-start;justify-content:center;padding:8vh 1rem 1rem}
