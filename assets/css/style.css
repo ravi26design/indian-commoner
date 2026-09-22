@@ -163,6 +163,9 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
   font-size:.95rem;font-weight:600;color:var(--muted)}
 .mobnav a.active{background:var(--blue-soft);color:var(--blue)}
 .mobnav a i,.mobnav a svg.lucide{width:1.05rem;height:1.05rem;color:var(--faint)}
+.mobnav-static{display:flex;align-items:center;gap:.65rem;padding:.7rem .75rem;border-radius:.6rem;
+  font-size:.95rem;font-weight:600;color:var(--faint);cursor:default;user-select:none}
+.mobnav-static i,.mobnav-static svg.lucide{width:1.05rem;height:1.05rem;color:var(--faint)}
 .mob-h{font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
   margin:.85rem .75rem .35rem;padding-top:.75rem;border-top:1px solid var(--line)}
 .mob-langs{display:flex;flex-wrap:wrap;gap:.4rem;padding:.15rem .75rem .35rem}
@@ -1467,14 +1470,16 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
   box-shadow:0 22px 48px -18px rgba(20,30,20,.28);padding:.6rem;position:relative}
 .navdrop-in::before{content:'';position:absolute;top:-.4rem;left:1.6rem;width:.8rem;height:.8rem;
   background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
-.navdrop-in a{display:flex;align-items:center;gap:.85rem;padding:.55rem .6rem;border-radius:.7rem;
+.navdrop-in a,.navdrop-in .nd-static{display:flex;align-items:center;gap:.85rem;padding:.55rem .6rem;border-radius:.7rem;
   font-size:.92rem;font-weight:700;color:var(--ink-2);white-space:nowrap;transition:background .15s,color .15s}
 .navdrop-in a:hover{background:var(--green-soft);color:var(--green-d)}
-.navdrop-in a+a{margin-top:.15rem}
+.navdrop-in a+a,.navdrop-in .nd-static+a,.navdrop-in a+.nd-static,.navdrop-in .nd-static+.nd-static{margin-top:.15rem}
 .navdrop-in .nd-ic{width:2.2rem;height:2.2rem;border-radius:.65rem;background:var(--bg-soft);color:var(--muted-2);
   display:grid;place-items:center;flex:none;transition:background .15s,color .15s}
 .navdrop-in a:hover .nd-ic{background:var(--green);color:#fff}
 .navdrop-in .nd-ic i,.navdrop-in .nd-ic svg.lucide{width:1.05rem;height:1.05rem}
+.navdrop-in .nd-static{color:var(--muted-2);cursor:default;user-select:none}
+.navdrop-in .nd-static .nd-ic{opacity:.75}
 @media(max-width:980px){.navdrop{display:none!important}}
 
 /* ---- forum: topic row (listing) ---- */
