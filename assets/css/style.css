@@ -1455,6 +1455,12 @@ nav.top .links a.navlink:hover{background:var(--chip)}
 nav.top .links a.navlink i,nav.top .links a.navlink svg.lucide{width:.85rem;height:.85rem;color:var(--muted-2);transition:transform .15s,color .15s}
 nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color:var(--ink-3)}
 .navgroup:hover a.navlink i,.navgroup:hover a.navlink svg.lucide{transform:rotate(180deg);color:var(--green-d)}
+/* non-clickable nav parent (dropdown-only, no destination page yet) */
+.navlink-static{display:inline-flex;align-items:center;gap:.3rem;padding:.6rem .7rem;border-radius:.5rem;
+  color:var(--ink-2);font-size:.95rem;font-weight:600;cursor:default;user-select:none}
+.navlink-static i,.navlink-static svg.lucide{width:.85rem;height:.85rem;color:var(--muted-2);transition:transform .15s,color .15s}
+.navgroup:hover .navlink-static i,.navgroup:hover .navlink-static svg.lucide{transform:rotate(180deg);color:var(--green-d)}
+.navlink-static.active{color:var(--green-d);font-weight:700}
 .navdrop{position:absolute;left:0;top:100%;padding-top:.7rem;display:none;z-index:70}
 .navgroup:hover .navdrop,.navgroup:focus-within .navdrop{display:block}
 .navdrop-in{min-width:16rem;background:#fff;border:1px solid var(--line);border-radius:1rem;
