@@ -403,11 +403,6 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .imgcard:hover .ic-photo img{transform:scale(1.045)}
 .imgcard .ic-body{padding:1.2rem 1.35rem 1.35rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
 
-/* real theme-card source photos are only 290x255 — show at native size instead of stretching */
-.themecard .ic-photo{display:flex;align-items:center;justify-content:center}
-.themecard .ic-photo img{width:auto;height:auto;max-width:290px;max-height:255px;object-fit:contain}
-.themecard:hover .ic-photo img{transform:none}
-
 /* type card (five families) */
 .typecard{position:relative;overflow:hidden;padding-left:1.5rem}
 .typecard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--tc,var(--green))}
