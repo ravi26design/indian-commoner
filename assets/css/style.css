@@ -1663,6 +1663,16 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
 .podcastcard h3{color:#fff;font-size:1.05rem;line-height:1.42;position:relative;z-index:1}
 .podcastcard .tags{margin-top:auto;padding-top:.35rem;position:relative;z-index:1}
 
+/* ---- literature tile (Resources > Literature): card grid, no thumbnail ---- */
+.litcard{min-height:11rem}
+.litcard .lit-ic{display:inline-grid;place-items:center;width:2.85rem;height:2.85rem;border-radius:.85rem;
+  background:var(--green-soft);color:var(--green-d);flex:none;transition:background .2s,color .2s}
+.litcard .lit-ic i,.litcard .lit-ic svg.lucide{width:1.35rem;height:1.35rem}
+.litcard:hover .lit-ic{background:var(--green-d);color:#fff}
+.litcard h3{font-size:1rem;line-height:1.42}
+.litcard:hover h3{color:var(--green-d)}
+.litcard .tags{margin-top:auto;padding-top:.35rem}
+
 /* ---- topic table (Recent Topics): Topics / Posted By columns ---- */
 /* Grid-based (not <table>) so header/row columns can never drift out of
    alignment the way auto table-layout does once cells contain flex content. */
