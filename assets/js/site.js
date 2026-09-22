@@ -113,4 +113,21 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+
+  // YouTube video cards: play inline on click instead of leaving the site
+  document.querySelectorAll('a.v-frame').forEach(function (frame) {
+    var href = frame.getAttribute('href') || '';
+    var m = href.match(/[?&]v=([\w-]+)/);
+    if (!m) return;
+    var videoId = m[1];
+    frame.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (frame.querySelector('iframe')) return;
+      var title = frame.querySelector('img') ? frame.querySelector('img').alt : 'YouTube video player';
+      frame.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" ' +
+        'title="' + title.replace(/"/g, '&quot;') + '" frameborder="0" ' +
+        'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+        'allowfullscreen></iframe>';
+    });
+  });
 });
