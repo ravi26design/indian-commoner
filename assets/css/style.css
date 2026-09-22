@@ -245,6 +245,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .section.tight{padding:64px 0}
 @media(max-width:700px){.section{padding:56px 0}.section.tight{padding:40px 0}}
 .band{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.resbg{background:var(--bg-soft)}
 .sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:1.25rem;flex-wrap:wrap;margin-bottom:1.6rem}
 .sechead h2{font-size:1.55rem}
 .panel{background:#fff;border:1px solid var(--line);border-radius:0;padding:1.6rem;box-shadow:var(--shadow-card)}
