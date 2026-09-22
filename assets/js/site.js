@@ -10,6 +10,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  document.querySelectorAll('.fp-more').forEach(function (btn) {
+    var group = btn.previousElementSibling;
+    if (!group || !group.classList.contains('fp-more-group')) return;
+    btn.addEventListener('click', function () {
+      var open = group.hidden;
+      group.hidden = !open;
+      btn.textContent = open ? 'Show less' : btn.dataset.label;
+    });
+    btn.dataset.label = btn.textContent;
+  });
+
   var navToggle = document.querySelector('.navtoggle');
   var mobnav = document.getElementById('mobnav');
   if (navToggle && mobnav) {

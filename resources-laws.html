@@ -178,46 +178,44 @@
 
     <aside class="filterpanel">
       <div class="fp-head"><i data-lucide="sliders-horizontal"></i><b>Filter</b></div>
-      <div class="fp-grid">
-        <div>
-          <div class="fgrouplabel">Region</div>
-          <select>
-            <option>All Regions</option>
-            <option>Tamil Nadu</option>
-            <option>Karnataka</option>
-            <option>Rajasthan</option>
-            <option>Uttarakhand</option>
-            <option>Uttar Pradesh</option>
-            <option>Sikkim</option>
-            <option>West Bengal</option>
-            <option>Telangana</option>
-            <option>Tripura</option>
-          </select>
+
+      <div class="fp-cat">
+        <div class="fp-cat-head"><b>Region</b><button type="button" class="fp-cat-search" aria-label="Search regions"><i data-lucide="search"></i></button></div>
+        <label class="fp-check"><input type="checkbox"> Rajasthan <span>(17)</span></label>
+        <label class="fp-check"><input type="checkbox"> Tamil Nadu <span>(10)</span></label>
+        <label class="fp-check"><input type="checkbox"> Uttarakhand <span>(4)</span></label>
+        <label class="fp-check"><input type="checkbox"> Sikkim <span>(4)</span></label>
+        <label class="fp-check"><input type="checkbox"> Uttar Pradesh <span>(4)</span></label>
+        <div class="fp-more-group" hidden>
+          <label class="fp-check"><input type="checkbox"> Tripura <span>(2)</span></label>
+          <label class="fp-check"><input type="checkbox"> Karnataka <span>(1)</span></label>
+          <label class="fp-check"><input type="checkbox"> Telangana <span>(1)</span></label>
+          <label class="fp-check"><input type="checkbox"> West Bengal <span>(1)</span></label>
         </div>
-        <div>
-          <div class="fgrouplabel">Subject</div>
-          <select>
-            <option>All Subjects</option>
-            <option>Forests</option>
-            <option>Water &amp; Irrigation</option>
-            <option>Land Revenue &amp; Tenure</option>
-            <option>Grazing &amp; Pastures</option>
-            <option>Panchayati Raj</option>
-            <option>Fisheries</option>
-            <option>Encroachment</option>
-          </select>
+        <button type="button" class="fp-more">+ 4 more</button>
+      </div>
+
+      <div class="fp-cat">
+        <div class="fp-cat-head"><b>Subject</b><button type="button" class="fp-cat-search" aria-label="Search subjects"><i data-lucide="search"></i></button></div>
+        <label class="fp-check"><input type="checkbox"> Forests <span>(19)</span></label>
+        <label class="fp-check"><input type="checkbox"> Land Revenue &amp; Tenure <span>(9)</span></label>
+        <label class="fp-check"><input type="checkbox"> Panchayati Raj <span>(7)</span></label>
+        <label class="fp-check"><input type="checkbox"> Water &amp; Irrigation <span>(7)</span></label>
+        <label class="fp-check"><input type="checkbox"> Encroachment <span>(4)</span></label>
+        <div class="fp-more-group" hidden>
+          <label class="fp-check"><input type="checkbox"> Fisheries <span>(3)</span></label>
+          <label class="fp-check"><input type="checkbox"> Grazing &amp; Pastures <span>(1)</span></label>
         </div>
-        <div>
-          <div class="fgrouplabel">Type</div>
-          <select>
-            <option>All Types</option>
-            <option>Act</option>
-            <option>Rules</option>
-            <option>Policy</option>
-            <option>Scheme</option>
-            <option>Notification</option>
-          </select>
-        </div>
+        <button type="button" class="fp-more">+ 2 more</button>
+      </div>
+
+      <div class="fp-cat">
+        <div class="fp-cat-head"><b>Type</b><button type="button" class="fp-cat-search" aria-label="Search types"><i data-lucide="search"></i></button></div>
+        <label class="fp-check"><input type="checkbox"> Act <span>(21)</span></label>
+        <label class="fp-check"><input type="checkbox"> Rules <span>(21)</span></label>
+        <label class="fp-check"><input type="checkbox"> Policy <span>(5)</span></label>
+        <label class="fp-check"><input type="checkbox"> Scheme <span>(2)</span></label>
+        <label class="fp-check"><input type="checkbox"> Notification <span>(1)</span></label>
       </div>
     </aside>
 
