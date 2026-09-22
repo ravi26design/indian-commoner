@@ -535,7 +535,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .clearbtn{font-size:.82rem;font-weight:700;color:var(--blue);background:none;border:0;
   padding:.4rem .2rem;min-height:36px;display:inline-flex;align-items:center}
 .clearbtn:hover{text-decoration:underline}
-.layout-wide{display:grid;grid-template-columns:1fr 21rem;gap:2rem;align-items:start}
+.layout-wide{display:grid;grid-template-columns:21rem 1fr;gap:2rem;align-items:start}
 @media(max-width:1080px){.layout-wide{grid-template-columns:1fr}}
 
 /* search + form fields */
@@ -1294,12 +1294,8 @@ main{min-height:60vh;animation:fade .3s ease}
 /* checkbox-list filter categories (Laws & Regulations sidebar) */
 .fp-cat{padding:1.1rem 0;border-top:1px solid var(--line)}
 .fp-cat:first-of-type{border-top:0;padding-top:0}
-.fp-cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+.fp-cat-head{display:flex;align-items:center;margin-bottom:.7rem}
 .fp-cat-head b{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
-.fp-cat-search{border:0;background:var(--bg-soft);width:1.9rem;height:1.9rem;border-radius:50%;
-  display:grid;place-items:center;color:var(--muted-2);flex:none;transition:background .15s,color .15s}
-.fp-cat-search:hover{background:var(--green-soft);color:var(--green-d)}
-.fp-cat-search i,.fp-cat-search svg.lucide{width:.9rem;height:.9rem}
 .fp-check{display:flex;align-items:center;gap:.6rem;padding:.4rem 0;font-size:.88rem;color:var(--ink-2);cursor:pointer}
 .fp-check input{accent-color:var(--green-d);width:1rem;height:1rem;flex:none}
 .fp-check span{color:var(--faint);font-size:.8rem}
