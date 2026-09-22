@@ -904,7 +904,7 @@ button.dd-btn.lg-input{justify-content:space-between;font-weight:600;text-align:
   background:var(--green-soft);color:var(--green-d);flex:none;transition:background .2s,color .2s}
 .news-ic i,.news-ic svg.lucide{width:1.35rem;height:1.35rem}
 .newscard:hover .news-ic{background:var(--green-d);color:#fff}
-.newscard h3{font-size:1.02rem;line-height:1.42;margin:0}
+.newscard h3{font-family:var(--sans);font-weight:700;font-size:1.02rem;line-height:1.42;margin:0}
 .newscard h3 a{color:var(--ink);transition:color .15s}
 .newscard:hover h3 a{color:var(--green-d)}
 .newscard-foot{margin-top:auto;padding-top:.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
