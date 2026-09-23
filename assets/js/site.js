@@ -102,6 +102,19 @@ document.addEventListener('DOMContentLoaded', function () {
         opt.classList.add('on');
         if (ddLabel) ddLabel.innerHTML = opt.innerHTML;
         dd.classList.remove('open');
+
+        // Beginner/Intermediate/Advanced filter: cards tagged with a real
+        // difficulty level are shown/hidden; cards with no known real level
+        // stay visible under every filter rather than guessing one for them.
+        var level = opt.textContent.trim().toLowerCase();
+        if (['beginner', 'intermediate', 'advanced'].indexOf(level) === -1) return;
+        document.querySelectorAll('.grid').forEach(function (grid) {
+          var cards = grid.querySelectorAll(':scope > a, :scope > article');
+          cards.forEach(function (card) {
+            var lvl = card.getAttribute('data-level');
+            card.style.display = (!lvl || lvl === level) ? '' : 'none';
+          });
+        });
       });
     });
   });
