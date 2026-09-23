@@ -95,29 +95,16 @@
 
 <div class="pagehead noline" style="background:#fff"><div class="mx-sm" style="max-width:52rem;text-align:center">
   <div>
-    <span class="kicker" id="art-date">—</span>
     <h1 style="font-size:1.9rem" id="art-title">Newsfeed article</h1>
+    <span class="kicker" id="art-date" style="display:inline-block;margin-top:.6rem">—</span>
   </div>
 </div></div>
 
 <section class="section tight"><div class="mx-sm" style="max-width:52rem;text-align:center">
-  <div class="postcard" style="text-align:left">
-    <div class="post-head">
-      <span class="pw-av" id="art-source-av">—</span>
-      <div>
-        <b id="art-source">Source</b>
-        <span id="art-date-sub">—</span>
-      </div>
-    </div>
-    <div class="post-body" id="art-body">
-      <p>This is placeholder body copy standing in for the full article — the real headline, date and source above are genuine, but the article text itself isn't reproduced here since it belongs to its original publisher. Use the link below to read the real piece on the source site.</p>
-    </div>
-  </div>
+  <p class="lead" id="art-body" style="color:var(--ink-2)">This is placeholder body copy standing in for the full article — the real headline and date above are genuine, but the article text itself isn't reproduced here since it belongs to its original publisher.</p>
 
-  <div class="row" style="margin-top:1.5rem;gap:.75rem;justify-content:center">
-    <a class="btn btn-outline" href="resources-newsfeed.html"><i data-lucide="arrow-left"></i> Back to Newsfeed</a>
-    <a class="btn btn-primary" id="art-source-link" href="resources-newsfeed.html" target="_blank" rel="noopener noreferrer">Read the full article <i data-lucide="arrow-up-right"></i></a>
-  </div>
+  <h2 style="margin-top:2.5rem" id="art-source">Source</h2>
+  <p style="color:var(--muted)" id="art-date-sub">—</p>
 </div></section>
 
 </main>
@@ -179,18 +166,14 @@
     document.getElementById('art-crumb').textContent = title;
     document.getElementById('art-date').textContent = date || 'Newsfeed';
 
-    if (source) {
-      document.getElementById('art-source').textContent = source;
-      document.getElementById('art-source-av').textContent = source.charAt(0);
-    }
-    if (date && source) document.getElementById('art-date-sub').textContent = date + ' · ' + source;
-    else if (date) document.getElementById('art-date-sub').textContent = date;
+    if (source) document.getElementById('art-source').textContent = source;
 
-    var link = document.getElementById('art-source-link');
+    var dateSub = document.getElementById('art-date-sub');
+    var dateText = date || '';
     if (url) {
-      link.href = url;
+      dateSub.innerHTML = (dateText ? dateText + ' · ' : '') + '<a href="' + url + '" target="_blank" rel="noopener noreferrer">Read the original article</a>';
     } else {
-      link.remove();
+      dateSub.textContent = dateText;
     }
   })();
 </script>
