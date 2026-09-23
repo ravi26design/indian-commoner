@@ -2,9 +2,34 @@
 document.addEventListener('DOMContentLoaded', function () {
   if (window.lucide) lucide.createIcons();
 
-  // Every link to login.html carries the current page as a return-to param, so
-  // signing in lands the user back where they started (more reliable than
-  // document.referrer, which browsers can drop or which changes across hops).
+  // Signed-in state persists across pages/reloads until the user explicitly
+  // signs out — a plain localStorage flag, since this prototype has no real backend.
+  var LOGIN_KEY = 'ic-logged-in';
+  function isLoggedIn() {
+    try { return localStorage.getItem(LOGIN_KEY) === '1'; } catch (e) { return false; }
+  }
+  function setLoggedIn(v) {
+    try { if (v) localStorage.setItem(LOGIN_KEY, '1'); else localStorage.removeItem(LOGIN_KEY); } catch (e) {}
+  }
+
+  if (isLoggedIn()) {
+    document.querySelectorAll('a.signin-btn:not(.acctav)').forEach(function (a) {
+      a.href = 'member-profile.html';
+      a.title = 'My Profile';
+      a.classList.add('acctav');
+      a.style.cssText += 'width:2.5rem;height:2.5rem;border-radius:50%;padding:0;display:grid;place-items:center;font-weight:800';
+      a.textContent = 'PS';
+    });
+    document.querySelectorAll('#mobnav a[href="login.html"]').forEach(function (a) {
+      a.href = 'member-profile.html';
+      a.innerHTML = '<i data-lucide="user"></i> My Profile';
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  // Every remaining link to login.html carries the current page as a return-to
+  // param, so signing in lands the user back where they started (more reliable
+  // than document.referrer, which browsers can drop or which changes across hops).
   if (!/\/(login|register)\.html$/.test(location.pathname)) {
     var returnUrl = location.href;
     document.querySelectorAll('a[href="login.html"]').forEach(function (a) {
@@ -23,7 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
         signinBtn.href = ref;
       }
     }
+    signinBtn.addEventListener('click', function () { setLoggedIn(true); });
   }
+
+  var signupBtn = document.getElementById('rg-signup');
+  if (signupBtn) signupBtn.addEventListener('click', function () { setLoggedIn(true); });
+
+  var signoutLink = document.getElementById('signout-link');
+  if (signoutLink) signoutLink.addEventListener('click', function () { setLoggedIn(false); });
 
   document.querySelectorAll('.fp-more').forEach(function (btn) {
     var group = btn.previousElementSibling;
