@@ -102,13 +102,21 @@
 
 <section class="section tight"><div class="mx-sm" style="max-width:52rem">
   <div class="postcard">
-    <div class="post-body">
-      <p>This news item is an illustrative placeholder standing in for a real newsfeed link — indiancommoner.org's live Newsfeed page is currently empty, so there is no real article to show here. Once forum members start submitting reports and articles, each of these cards will open the real source link instead of this note.</p>
+    <div class="post-head">
+      <span class="pw-av" id="art-source-av">—</span>
+      <div>
+        <b id="art-source">Source</b>
+        <span id="art-date-sub">—</span>
+      </div>
+    </div>
+    <div class="post-body" id="art-body">
+      <p>This is placeholder body copy standing in for the full article — the real headline, date and source above are genuine, but the article text itself isn't reproduced here since it belongs to its original publisher. Use the link below to read the real piece on the source site.</p>
     </div>
   </div>
 
-  <div class="row" style="margin-top:1.5rem">
+  <div class="row" style="margin-top:1.5rem;gap:.75rem">
     <a class="btn btn-outline" href="resources-newsfeed.html"><i data-lucide="arrow-left"></i> Back to Newsfeed</a>
+    <a class="btn btn-primary" id="art-source-link" href="resources-newsfeed.html" target="_blank" rel="noopener noreferrer">Read the full article <i data-lucide="arrow-up-right"></i></a>
   </div>
 </div></section>
 
@@ -164,10 +172,26 @@
     var p = new URLSearchParams(location.search);
     var title = p.get('title') || 'Newsfeed article';
     var date = p.get('date') || '';
+    var source = p.get('source') || '';
+    var url = p.get('url') || '';
     document.getElementById('art-title').textContent = title;
     document.getElementById('art-title-tag').textContent = title + ' — Indian Commoner';
     document.getElementById('art-crumb').textContent = title;
     document.getElementById('art-date').textContent = date || 'Newsfeed';
+
+    if (source) {
+      document.getElementById('art-source').textContent = source;
+      document.getElementById('art-source-av').textContent = source.charAt(0);
+    }
+    if (date && source) document.getElementById('art-date-sub').textContent = date + ' · ' + source;
+    else if (date) document.getElementById('art-date-sub').textContent = date;
+
+    var link = document.getElementById('art-source-link');
+    if (url) {
+      link.href = url;
+    } else {
+      link.remove();
+    }
   })();
 </script>
 </body>
