@@ -1707,7 +1707,7 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
   color:var(--ink);border:1px solid var(--line);border-radius:0;padding:1.35rem 1.5rem;min-height:7rem;box-shadow:var(--shadow-card);
   transition:box-shadow .2s,transform .2s,border-color .15s}
 .lawcard:hover{box-shadow:var(--shadow-lift);border-color:var(--line-2);transform:translateY(-3px)}
-.lawcard h3{color:var(--ink);font-size:.94rem;font-weight:700;line-height:1.45}
+.lawcard h3{font-family:var(--sans);color:var(--ink);font-size:.94rem;font-weight:700;line-height:1.45}
 .lawcard:hover h3{color:#01655c}
 
 /* ---- topic table (Recent Topics): Topics / Posted By columns ---- */
