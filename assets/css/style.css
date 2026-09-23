@@ -6,9 +6,9 @@
    ============================================================ */
 :root{
   --ink:#4a423e; --ink-2:#5a514c; --ink-3:#3b3531;
-  /* primary: sage green · secondary: gold — from the Facilitating Commoning palette */
-  --blue:#4e7c59; --blue-h:#40684a; --blue-soft:#edf3ee;
-  --green:#4e7c59; --green-d:#3f6549; --green-soft:#edf3ee; --green-line:#cfe0d4;
+  /* primary: pine teal · secondary: gold — from the Facilitating Commoning palette */
+  --blue:#01796f; --blue-h:#015c54; --blue-soft:#e6f3f1;
+  --green:#01796f; --green-d:#015c54; --green-soft:#e6f3f1; --green-line:#bfe0da;
   --cta:#d4a24c; --cta-h:#c08f3d; --cta-ink:#fff;
   --muted:#5b6472; --muted-2:#6b7280; --faint:#8a909a;
   --line:#eef0f4; --line-2:#dfe3ea; --bg-soft:#f6f8fc; --chip:#f4f7fb; --white:#fff;
@@ -467,7 +467,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .feature:hover .f-cta i,.feature:hover .f-cta svg.lucide{transform:translateX(3px)}
 
 /* dark map tile */
-.feature.dark{background:linear-gradient(140deg,#33513b 0%,#3f6549 58%,#46704f 100%);border-color:transparent}
+.feature.dark{background:linear-gradient(140deg,#013a35 0%,#015c54 58%,#01796f 100%);border-color:transparent}
 .feature.dark::before{content:'';position:absolute;right:-90px;top:-90px;width:300px;height:300px;
   background:radial-gradient(circle,rgba(212,162,76,.30),transparent 68%);pointer-events:none}
 .feature.dark>*{position:relative;z-index:1}
@@ -668,7 +668,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .chaplead{display:grid;grid-template-columns:17rem 1fr;gap:1.5rem;align-items:stretch}
 @media(max-width:820px){.chaplead{grid-template-columns:1fr}}
 .chapcount{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;
-  padding:1.75rem;color:#fff;background:linear-gradient(140deg,#33513b 0%,#3f6549 60%,#46704f 100%)}
+  padding:1.75rem;color:#fff;background:linear-gradient(140deg,#013a35 0%,#015c54 60%,#01796f 100%)}
 .chapcount::before{content:'';position:absolute;right:-70px;top:-70px;width:210px;height:210px;
   background:radial-gradient(circle,rgba(212,162,76,.34),transparent 70%);pointer-events:none}
 .chapcount>*{position:relative;z-index:1}
@@ -1715,7 +1715,7 @@ footer.site.simple .social svg{width:1.35rem;height:1.35rem;display:block}
   transition:box-shadow .2s,transform .2s,border-color .15s}
 .lawcard:hover{box-shadow:var(--shadow-lift);border-color:var(--line-2);transform:translateY(-3px)}
 .lawcard h3{font-family:var(--sans);color:var(--ink);font-size:.94rem;font-weight:700;line-height:1.45}
-.lawcard:hover h3{color:#01655c}
+.lawcard:hover h3{color:#015c54}
 
 /* ---- topic table (Recent Topics): Topics / Posted By columns ---- */
 /* Grid-based (not <table>) so header/row columns can never drift out of
@@ -1775,8 +1775,8 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 /* ---- avatar colour variants for admin tables ---- */
 .av-1{background:linear-gradient(135deg,#8a6a2f,#6f5424)}
-.av-2{background:linear-gradient(135deg,#3f6549,#2e4d38)}
-.av-3{background:linear-gradient(135deg,#4e7c59,#3a5c43)}
+.av-2{background:linear-gradient(135deg,#015c54,#013a35)}
+.av-3{background:linear-gradient(135deg,#01796f,#015c54)}
 .av-4{background:linear-gradient(135deg,#a2543a,#823f2a)}
 .av-5{background:linear-gradient(135deg,#3b3531,#26211e)}
 
@@ -1793,7 +1793,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
   justify-content:center;padding:3rem 1.5rem;background:linear-gradient(160deg,#eef4fb,#f6f8fc 45%,#fff)}
 .ssocard{width:100%;max-width:58rem;background:#fff;box-shadow:0 30px 70px -30px rgba(20,30,60,.28);
   display:grid;grid-template-columns:1fr 1.2fr}
-.sso-left{background:linear-gradient(160deg,#33513b 0%,#3f6549 60%,#46704f 100%);color:#fff;
+.sso-left{background:linear-gradient(160deg,#013a35 0%,#015c54 60%,#01796f 100%);color:#fff;
   padding:2.75rem 2.25rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;overflow:hidden}
 .sso-close{position:fixed;top:1.5rem;right:1.5rem;width:2.5rem;height:2.5rem;border-radius:50%;
   background:#fff;border:1px solid var(--line-2);color:var(--muted);display:grid;place-items:center;
