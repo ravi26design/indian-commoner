@@ -111,6 +111,7 @@
 
   <span class="tag solid" id="wk-tag" style="display:none"></span>
   <h1 style="margin-top:.9rem" id="wk-title">Workshop</h1>
+  <p class="lead" style="color:var(--ink-2);margin-top:.3rem;display:none" id="wk-title-hi"></p>
   <p class="lead" style="color:var(--ink-2);margin-top:1rem" id="wk-desc"></p>
   <div class="v-meta" style="margin-top:.4rem" id="wk-meta"></div>
 
@@ -179,7 +180,8 @@
         metaIcon: 'users'
       },
       'panchayati-raj-hindi': {
-        title: 'सामुदायिक संसाधन, पंचायती राज और सामाजिक संस्थाएं',
+        title: 'Commons, the Panchayati Raj, and the Civil Society',
+        titleHi: 'सामुदायिक संसाधन, पंचायती राज और सामाजिक संस्थाएं',
         img: 'https://indiancommoner.org/wp-content/uploads/2023/05/Panchayati-raj-poster_Hindi-300x300.png',
         tag: 'वेबिनार (Webinar)',
         desc: '"Community Resources, Panchayati Raj and Social Institutions" — on the role of Panchayati Raj Institutions in community-led governance of natural resources.',
@@ -207,6 +209,11 @@
     document.getElementById('wk-title').textContent = d.title;
     document.getElementById('wk-title-tag').textContent = d.title + ' — Indian Commoner';
     document.getElementById('wk-crumb').textContent = d.title;
+    if (d.titleHi) {
+      var hiEl = document.getElementById('wk-title-hi');
+      hiEl.textContent = d.titleHi;
+      hiEl.style.display = '';
+    }
     document.getElementById('wk-img').src = d.img;
     document.getElementById('wk-img').alt = d.title;
     document.getElementById('wk-desc').textContent = d.desc || '';
