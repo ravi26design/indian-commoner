@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Workshops — Indian Commoner</title>
-<meta name="description" content="Workshops — Indian Commoner.">
+<title id="wk-title-tag">Workshop — Indian Commoner</title>
+<meta name="description" content="Workshop — Indian Commoner.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -98,46 +98,24 @@
 
 <main>
 
-<div class="pagehead noline"><div class="in">
-  <div>
-    <span class="kicker">Activities</span>
-    <h1>Workshops</h1>
-    <p>The forum encourages the forming of small discussion groups on topics of relevance. Registered members may initiate this on their own. The forum will help facilitate the process by providing a platform and where possible, an anchor. This apart, from time to time, the forum will propose and organize more formal workshops by inviting papers and arranging for online presentations and discussions. These papers may subsequently be developed and published in the working paper series.</p>
+<div class="crumbbar"><div class="mx"><div class="crumb">
+  <a href="index.html"><i data-lucide="house"></i>Home</a><span class="sep">/</span>
+  <a href="activities-workshops.html">Workshops</a><span class="sep">/</span>
+  <span class="here" id="wk-crumb">Workshop</span>
+</div></div></div>
+
+<section class="section tight"><div class="mx-sm" style="max-width:52rem">
+  <div class="ic-photo" style="aspect-ratio:16/9;border-radius:1rem;overflow:hidden;margin-bottom:1.75rem">
+    <img id="wk-img" src="" alt="">
   </div>
-</div></div>
 
-<section class="section" style="padding-top:1.5rem"><div class="mx">
+  <span class="tag solid" id="wk-tag" style="display:none"></span>
+  <h1 style="margin-top:.9rem" id="wk-title">Workshop</h1>
+  <p class="lead" style="color:var(--ink-2);margin-top:1rem" id="wk-desc"></p>
+  <div class="v-meta" style="margin-top:.4rem" id="wk-meta"></div>
 
-  <div class="grid g4">
-
-    <a class="card click imgcard" href="activities-workshop-detail.html?id=navigating-coast">
-      <div class="ic-photo" style="aspect-ratio:4/5"><img src="https://indiancommoner.org/wp-content/uploads/2023/07/Coastal-Commons-Webinar-poster-1-240x300.png" alt="Navigating the Coast" loading="lazy"></div>
-      <div class="ic-body">
-        <h3>Navigating the Coast</h3>
-      </div>
-    </a>
-
-    <a class="card click imgcard" href="activities-workshop-detail.html?id=panchayati-raj-hindi">
-      <div class="ic-photo" style="aspect-ratio:4/5"><img src="https://indiancommoner.org/wp-content/uploads/2023/05/Panchayati-raj-poster_Hindi-300x300.png" alt="सामुदायिक संसाधन, पंचायती राज और सामाजिक संस्थाएं" loading="lazy"></div>
-      <div class="ic-body">
-        <h3>सामुदायिक संसाधन, पंचायती राज और सामाजिक संस्थाएं</h3>
-      </div>
-    </a>
-
-    <a class="card click imgcard" href="activities-workshop-detail.html?id=commoning-commons">
-      <div class="ic-photo" style="aspect-ratio:4/5"><img src="https://indiancommoner.org/wp-content/uploads/2022/12/1-220x300.jpg" alt="Commoning the Commons: Celebrating Community Stewardship" loading="lazy"></div>
-      <div class="ic-body">
-        <h3>Commoning the Commons: Celebrating Community Stewardship</h3>
-      </div>
-    </a>
-
-    <a class="card click imgcard" href="activities-workshop-detail.html?id=workshop-photo">
-      <div class="ic-photo" style="aspect-ratio:4/5"><img src="https://indiancommoner.org/wp-content/uploads/2022/12/WhatsApp-Image-2020-12-08-at-1.26.37-PM-750x1024-1-220x300.jpeg" alt="Workshop field photograph" loading="lazy"></div>
-      <div class="ic-body">
-        <h3>Workshop archive photograph</h3>
-      </div>
-    </a>
-
+  <div class="row" style="margin-top:2rem">
+    <a class="btn btn-outline" href="activities-workshops.html"><i data-lucide="arrow-left"></i> Back to Workshops</a>
   </div>
 </div></section>
 
@@ -188,5 +166,64 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+  (function () {
+    var DATA = {
+      'navigating-coast': {
+        title: 'Navigating the Coast',
+        img: 'https://indiancommoner.org/wp-content/uploads/2023/07/Coastal-Commons-Webinar-poster-1-240x300.png',
+        tag: '7 July 2023 · 5 PM IST',
+        tagIcon: 'calendar',
+        desc: 'Exploring Ownership, Threats and Pathways for Coastal Commons.',
+        meta: 'Naveen Namboodiri · Dr. Sreeja KG · Amalendu Jyotishi',
+        metaIcon: 'users'
+      },
+      'panchayati-raj-hindi': {
+        title: 'सामुदायिक संसाधन, पंचायती राज और सामाजिक संस्थाएं',
+        img: 'https://indiancommoner.org/wp-content/uploads/2023/05/Panchayati-raj-poster_Hindi-300x300.png',
+        tag: 'वेबिनार (Webinar)',
+        desc: '"Community Resources, Panchayati Raj and Social Institutions" — on the role of Panchayati Raj Institutions in community-led governance of natural resources.',
+        meta: '24 April 2023 · 5 PM – 6.30 PM',
+        metaIcon: 'calendar'
+      },
+      'commoning-commons': {
+        title: 'Commoning the Commons: Celebrating Community Stewardship',
+        img: 'https://indiancommoner.org/wp-content/uploads/2022/12/1-220x300.jpg',
+        tag: 'Virtual Conference · 8–10 December 2022',
+        tagIcon: 'globe',
+        desc: 'Commons, or shared resources such as groundwater, forests, pastures, other natural resources and cultural knowledge systems associated with them, sustain the lives and livelihoods of millions of people worldwide. Rural communities have been at the centre of protecting, conserving, and managing these resources in innovative ways which have stood the test of time. As a part of the Promise of Commons initiative, this virtual conference on Celebrating Community Stewardship seeks to provide a platform for community members to share their experiences in natural resource governance and management — bringing together practitioners, academicians, policymakers and civil society. It is organized as part of World Commons Week (December 4–10).'
+      },
+      'workshop-photo': {
+        title: 'Workshop archive photograph',
+        img: 'https://indiancommoner.org/wp-content/uploads/2022/12/WhatsApp-Image-2020-12-08-at-1.26.37-PM-750x1024-1-220x300.jpeg',
+        tag: 'From the field',
+        desc: "An uncaptioned field photograph from one of the forum's discussion groups and workshop sessions."
+      }
+    };
+
+    var id = new URLSearchParams(location.search).get('id');
+    var d = DATA[id] || DATA['navigating-coast'];
+
+    document.getElementById('wk-title').textContent = d.title;
+    document.getElementById('wk-title-tag').textContent = d.title + ' — Indian Commoner';
+    document.getElementById('wk-crumb').textContent = d.title;
+    document.getElementById('wk-img').src = d.img;
+    document.getElementById('wk-img').alt = d.title;
+    document.getElementById('wk-desc').textContent = d.desc || '';
+
+    var tagEl = document.getElementById('wk-tag');
+    if (d.tag) {
+      tagEl.style.display = '';
+      tagEl.innerHTML = (d.tagIcon ? '<i data-lucide="' + d.tagIcon + '"></i> ' : '') + d.tag;
+    }
+
+    var metaEl = document.getElementById('wk-meta');
+    if (d.meta) {
+      metaEl.innerHTML = '<i data-lucide="' + (d.metaIcon || 'info') + '"></i> ' + d.meta;
+    }
+
+    if (window.lucide) lucide.createIcons();
+  })();
+</script>
 </body>
 </html>
