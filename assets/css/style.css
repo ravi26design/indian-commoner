@@ -1495,16 +1495,20 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
   box-shadow:0 22px 48px -18px rgba(20,30,20,.28);padding:.6rem;position:relative}
 .navdrop-in::before{content:'';position:absolute;top:-.4rem;left:1.6rem;width:.8rem;height:.8rem;
   background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
-.navdrop-in a,.navdrop-in .nd-static{display:flex;align-items:center;gap:.85rem;padding:.55rem .6rem;border-radius:.7rem;
-  font-size:.92rem;font-weight:700;color:var(--ink-2);white-space:nowrap;transition:background .15s,color .15s}
-.navdrop-in a:hover{background:var(--green-soft);color:var(--green-d)}
+.navdrop-in a,.navdrop-in .nd-static{display:flex;align-items:center;gap:.85rem;padding:.6rem .7rem;border-radius:.85rem;
+  font-size:.92rem;font-weight:700;color:var(--ink-2);white-space:nowrap;transition:background .15s,color .15s,transform .15s}
+.navdrop-in a:hover{background:var(--green-soft);color:var(--green-d);transform:translateX(2px)}
 .navdrop-in a+a,.navdrop-in .nd-static+a,.navdrop-in a+.nd-static,.navdrop-in .nd-static+.nd-static{margin-top:.15rem}
-.navdrop-in .nd-ic{width:2.2rem;height:2.2rem;border-radius:.65rem;background:var(--bg-soft);color:var(--muted-2);
+.navdrop-in .nd-ic{width:2.6rem;height:2.6rem;border-radius:.75rem;background:var(--green-soft);color:var(--green-d);
   display:grid;place-items:center;flex:none;transition:background .15s,color .15s}
 .navdrop-in a:hover .nd-ic{background:var(--green);color:#fff}
-.navdrop-in .nd-ic i,.navdrop-in .nd-ic svg.lucide{width:1.05rem;height:1.05rem}
+.navdrop-in .nd-ic i,.navdrop-in .nd-ic svg.lucide{width:1.2rem;height:1.2rem}
 .navdrop-in .nd-static{color:var(--muted-2);cursor:default;user-select:none}
-.navdrop-in .nd-static .nd-ic{opacity:.75}
+.navdrop-in .nd-static .nd-ic{background:var(--bg-soft);color:var(--muted-2);opacity:.85}
+.navdrop-in .nd-tx{display:flex;flex-direction:column;gap:.1rem;white-space:nowrap}
+.navdrop-in .nd-tx b{font-size:.93rem;font-weight:700;line-height:1.2}
+.navdrop-in .nd-tx small{font-size:.76rem;font-weight:500;color:var(--muted-2)}
+.navdrop-in a:hover .nd-tx small{color:var(--green-d)}
 @media(max-width:980px){.navdrop{display:none!important}}
 
 /* ---- forum: topic row (listing) ---- */
