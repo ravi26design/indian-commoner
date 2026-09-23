@@ -103,17 +103,24 @@ document.addEventListener('DOMContentLoaded', function () {
         if (ddLabel) ddLabel.innerHTML = opt.innerHTML;
         dd.classList.remove('open');
 
-        // Beginner/Intermediate/Advanced filter: cards tagged with a real
-        // difficulty level are shown/hidden; cards with no known real level
-        // stay visible under every filter rather than guessing one for them.
+        // Beginner/Intermediate/Advanced sort: cards tagged with the chosen
+        // real difficulty level move to the front of the grid (in their
+        // original relative order); everything else follows after, still
+        // visible — cards with no known real level are never hidden, since
+        // we don't want to guess a level for them.
         var level = opt.textContent.trim().toLowerCase();
         if (['beginner', 'intermediate', 'advanced'].indexOf(level) === -1) return;
         document.querySelectorAll('.grid').forEach(function (grid) {
-          var cards = grid.querySelectorAll(':scope > a, :scope > article');
-          cards.forEach(function (card) {
-            var lvl = card.getAttribute('data-level');
-            card.style.display = (!lvl || lvl === level) ? '' : 'none';
-          });
+          var cards = Array.from(grid.querySelectorAll(':scope > a, :scope > article'));
+          if (!cards.some(function (c) { return c.hasAttribute('data-level'); })) return;
+          cards
+            .slice()
+            .sort(function (a, b) {
+              var aMatch = a.getAttribute('data-level') === level ? 0 : 1;
+              var bMatch = b.getAttribute('data-level') === level ? 0 : 1;
+              return aMatch - bMatch;
+            })
+            .forEach(function (card) { grid.appendChild(card); });
         });
       });
     });
