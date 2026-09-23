@@ -2,11 +2,26 @@
 document.addEventListener('DOMContentLoaded', function () {
   if (window.lucide) lucide.createIcons();
 
+  // Every link to login.html carries the current page as a return-to param, so
+  // signing in lands the user back where they started (more reliable than
+  // document.referrer, which browsers can drop or which changes across hops).
+  if (!/\/(login|register)\.html$/.test(location.pathname)) {
+    var returnUrl = location.href;
+    document.querySelectorAll('a[href="login.html"]').forEach(function (a) {
+      a.href = 'login.html?return=' + encodeURIComponent(returnUrl);
+    });
+  }
+
   var signinBtn = document.getElementById('lg-signin');
   if (signinBtn) {
-    var ref = document.referrer;
-    if (ref && ref.indexOf(location.origin) === 0 && !/\/(login|register)\.html([?#].*)?$/.test(ref)) {
-      signinBtn.href = ref;
+    var ret = new URLSearchParams(location.search).get('return');
+    if (ret && ret.indexOf(location.origin) === 0 && !/\/(login|register)\.html([?#].*)?$/.test(ret)) {
+      signinBtn.href = ret;
+    } else {
+      var ref = document.referrer;
+      if (ref && ref.indexOf(location.origin) === 0 && !/\/(login|register)\.html([?#].*)?$/.test(ref)) {
+        signinBtn.href = ref;
+      }
     }
   }
 
