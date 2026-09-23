@@ -1478,6 +1478,9 @@ table.admin th:last-child,table.admin td:last-child{padding-right:1.25rem}
 /* ---- desktop nav dropdown (Resources / Activities / People) ---- */
 nav.top .links{gap:.35rem}
 nav.top .links>.navgroup{position:relative}
+.acctgroup{position:relative}
+.navdrop.dd-right{left:auto;right:0}
+.navdrop.dd-right .navdrop-in::before{left:auto;right:1.6rem}
 nav.top .links a.navlink{display:inline-flex;align-items:center;gap:.3rem;padding:.6rem .7rem;border-radius:.5rem}
 nav.top .links a.navlink:hover{background:var(--chip)}
 nav.top .links a.navlink i,nav.top .links a.navlink svg.lucide{width:.85rem;height:.85rem;color:var(--muted-2);transition:transform .15s,color .15s}

@@ -19,6 +19,22 @@ document.addEventListener('DOMContentLoaded', function () {
       a.classList.add('acctav');
       a.style.cssText += 'width:2.5rem;height:2.5rem;border-radius:50%;padding:0;display:grid;place-items:center;font-weight:800';
       a.textContent = 'PS';
+
+      var group = document.createElement('div');
+      group.className = 'navgroup acctgroup';
+      a.parentNode.insertBefore(group, a);
+      group.appendChild(a);
+      var drop = document.createElement('div');
+      drop.className = 'navdrop dd-right';
+      drop.innerHTML = '<div class="navdrop-in">' +
+        '<a href="member-profile.html"><span class="nd-ic"><i data-lucide="user"></i></span><span class="nd-tx"><b>My Profile</b><small>Your account details and preferences</small></span></a>' +
+        '<a href="#"><span class="nd-ic"><i data-lucide="file-text"></i></span><span class="nd-tx"><b>My Contributions</b><small>Content you\'ve added to the forum</small></span></a>' +
+        '<a href="#"><span class="nd-ic"><i data-lucide="check-circle"></i></span><span class="nd-tx"><b>Approvals</b><small>Items waiting on your review</small></span></a>' +
+        '<a href="users-roles.html"><span class="nd-ic"><i data-lucide="users-round"></i></span><span class="nd-tx"><b>Users &amp; Roles</b><small>Manage member permissions</small></span></a>' +
+        '<a href="change-password.html"><span class="nd-ic"><i data-lucide="key-round"></i></span><span class="nd-tx"><b>Change Password</b><small>Update your login credentials</small></span></a>' +
+        '<a id="signout-link-nav" href="index.html"><span class="nd-ic"><i data-lucide="log-out"></i></span><span class="nd-tx"><b>Sign out</b></span></a>' +
+        '</div>';
+      group.appendChild(drop);
     });
     document.querySelectorAll('#mobnav a[href="login.html"]').forEach(function (a) {
       a.href = 'member-profile.html';
@@ -54,8 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var signupBtn = document.getElementById('rg-signup');
   if (signupBtn) signupBtn.addEventListener('click', function () { setLoggedIn(true); });
 
-  var signoutLink = document.getElementById('signout-link');
-  if (signoutLink) signoutLink.addEventListener('click', function () { setLoggedIn(false); });
+  document.querySelectorAll('#signout-link, #signout-link-nav').forEach(function (link) {
+    link.addEventListener('click', function () { setLoggedIn(false); });
+  });
 
   document.querySelectorAll('.fp-more').forEach(function (btn) {
     var group = btn.previousElementSibling;
