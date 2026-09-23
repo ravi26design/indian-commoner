@@ -190,4 +190,33 @@ document.addEventListener('DOMContentLoaded', function () {
         'allowfullscreen></iframe>';
     });
   });
+
+  // Laws & Regulations sidebar: Region/Subject/Type checkboxes filter the
+  // card grid. Checked boxes within a category are OR'd together; the
+  // categories themselves are AND'd (a card must match at least one checked
+  // box in every category that has any box checked).
+  var lawGrid = document.querySelector('.lawgrid');
+  if (lawGrid) {
+    var lawCards = Array.from(lawGrid.querySelectorAll('.lawcard'));
+    var filterCats = Array.from(document.querySelectorAll('.fp-cat[data-cat]'));
+
+    function applyLawFilters() {
+      var active = filterCats.map(function (cat) {
+        var checked = Array.from(cat.querySelectorAll('input[type="checkbox"]:checked')).map(function (c) { return c.value; });
+        return { key: cat.getAttribute('data-cat'), values: checked };
+      }).filter(function (c) { return c.values.length; });
+
+      lawCards.forEach(function (card) {
+        var visible = active.every(function (c) {
+          var cardValue = card.getAttribute('data-' + c.key);
+          return cardValue && c.values.indexOf(cardValue) !== -1;
+        });
+        card.style.display = visible ? '' : 'none';
+      });
+    }
+
+    document.querySelectorAll('.fp-cat input[type="checkbox"]').forEach(function (box) {
+      box.addEventListener('change', applyLawFilters);
+    });
+  }
 });
