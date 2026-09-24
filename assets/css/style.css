@@ -1198,6 +1198,7 @@ main{min-height:60vh;animation:fade .3s ease}
 .seg-tab.on{background:var(--green);color:#fff;border-color:var(--green)}
 .seg-tab.on:hover{background:var(--green-d);border-color:var(--green-d)}
 .cm-box{display:flex;gap:.9rem;background:var(--bg-soft);border:1px solid var(--line-2);padding:1.25rem}
+.cm-box[hidden]{display:none}
 .cm-grow{flex:1;min-width:0}
 .cm-box textarea{width:100%;min-height:5.5rem;resize:vertical;padding:.75rem .95rem;
   border:1px solid var(--line-2);border-radius:0;background:#fff;color:var(--ink);
@@ -1879,7 +1880,8 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
   background:#fff;color:var(--muted-2);transition:.15s;flex:none}
 .ctool:hover{border-color:var(--green);color:var(--green-d);background:var(--green-soft)}
 .ctool i{width:1.05rem;height:1.05rem}
-.ctool.rec{width:auto;padding:0 .85rem;gap:.4rem;color:var(--red);border-color:var(--red-soft);background:var(--red-soft);font-size:.78rem;font-weight:700}
+.ctool.rec{display:inline-flex;align-items:center;justify-content:center;width:auto;height:2.3rem;border-radius:999px;
+  padding:0 .85rem;gap:.4rem;white-space:nowrap;color:var(--red);border-color:var(--red-soft);background:var(--red-soft);font-size:.78rem;font-weight:700}
 .ctool.rec i{width:.95rem;height:.95rem}
 .ctool.rec.pulse{animation:ctool-pulse 1.4s ease-in-out infinite}
 @keyframes ctool-pulse{0%,100%{opacity:1}50%{opacity:.55}}

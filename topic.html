@@ -111,15 +111,15 @@
   <span class="here">GBBC</span>
 </div></div></div>
 
-<div class="pagehead noline"><div class="in">
+<div class="pagehead noline" style="background:#fff;padding-bottom:0"><div class="in" style="padding:1.5rem 2rem 1.25rem">
   <div>
     <span class="kicker">Sacred Sites and Cultural Landscapes · Pinned</span>
-    <h1 style="font-size:1.9rem">Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)</h1>
-    <p>Started by <b style="color:var(--ink)">Indu</b> · last updated by <b style="color:var(--ink)">Noah</b>, 2 months ago</p>
+    <h1 style="font-size:1.9rem;margin-top:.35rem">Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)</h1>
+    <p style="margin-top:.4rem">Started by <b style="color:var(--ink)">Indu</b> · last updated by <b style="color:var(--ink)">Noah</b>, 2 months ago</p>
   </div>
 </div></div>
 
-<section class="section tight"><div class="mx">
+<section class="section tight" style="padding-top:1.25rem"><div class="mx">
   <div class="rail-layout">
     <div style="max-width:52rem">
 
@@ -160,9 +160,19 @@
         </div>
       </div>
 
-      <div class="panel" style="margin-top:1.5rem;text-align:center;padding:2rem">
+      <div class="panel" id="reply-gate" style="margin-top:1.5rem;text-align:center;padding:2rem">
         <p style="font-size:.92rem;color:var(--muted)">You must be logged in to reply to this topic.</p>
         <a class="btn btn-primary" style="margin-top:.9rem" href="login.html"><i data-lucide="log-in"></i> Sign in to reply</a>
+      </div>
+
+      <div class="cm-box" id="reply-box" style="margin-top:1.5rem" hidden>
+        <span class="pw-av">PS</span>
+        <div class="cm-grow">
+          <textarea id="reply-text" placeholder="Add a reply…"></textarea>
+          <div class="row" style="justify-content:flex-end;margin-top:.75rem">
+            <button type="button" class="btn btn-primary" id="reply-send">Post reply</button>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -289,5 +299,28 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var loggedIn = false;
+  try { loggedIn = localStorage.getItem('ic-logged-in') === '1'; } catch (e) {}
+
+  var gate = document.getElementById('reply-gate');
+  var box = document.getElementById('reply-box');
+  if (loggedIn) {
+    if (gate) gate.hidden = true;
+    if (box) box.hidden = false;
+  }
+
+  var sendBtn = document.getElementById('reply-send');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', function () {
+      var ta = document.getElementById('reply-text');
+      if (!ta.value.trim()) { ta.focus(); return; }
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Posted ✓';
+    });
+  }
+})();
+</script>
 </body>
 </html>
