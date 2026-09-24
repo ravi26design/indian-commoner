@@ -1198,7 +1198,7 @@ main{min-height:60vh;animation:fade .3s ease}
 .seg-tab:hover{border-color:var(--green);color:var(--green-d)}
 .seg-tab.on{background:var(--green);color:#fff;border-color:var(--green)}
 .seg-tab.on:hover{background:var(--green-d);border-color:var(--green-d)}
-.cm-box{display:flex;gap:.9rem;background:var(--bg-soft);border:1px solid var(--line-2);padding:1.25rem}
+.cm-box{display:flex;gap:.9rem;background:var(--blue-soft);border:1px solid var(--line-2);padding:1.25rem}
 .cm-box[hidden]{display:none}
 .cm-grow{flex:1;min-width:0}
 .cm-box textarea{width:100%;min-height:5.5rem;resize:vertical;padding:.75rem .95rem;
