@@ -1302,17 +1302,25 @@ main{min-height:60vh;animation:fade .3s ease}
 .fp-check span{color:var(--faint);font-size:.8rem}
 .fp-more{border:0;background:none;padding:.45rem 0 0;font-size:.85rem;font-weight:700;color:var(--green-d);cursor:pointer}
 .fp-more:hover{color:var(--ink)}
-.leafmap{width:100%;height:34rem;z-index:1}
-.leafmap .leaflet-container{font-family:var(--sans)}
+.pinmap{position:relative;width:100%;height:28rem;border-radius:1rem;overflow:hidden;
+  background-color:var(--green-soft);
+  background-image:radial-gradient(var(--green-line) 1.5px, transparent 1.5px);
+  background-size:22px 22px}
+.pinmap-pin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;
+  align-items:center;gap:.4rem;text-decoration:none;z-index:1}
+.pinmap-pin:hover{z-index:2}
+.pinmap-label{font-size:.72rem;font-weight:700;color:var(--ink);background:#fff;padding:.15rem .55rem;
+  border-radius:.4rem;box-shadow:var(--shadow-card);white-space:nowrap;opacity:0;transform:translateY(-4px);
+  transition:opacity .15s,transform .15s;pointer-events:none}
+.pinmap-pin:hover .pinmap-label{opacity:1;transform:translateY(0)}
 .mkpin{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:#fff;font-size:.78rem;
-  font-weight:800;border:2px solid #fff;box-shadow:0 6px 14px -4px rgba(20,30,60,.65)}
+  font-weight:800;border:2px solid #fff;box-shadow:0 6px 14px -4px rgba(20,30,60,.65);transition:transform .15s}
+.pinmap-pin:hover .mkpin{transform:scale(1.12)}
 .sgpin{display:block;width:100%;height:100%;border-radius:50%;border:3px solid;box-shadow:0 5px 12px -4px rgba(20,30,60,.6)}
 .sgpin.on{box-shadow:0 6px 16px -4px rgba(20,30,60,.7)}
 .mapstats{font-size:.8rem;font-weight:600;color:var(--muted-2)}
 .mapstats b{color:var(--ink);font-weight:800}
-.leaflet-popup-content{font-size:.85rem;color:var(--ink);line-height:1.5}
-.leaflet-popup-content b{font-weight:800}
-@media(max-width:700px){.leafmap{height:24rem}}
+@media(max-width:700px){.pinmap{height:22rem}}
 .mapwrap>img{width:100%;height:auto;display:block}
 
 /* ---- contribute: record-so-far map ---- */
