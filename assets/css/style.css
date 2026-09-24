@@ -1927,7 +1927,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 .convo-layout aside,.rail-layout aside{position:sticky;top:5.75rem}
 
-.sidecard{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;box-shadow:var(--shadow-card);margin-bottom:1.25rem}
+.sidecard{background:#fff;border:1px solid var(--line);border-radius:0;padding:1.3rem;box-shadow:var(--shadow-card);margin-bottom:1.25rem}
 .sidecard h4{display:flex;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.92rem;font-weight:800;color:var(--ink);margin-bottom:.6rem}
 .sidecard p{font-size:.85rem;color:var(--muted);line-height:1.6}
 .sidecard .switch.on{background:var(--green-d)}
