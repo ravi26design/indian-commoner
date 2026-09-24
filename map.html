@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Change Password — Indian Commoner</title>
+<title>Map Exploration — Indian Commoner</title>
+<meta name="description" content="Find discussions and commoners by place across India's states.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -20,7 +21,7 @@
   </a>
   <div class="links">
     <div class="navgroup">
-      <a class="navlink" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
+      <a class="navlink active" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
       <div class="navdrop"><div class="navdrop-in">
         <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Start a Conversation</b><small>Ask, share or record in your own language</small></span></a>
         <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
@@ -81,7 +82,7 @@
         <button class="lang-opt">తెలుగు</button>
       </div>
     </div>
-    <a class="signin-btn acctav" href="member-profile.html" title="My Profile" style="width:2.5rem;height:2.5rem;border-radius:50%;padding:0;display:grid;place-items:center;font-weight:800">PS</a>
+    <a class="signin-btn" href="login.html"><i data-lucide="log-in"></i> Login</a>
     <button class="navtoggle" aria-label="Menu"><i data-lucide="menu"></i></button>
   </div>
 </div>
@@ -99,64 +100,29 @@
   <span class="mobnav-static"><i data-lucide="sprout"></i> What Are Commons</span>
   <span class="mobnav-static"><i data-lucide="users"></i> Who Is a Commoner</span>
   <span class="mobnav-static"><i data-lucide="feather"></i> Purpose of the Indian Commoner</span>
-  <a href="member-profile.html"><i data-lucide="user"></i> My Profile</a>
+  <a href="login.html"><i data-lucide="log-in"></i> Login</a>
 </div>
 </nav>
 
 <main>
 
-<div class="acctwrap">
-  <aside class="acct-side">
-    <nav class="acct-nav">
-      <a class="acct-item" href="member-profile.html"><i data-lucide="user"></i> My Profile</a>
-      <a class="acct-item" href="#"><i data-lucide="file-text"></i> My Contributions</a>
-      <a class="acct-item" href="#"><i data-lucide="check-circle"></i> Approvals <span class="badge" style="background:var(--cta);margin-left:auto">6</span></a>
-      <a class="acct-item" href="users-roles.html"><i data-lucide="users-round"></i> Users &amp; Roles</a>
-      <a class="acct-item active" href="change-password.html"><i data-lucide="key-round"></i> Change Password</a>
-      <a class="acct-item" href="index.html"><i data-lucide="log-out"></i> Sign out</a>
-    </nav>
-  </aside>
+<div class="crumbbar"><div class="mx"><div class="crumb">
+  <a href="index.html"><i data-lucide="house"></i>Home</a><span class="sep">/</span>
+  <span class="here">Map Exploration</span>
+</div></div></div>
 
-  <div class="acct-main">
-    <h1 class="acct-title">Change Password</h1>
-    <p class="acct-sub">Passwords follow the platform's OWASP-aligned policy.</p>
-
-    <div class="prefcard" style="max-width:32rem">
-      <h3><i data-lucide="shield-check"></i> Update your password</h3>
-
-      <div class="field">
-        <label for="cp-current">Current password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="lock"></i>
-          <input id="cp-current" type="password" value="••••••••" style="padding-left:2.4rem">
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="cp-new">New password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="key-round"></i>
-          <input id="cp-new" type="password" placeholder="At least 12 characters" style="padding-left:2.4rem" autocomplete="new-password">
-        </div>
-        <div class="pw-meter"><span id="pwMeterBar"></span></div>
-        <p class="hint" id="pwMeterHint">Use 12+ characters with a mix of letters, numbers and symbols.</p>
-      </div>
-
-      <div class="field">
-        <label for="cp-confirm">Confirm new password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="key-round"></i>
-          <input id="cp-confirm" type="password" style="padding-left:2.4rem" autocomplete="new-password">
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:.5rem">
-        <button class="btn btn-primary">Update password</button>
-        <button class="btn btn-outline">Cancel</button>
-      </div>
-    </div>
+<section class="section tight" style="padding-top:1.5rem"><div class="mx">
+  <div class="convo-hero">
+    <h1>Map Exploration</h1>
+    <p style="color:var(--muted);margin-top:.6rem;max-width:42rem">Commoners and discussions come from states across India. Click a state's pin to browse its topics.</p>
   </div>
-</div>
+</div></section>
+
+<section class="section statecloud" style="padding:0 0 4rem">
+  <div class="pinmap" id="commons-map" style="padding:0;border-radius:0;width:100%">
+    <iframe src="https://maps.google.com/maps?q=India&z=5&output=embed" width="100%" height="100%" style="border:0;display:block" loading="lazy" title="Map of India"></iframe>
+  </div>
+</section>
 
 </main>
 
@@ -206,29 +172,97 @@
 <script src="assets/js/site.js"></script>
 <script>
   (function () {
-    var input = document.getElementById('cp-new');
-    var bar = document.getElementById('pwMeterBar');
-    var hint = document.getElementById('pwMeterHint');
-    if (!input || !bar) return;
-    input.addEventListener('input', function () {
-      var v = input.value;
-      var score = 0;
-      if (v.length >= 12) score++;
-      if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
-      if (/[0-9]/.test(v)) score++;
-      if (/[^A-Za-z0-9]/.test(v)) score++;
-      var levels = [
-        {w: '0%', cls: '', text: 'Use 12+ characters with a mix of letters, numbers and symbols.'},
-        {w: '25%', cls: 'weak', text: 'Weak — add numbers, symbols or length.'},
-        {w: '55%', cls: 'ok', text: 'Getting there — try a longer mix of characters.'},
-        {w: '80%', cls: 'good', text: 'Good password.'},
-        {w: '100%', cls: 'strong', text: 'Strong password.'}
-      ];
-      var lvl = v.length === 0 ? levels[0] : levels[Math.min(score + 1, 4)];
-      bar.style.width = lvl.w;
-      bar.className = lvl.cls;
-      hint.textContent = lvl.text;
+    var el = document.getElementById('commons-map');
+    if (!el) return;
+
+    // Real topic-tag counts per state, from indiancommoner.org's own
+    // state tag-cloud (forums/topic-tag archive) — same dataset as the
+    // homepage map.
+    var STATES = [
+      { name: 'Andhra Pradesh',   count: 22, lat: 15.9129, lng: 79.7400 },
+      { name: 'Jharkhand',        count: 11, lat: 23.6102, lng: 85.2799 },
+      { name: 'Karnataka',        count: 11, lat: 15.3173, lng: 75.7139 },
+      { name: 'Rajasthan',        count: 7,  lat: 27.0238, lng: 74.2179 },
+      { name: 'Maharashtra',      count: 4,  lat: 19.7515, lng: 75.7139 },
+      { name: 'Madhya Pradesh',   count: 3,  lat: 22.9734, lng: 78.6569 },
+      { name: 'Gujarat',          count: 2,  lat: 22.2587, lng: 71.1924 },
+      { name: 'Kerala',           count: 2,  lat: 10.8505, lng: 76.2711 },
+      { name: 'Odisha',           count: 2,  lat: 20.9517, lng: 85.0985 },
+      { name: 'Punjab',           count: 2,  lat: 31.1471, lng: 75.3412 },
+      { name: 'Arunachal Pradesh',count: 1,  lat: 28.2180, lng: 94.7278 },
+      { name: 'Assam',            count: 1,  lat: 26.2006, lng: 92.9376 },
+      { name: 'Chhattisgarh',     count: 1,  lat: 21.2787, lng: 81.8661 },
+      { name: 'Meghalaya',        count: 1,  lat: 25.4670, lng: 91.3662 },
+      { name: 'Nagaland',         count: 1,  lat: 26.1584, lng: 94.5624 },
+      { name: 'Uttarakhand',      count: 1,  lat: 30.0668, lng: 79.0193 },
+      { name: 'Uttar Pradesh',    count: 1,  lat: 26.8467, lng: 80.9462 }
+    ];
+
+    // The embed URL is "q=India&z=5" — Google resolves the bare "India"
+    // query to the country's commonly cited geographic centroid, at
+    // zoom level 5. This is a best-effort alignment (we don't have API
+    // access to read the iframe's actual live viewport), using the
+    // same standard Web Mercator math real map tiles are built on.
+    var CENTER = { lat: 20.5937, lng: 78.9629 };
+    var ZOOM = 5;
+    var TILE = 256;
+
+    function project(lat, lng) {
+      var world = TILE * Math.pow(2, ZOOM);
+      var x = (lng + 180) / 360 * world;
+      var siny = Math.min(Math.max(Math.sin(lat * Math.PI / 180), -0.9999), 0.9999);
+      var y = (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)) * world;
+      return { x: x, y: y };
+    }
+
+    function tier(c) {
+      if (c >= 10) return { color: '#01796f', size: 38 };
+      if (c >= 3)  return { color: '#d4a24c', size: 32 };
+      return { color: '#1565C0', size: 26 };
+    }
+
+    var centerPx = project(CENTER.lat, CENTER.lng);
+    var pins = [];
+
+    STATES.forEach(function (s) {
+      var p = project(s.lat, s.lng);
+      var pin = document.createElement('a');
+      pin.href = 'state.html';
+      pin.className = 'pinmap-pin';
+      pin.title = s.name + ' — ' + s.count + ' topic' + (s.count === 1 ? '' : 's');
+      pin.dataset.dx = p.x - centerPx.x;
+      pin.dataset.dy = p.y - centerPx.y;
+
+      var t = tier(s.count);
+      var mk = document.createElement('span');
+      mk.className = 'mkpin';
+      mk.style.background = t.color;
+      mk.style.width = t.size + 'px';
+      mk.style.height = t.size + 'px';
+      mk.textContent = s.count;
+      pin.appendChild(mk);
+
+      var label = document.createElement('span');
+      label.className = 'pinmap-label';
+      label.textContent = s.name;
+      pin.appendChild(label);
+
+      el.appendChild(pin);
+      pins.push(pin);
     });
+
+    function layout() {
+      var rect = el.getBoundingClientRect();
+      pins.forEach(function (pin) {
+        var dx = parseFloat(pin.dataset.dx);
+        var dy = parseFloat(pin.dataset.dy);
+        pin.style.left = (rect.width / 2 + dx) + 'px';
+        pin.style.top = (rect.height / 2 + dy) + 'px';
+      });
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
   })();
 </script>
 </body>
