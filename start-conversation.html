@@ -313,12 +313,18 @@
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
       '<div class="msg-text">' + escapeHtml(reply) + '</div>' + resultsHtml +
       '<div class="msg-actions">' +
+      '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
       '<a class="msg-act" href="forum.html"><i data-lucide="search"></i> See all results</a>' +
       '</div></div>';
     thread.appendChild(row);
 
+    var replyBtn = row.querySelector('[data-act="reply"]');
+    if (replyBtn) replyBtn.addEventListener('click', function () {
+      textarea.focus();
+      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
     var helpfulBtn = row.querySelector('[data-act="helpful"]');
     if (helpfulBtn) helpfulBtn.addEventListener('click', function () { helpfulBtn.classList.toggle('on'); });
     var listenBtn = row.querySelector('[data-act="listen"]');
