@@ -297,7 +297,7 @@
   var textarea = document.getElementById('convo-text');
   var langSelect = document.querySelector('.composer-top select');
   var sendBtn = document.getElementById('convo-send');
-  var classifyState = { theme: 'Governing the Commons', sub: null, keyword: '' };
+  var classifyState = { theme: 'Governing the Commons', sub: null };
   var themeTouched = false;
   var subTouched = false;
   var firstSendDone = false;
@@ -381,17 +381,6 @@
     }).join('');
     html += '</div>';
 
-    html += '<div class="classify-label">Keywords <span class="ai-badge sm"><i data-lucide="sparkles"></i> AI</span></div>';
-    html += classifyState.keyword
-      ? '<div class="classify-pills"><span class="kw-chip">' + escapeHtml(classifyState.keyword) + '</span></div>'
-      : '<p style="font-size:.8rem;color:var(--faint);font-style:italic;margin:0">Start typing below to detect keywords</p>';
-
-    html += '<div class="matchbar"><div class="matchbar-top"><span>Theme match</span><b>88%</b></div>' +
-      '<div class="matchbar-track"><div class="matchbar-fill" style="width:88%"></div></div></div>';
-    html += '<div class="matchbar"><div class="matchbar-top"><span>Language detect</span><b>99%</b></div>' +
-      '<div class="matchbar-track"><div class="matchbar-fill" style="width:99%"></div></div></div>';
-
-    html += '<p class="classify-note">Suggested from what you wrote — change anything before publishing. These are what readers filter the forum by.</p>';
     card.innerHTML = html;
 
     card.querySelectorAll('[data-role="theme"]').forEach(function (btn) {
@@ -464,7 +453,6 @@
 
   function updateLiveClassification() {
     var text = textarea.value;
-    classifyState.keyword = text.trim().slice(0, 40) + (text.trim().length > 40 ? '…' : '');
     if (!themeTouched) {
       var newTheme = classifyTheme(text);
       if (newTheme !== classifyState.theme) {
