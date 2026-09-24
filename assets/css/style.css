@@ -1950,11 +1950,16 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 /* ---- INDIAN COMMONER ADD: Start a Conversation — live thread + AI rail ---- */
 .convo-thread{display:flex;flex-direction:column;gap:1rem;margin-bottom:1rem}
 .msg-row{display:flex;gap:.9rem;align-items:flex-start}
+.msg-row.you{justify-content:flex-end}
+.msg-row.you .msg-av{order:2}
+.msg-row.you .msg-body{order:1;align-items:flex-end}
 .msg-av{flex:none;width:2.3rem;height:2.3rem;border-radius:50%;display:grid;place-items:center;color:#fff}
 .msg-av.you{background:linear-gradient(135deg,var(--cta),var(--cta-h))}
 .msg-av.ai{background:linear-gradient(135deg,var(--green-d),var(--green))}
 .msg-av i{width:1.05rem;height:1.05rem}
-.msg-body{flex:1;min-width:0}
+.msg-body{flex:none;max-width:70%;min-width:0;display:flex;flex-direction:column}
+.msg-row.you .msg-meta,.msg-row.you .msg-actions{align-self:flex-end}
+@media(max-width:700px){.msg-body{max-width:85%}}
 .msg-meta{font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem}
 .msg-text{font-size:.92rem;line-height:1.65;color:var(--ink)}
 .msg-row.you .msg-text{background:var(--green-soft);border-radius:.8rem;padding:.85rem 1rem}
