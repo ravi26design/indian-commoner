@@ -435,7 +435,7 @@
     STATES.forEach(function (s) {
       var p = project(s.lat, s.lng);
       var pin = document.createElement('a');
-      pin.href = 'state.html';
+      pin.href = 'forum.html?state=' + encodeURIComponent(s.name);
       pin.className = 'pinmap-pin';
       pin.title = s.name + ' — ' + s.count + ' topic' + (s.count === 1 ? '' : 's');
       pin.dataset.dx = p.x - centerPx.x;
