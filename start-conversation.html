@@ -178,10 +178,6 @@
         <h4>Publish this conversation</h4>
         <p>When you are ready, you can publish the conversation as a discussion thread — or keep it private as a draft.</p>
       </div>
-      <div class="sidecard" id="card-duplicates">
-        <h4><span class="qi"><i data-lucide="help-circle"></i></span> Before you post</h4>
-        <p>Once you have written your question, existing threads that already cover it will be listed here.</p>
-      </div>
     </aside>
   </div>
 </div></section>
@@ -387,14 +383,6 @@
         renderClassifyCard();
       });
     });
-    if (window.lucide) lucide.createIcons();
-  }
-
-  function renderDuplicatesCard() {
-    var card = document.getElementById('card-duplicates');
-    if (!card) return;
-    card.innerHTML = '<h4><span class="qi"><i data-lucide="help-circle"></i></span> Before you post</h4>' +
-      '<p>Nothing similar found — this looks like a new question.</p>';
     if (window.lucide) lucide.createIcons();
   }
 
@@ -610,7 +598,6 @@
       addAssistantMessage(text);
       if (!firstSendDone) {
         firstSendDone = true;
-        renderDuplicatesCard();
         renderPublishCard(text, lang);
       }
       textarea.value = '';

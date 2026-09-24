@@ -1899,9 +1899,6 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 .sidecard{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;box-shadow:var(--shadow-card);margin-bottom:1.25rem}
 .sidecard h4{display:flex;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.92rem;font-weight:800;color:var(--ink);margin-bottom:.6rem}
-.sidecard h4 .qi{width:1.3rem;height:1.3rem;border-radius:50%;background:var(--chip);color:var(--muted-2);
-  display:grid;place-items:center;flex:none}
-.sidecard h4 .qi i{width:.75rem;height:.75rem}
 .sidecard p{font-size:.85rem;color:var(--muted);line-height:1.6}
 .sidecard .switch.on{background:var(--green-d)}
 .sidecard .prefrow{padding:.85rem 0}
