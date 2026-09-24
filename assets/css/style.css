@@ -1864,6 +1864,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 /* ---- INDIAN COMMONER ADD: Start a Conversation composer ---- */
 .convo-hero{margin-bottom:1.75rem}
+.convo-hero h1{font-size:1.9rem}
 .convo-layout,.rail-layout{display:grid;grid-template-columns:1fr 21rem;gap:1.25rem;align-items:start}
 @media(max-width:960px){.convo-layout,.rail-layout{grid-template-columns:1fr}}
 
