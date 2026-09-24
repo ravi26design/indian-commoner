@@ -329,10 +329,17 @@ document.addEventListener('DOMContentLoaded', function () {
       var lang = pillValue(langGroup);
       var state = stateSel ? stateSel.value : 'all';
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
+      var includeTranslated = document.getElementById('fx-translated');
+      // Every real thread here only has an English original. With "include
+      // translated threads" on (the default), a language pill still matches
+      // everything — the platform serves a translation of each thread in any
+      // language. Turning that off narrows strictly to real-language
+      // originals, which is honestly just the English ones.
+      var langMatchesAll = lang === 'all' || (includeTranslated && includeTranslated.checked);
 
       var visible = forumRows.filter(function (row) {
         if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
-        if (lang !== 'all' && row.getAttribute('data-lang') !== lang) return false;
+        if (!langMatchesAll && row.getAttribute('data-lang') !== lang) return false;
         if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
         return true;
