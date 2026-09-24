@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Newsfeed — Indian Commoner</title>
-<meta name="description" content="Newsfeed — Indian Commoner.">
+<title>Themes &amp; sub-themes — Indian Commoner</title>
+<meta name="description" content="Browse the eight discussion themes and their sub-thematic areas on Indian Commoner.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
+<body style="background:#eef0f4">
 
 <nav class="top"><div class="bar">
   <a class="brand" href="index.html">
@@ -21,7 +21,7 @@
   </a>
   <div class="links">
     <div class="navgroup">
-      <a class="navlink" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
+      <a class="navlink active" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
       <div class="navdrop"><div class="navdrop-in">
         <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Start a Conversation</b><small>Ask, share or record in your own language</small></span></a>
         <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
@@ -30,12 +30,12 @@
       </div></div>
     </div>
     <div class="navgroup">
-      <a class="navlink active" href="resources-videos.html"><i data-lucide="package"></i> Resources <i data-lucide="chevron-down"></i></a>
+      <a class="navlink" href="resources-videos.html"><i data-lucide="package"></i> Resources <i data-lucide="chevron-down"></i></a>
       <div class="navdrop"><div class="navdrop-in">
         <a href="resources-videos.html"><span class="nd-ic"><i data-lucide="video"></i></span><span class="nd-tx"><b>Videos</b><small>Watch talks and explainers</small></span></a>
         <a href="resources-podcasts.html"><span class="nd-ic"><i data-lucide="mic"></i></span><span class="nd-tx"><b>Podcasts</b><small>Listen to conversations on commons</small></span></a>
         <a href="resources-literature.html"><span class="nd-ic"><i data-lucide="book-open"></i></span><span class="nd-tx"><b>Literature</b><small>Read papers and case studies</small></span></a>
-        <a class="navlink active" href="resources-newsfeed.html"><span class="nd-ic"><i data-lucide="newspaper"></i></span><span class="nd-tx"><b>Newsfeed</b><small>Latest news on commons in India</small></span></a>
+        <a href="resources-newsfeed.html"><span class="nd-ic"><i data-lucide="newspaper"></i></span><span class="nd-tx"><b>Newsfeed</b><small>Latest news on commons in India</small></span></a>
         <a href="resources-laws.html"><span class="nd-ic"><i data-lucide="scale"></i></span><span class="nd-tx"><b>Laws and Regulations</b><small>Browse laws, acts and policies</small></span></a>
       </div></div>
     </div>
@@ -106,76 +106,90 @@
 
 <main>
 
-<div class="pagehead noline"><div class="in" style="padding-bottom:1.25rem">
-  <div>
-    <h1>Newsfeed</h1>
+<div class="crumbbar"><div class="mx"><div class="crumb">
+  <a href="index.html"><i data-lucide="house"></i>Home</a><span class="sep">/</span>
+  <a href="forum.html">Forum Themes</a><span class="sep">/</span>
+  <span class="here">Themes &amp; sub-themes</span>
+</div></div></div>
+
+<section class="section tight" style="padding:1.5rem 0 1rem"><div class="mx">
+  <div class="convo-hero" style="margin-bottom:0">
+    <h1>Themes &amp; sub-themes</h1>
+    <p style="color:var(--muted);margin-top:.6rem;max-width:42rem">Every discussion on the forum sits under one of eight themes. Open a theme to read about it, or jump straight to its threads.</p>
   </div>
-</div></div>
-
-<section class="section resbg" style="padding-top:1rem"><div class="mx">
-
-  <div class="restabs-row">
-    <div class="tabbar restabs">
-      <a class="tab" href="resources-videos.html"><span class="rt-ic"><i data-lucide="video"></i></span> Videos</a>
-      <a class="tab" href="resources-podcasts.html"><span class="rt-ic"><i data-lucide="mic"></i></span> Podcasts</a>
-      <a class="tab" href="resources-literature.html"><span class="rt-ic"><i data-lucide="book-open"></i></span> Literature</a>
-      <a class="tab active" href="resources-newsfeed.html"><span class="rt-ic"><i data-lucide="newspaper"></i></span> Newsfeed</a>
-      <a class="tab" href="resources-laws.html"><span class="rt-ic"><i data-lucide="scale"></i></span> Laws and Regulations</a>
-    </div>
-    <div class="dd" style="max-width:13rem">
-      <button class="dd-btn" type="button">
-        <span class="lf"><i data-lucide="leaf"></i> Beginner</span>
-        <i class="dd-cv" data-lucide="chevron-down"></i>
-      </button>
-      <div class="dd-menu">
-        <button class="dd-opt on" type="button"><i data-lucide="leaf"></i> Beginner</button>
-        <button class="dd-opt" type="button"><i data-lucide="trending-up"></i> Intermediate</button>
-        <button class="dd-opt" type="button"><i data-lucide="award"></i> Advanced</button>
-      </div>
-    </div>
-  </div>
-
-  <p class="lead" style="color:var(--ink-2);margin-bottom:2rem">This is a collated list of news reports and articles on commons from different sources like local and regional newspapers, magazines, news websites. Forum members are invited to send links which are relevant and can be uploaded here.</p>
-
-  <div class="grid g3">
-    <a class="card click newscard" href="resources-newsfeed-article.html?title=How%20a%20village%20in%20Bastar%20is%20stopping%20forest%20fires&date=September%202026&source=Mongabay%20India&url=https%3A%2F%2Findia.mongabay.com%2Fvideo%2F2026%2F09%2Fhow-a-village-in-bastar-is-stopping-forest-fires%2F">
-      <h3>How a village in Bastar is stopping forest fires</h3>
-      <div class="newscard-foot">
-        <span class="newsitem-date">September 2026 · Mongabay India</span>
-      </div>
-    </a>
-    <a class="card click newscard" href="resources-newsfeed-article.html?title=When%20a%20spring%20sings%20again%3A%20How%20a%20Himalayan%20village%20revived%20its%20lifeline&date=December%202025&source=Down%20To%20Earth&url=https%3A%2F%2Fwww.downtoearth.org.in%2Fwater%2Fwhen-a-spring-sings-again-how-a-himalayan-village-revived-its-lifeline">
-      <h3>When a spring sings again: How a Himalayan village revived its lifeline</h3>
-      <div class="newscard-foot">
-        <span class="newsitem-date">December 2025 · Down To Earth</span>
-      </div>
-    </a>
-    <a class="card click newscard" href="resources-newsfeed-article.html?title=Hilly%20villages%20trap%20runoff%20to%20tackle%20water%20scarcity%20amid%20plenty&date=February%202026&source=Mongabay%20India&url=https%3A%2F%2Findia.mongabay.com%2F2026%2F02%2Fhilly-villages-trap-runoff-to-tackle-water-scarcity-amid-plenty%2F">
-      <h3>Hilly villages trap runoff to tackle water scarcity amid plenty</h3>
-      <div class="newscard-foot">
-        <span class="newsitem-date">February 2026 · Mongabay India</span>
-      </div>
-    </a>
-    <a class="card click newscard" href="resources-newsfeed-article.html?title=How%20map%20scales%20impact%20coastal%20communities&date=May%202026&source=Mongabay%20India&url=https%3A%2F%2Findia.mongabay.com%2F2026%2F05%2Fhow-map-scales-impact-coastal-communities%2F">
-      <h3>How map scales impact coastal communities</h3>
-      <div class="newscard-foot">
-        <span class="newsitem-date">May 2026 · Mongabay India</span>
-      </div>
-    </a>
-    <a class="card click newscard" href="resources-newsfeed-article.html?title=More%20than%2015%20years%20on%2C%20implementation%20of%20Forest%20Rights%20Act%20is%20lagging%2C%20new%20report%20finds&date=April%202024&source=Mongabay%20India&url=https%3A%2F%2Findia.mongabay.com%2F2024%2F04%2Fmore-than-15-years-on-implementation-of-forest-right-act-is-lagging-new-report-finds%2F">
-      <h3>More than 15 years on, implementation of Forest Rights Act is lagging, new report finds</h3>
-      <div class="newscard-foot">
-        <span class="newsitem-date">April 2024 · Mongabay India</span>
-      </div>
-    </a>
-  </div>
-
 </div></section>
 
-<section class="meetband"><div class="mx" style="text-align:center;max-width:38rem">
-  <h2 style="font-size:clamp(1.3rem,2.2vw,1.7rem)">Have a report or article <em>to share?</em></h2>
-  <p class="sub">If you've come across a report or article on commons worth sharing with fellow commoners, sign in and add it — it'll appear right here for the whole community.</p>
-  <a class="btn btn-primary" href="login.html" style="margin-top:1.75rem"><i data-lucide="log-in"></i> Sign in to submit a link</a>
+<section class="section" style="padding-top:.5rem"><div class="mx">
+  <div class="grid g3" id="themes-grid">
+
+    <a class="card click" href="forum-theme-governing.html" style="padding:1.5rem">
+      <h3>Governing the Commons</h3>
+      <div class="tags" style="margin-top:.7rem">
+        <span class="tag">Laws and Enactments</span>
+        <span class="tag">Policies</span>
+        <span class="tag">Tenure Arrangements</span>
+        <span class="tag">Institutional Arrangements</span>
+      </div>
+    </a>
+
+    <a class="card click" href="forum-theme-culture.html" style="padding:1.5rem">
+      <h3>Commons as Culture</h3>
+      <div class="tags" style="margin-top:.7rem">
+        <span class="tag">Traditional Constructions</span>
+        <span class="tag">Sacred Sites and Cultural Landscapes</span>
+        <span class="tag">Traditional Knowledge, Customs and Practices</span>
+      </div>
+    </a>
+
+    <a class="card click" href="forum-theme-microhabitats.html" style="padding:1.5rem">
+      <h3>Commons as Micro Habitats</h3>
+      <div class="tags" style="margin-top:.7rem">
+        <span class="tag">Biodiversity</span>
+        <span class="tag">Invasive Species</span>
+        <span class="tag">Fire Ecology</span>
+        <span class="tag">Regulatory Functions</span>
+        <span class="tag">Restoration Ecology</span>
+      </div>
+    </a>
+
+    <a class="card click" href="forum-theme-livelihoods.html" style="padding:1.5rem">
+      <h3>Livelihoods, Subsistence &amp; Valuation of Commons</h3>
+      <div class="tags" style="margin-top:.7rem">
+        <span class="tag">Cash Income</span>
+        <span class="tag">Valuation of Commons</span>
+        <span class="tag">Reciprocity and Embodied Exchange</span>
+        <span class="tag">Security and Subsistence</span>
+      </div>
+    </a>
+
+    <a class="card click" href="forum.html?theme=Gender%20and%20Commons" style="padding:1.5rem">
+      <h3>Gender and Commons</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">See threads tagged with this theme in the forum.</p>
+    </a>
+
+    <a class="card click" href="forum.html?theme=Power%20and%20Commons" style="padding:1.5rem">
+      <h3>Power and Commons</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">See threads tagged with this theme in the forum.</p>
+    </a>
+
+    <a class="card click" href="forum-theme.html" style="padding:1.5rem">
+      <h3>Conversion of Commons</h3>
+      <div class="tags" style="margin-top:.7rem">
+        <span class="tag">Infrastructural Projects</span>
+        <span class="tag">Mining</span>
+        <span class="tag">Industrial &amp; Domestic Waste</span>
+        <span class="tag">Encroachment &amp; Land Redistribution</span>
+        <span class="tag">Water Resources</span>
+        <span class="tag">Conservation Projects</span>
+      </div>
+    </a>
+
+    <a class="card click" href="forum.html?theme=Others" style="padding:1.5rem">
+      <h3>Others</h3>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:.5rem">See threads tagged with this theme in the forum.</p>
+    </a>
+
+  </div>
 </div></section>
 
 </main>

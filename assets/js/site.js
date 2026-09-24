@@ -449,6 +449,16 @@ document.addEventListener('DOMContentLoaded', function () {
       if (stateMatch) setPill(stateGroup, urlState);
     }
 
+    // A card on the Themes & sub-themes page links here as
+    // forum.html?theme=<name>, so the matching Theme pill is pre-selected.
+    var urlTheme = new URLSearchParams(location.search).get('theme');
+    if (urlTheme && themeGroup) {
+      var themeMatch = Array.from(themeGroup.querySelectorAll('.seg-tab')).some(function (b) {
+        return b.getAttribute('data-v') === urlTheme;
+      });
+      if (themeMatch) setPill(themeGroup, urlTheme);
+    }
+
     applyForumFilters();
   }
 });
