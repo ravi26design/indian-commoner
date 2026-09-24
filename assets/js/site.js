@@ -346,9 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (forumSort === 'unanswered') {
         sorted = sorted.filter(function (row) { return (+row.getAttribute('data-replies') || 0) === 0; });
       }
-      sorted.forEach(function (row, i) {
+      sorted.forEach(function (row) {
         row.style.display = '';
-        row.classList.toggle('alt', i % 2 === 1);
         forumList.appendChild(row);
       });
 

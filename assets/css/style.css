@@ -1953,12 +1953,13 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 /* ---- INDIAN COMMONER ADD: Discussion forum — rounded, tighter panels ---- */
 .forum-filter{border-radius:1rem;padding:1.3rem}
-.forum-list-panel{border-radius:1rem}
-.forum-list-panel .topicrow{position:relative;padding-right:1.5rem}
-.forum-list-panel .topicrow::after{content:'';position:absolute;right:0;top:50%;width:.55rem;height:.55rem;
-  border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:translateY(-50%) rotate(-45deg);
+.forum-list-panel{background:none;border:0;box-shadow:none;padding:0}
+.forum-list-panel .topiclist{gap:.9rem}
+.forum-list-panel .topicrow{position:relative;padding:1.2rem 1.6rem 1.2rem 1.3rem;background:#fff;
+  border:1px solid var(--line);border-radius:1rem;box-shadow:var(--shadow-card);transition:box-shadow .15s,transform .15s,background .15s}
+.forum-list-panel .topicrow:hover{background:#fff;box-shadow:var(--shadow-lift);transform:translateY(-1px)}
+.forum-list-panel .topicrow::after{content:'';position:absolute;right:1.1rem;top:1.35rem;width:.55rem;height:.55rem;
+  border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(-45deg);
   opacity:0;transition:opacity .15s,right .15s}
-.forum-list-panel .topicrow:hover::after{opacity:1;right:.15rem}
+.forum-list-panel .topicrow:hover::after{opacity:1;right:.85rem}
 @media(max-width:700px){.forum-list-panel .topicrow::after{display:none}}
-.forum-list-panel .topicrow.alt{background:var(--bg-soft)}
-.forum-list-panel .topicrow.alt:hover{background:var(--green-soft)}
