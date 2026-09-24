@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
     var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
     var langGroup = document.querySelector('.seg-tabs[data-pillgroup="lang"]');
-    var stateSel = document.getElementById('fx-state');
+    var stateGroup = document.querySelector('.seg-tabs[data-pillgroup="state"]');
     var activitySel = document.getElementById('fx-activity');
     var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel #fx-activity');
     var forumReset = document.getElementById('forum-reset');
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function hasActiveFilters() {
       if (pillValue(themeGroup) !== 'all') return true;
       if (pillValue(langGroup) !== 'all') return true;
-      if (stateSel && stateSel.value !== 'all') return true;
+      if (pillValue(stateGroup) !== 'all') return true;
       if (activitySel && activitySel.value !== 'any') return true;
       if (forumSearch && forumSearch.value.trim()) return true;
       var translated = document.getElementById('fx-translated');
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyForumFilters() {
       var theme = pillValue(themeGroup);
       var lang = pillValue(langGroup);
-      var state = stateSel ? stateSel.value : 'all';
+      var state = pillValue(stateGroup);
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
       var includeTranslated = document.getElementById('fx-translated');
       // Every real thread here only has an English original. With "include
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (forumReset) forumReset.hidden = !hasActiveFilters();
     }
 
-    [themeGroup, langGroup].forEach(function (group) {
+    [themeGroup, langGroup, stateGroup].forEach(function (group) {
       if (!group) return;
       group.querySelectorAll('.seg-tab').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -371,7 +371,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
     });
-    if (stateSel) stateSel.addEventListener('change', applyForumFilters);
     otherFilterInputs.forEach(function (el) { el.addEventListener('change', applyForumFilters); });
     if (forumSearch) forumSearch.addEventListener('input', applyForumFilters);
 
@@ -390,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
       forumReset.addEventListener('click', function () {
         setPill(themeGroup, 'all');
         setPill(langGroup, 'all');
-        if (stateSel) stateSel.value = 'all';
+        setPill(stateGroup, 'all');
         if (activitySel) activitySel.value = 'any';
         document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
           c.checked = c.id === 'fx-translated';
@@ -404,6 +403,16 @@ document.addEventListener('DOMContentLoaded', function () {
         forumSort = 'recent';
         applyForumFilters();
       });
+    }
+
+    // A pin on the Map Exploration page links here as forum.html?state=<name>,
+    // so the matching State pill is pre-selected on arrival.
+    var urlState = new URLSearchParams(location.search).get('state');
+    if (urlState && stateGroup) {
+      var stateMatch = Array.from(stateGroup.querySelectorAll('.seg-tab')).some(function (b) {
+        return b.getAttribute('data-v') === urlState;
+      });
+      if (stateMatch) setPill(stateGroup, urlState);
     }
 
     applyForumFilters();
