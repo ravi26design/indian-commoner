@@ -1302,7 +1302,7 @@ main{min-height:60vh;animation:fade .3s ease}
 .fp-check span{color:var(--faint);font-size:.8rem}
 .fp-more{border:0;background:none;padding:.45rem 0 0;font-size:.85rem;font-weight:700;color:var(--green-d);cursor:pointer}
 .fp-more:hover{color:var(--ink)}
-.pinmap{position:relative;width:100%;height:28rem;border-radius:1rem;overflow:hidden;
+.pinmap{position:relative;width:100%;height:40rem;border-radius:1rem;overflow:hidden;
   background-color:var(--green-soft);
   background-image:radial-gradient(var(--green-line) 1.5px, transparent 1.5px);
   background-size:22px 22px}
@@ -1320,7 +1320,7 @@ main{min-height:60vh;animation:fade .3s ease}
 .sgpin.on{box-shadow:0 6px 16px -4px rgba(20,30,60,.7)}
 .mapstats{font-size:.8rem;font-weight:600;color:var(--muted-2)}
 .mapstats b{color:var(--ink);font-weight:800}
-@media(max-width:700px){.pinmap{height:22rem}}
+@media(max-width:700px){.pinmap{height:26rem}}
 .mapwrap>img{width:100%;height:auto;display:block}
 
 /* ---- contribute: record-so-far map ---- */
