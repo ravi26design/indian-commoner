@@ -1880,7 +1880,6 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .att-chip img{width:1.8rem;height:1.8rem;border-radius:.4rem;object-fit:cover;flex:none}
 .att-chip i.att-ic{width:1rem;height:1rem;flex:none;color:var(--muted-2)}
 .att-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:12rem}
-.att-chip audio{height:1.9rem;max-width:11rem}
 .att-x{flex:none;display:grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;border:0;
   background:none;color:var(--faint);cursor:pointer}
 .att-x:hover{background:var(--line-2);color:var(--ink)}

@@ -292,7 +292,7 @@
   var firstSendDone = false;
 
   function iconForAttachment(kind) {
-    return { file: 'paperclip', photo: 'image', video: 'video', location: 'map-pin', audio: 'mic' }[kind] || 'paperclip';
+    return { file: 'paperclip', photo: 'image', video: 'video', location: 'map-pin' }[kind] || 'paperclip';
   }
 
   function attachmentChipHtml(a, removable) {
@@ -300,7 +300,6 @@
     if (a.kind === 'photo' && a.url) inner += '<img src="' + a.url + '" alt="">';
     else inner += '<i class="att-ic" data-lucide="' + iconForAttachment(a.kind) + '"></i>';
     inner += '<span>' + escapeHtml(a.label) + '</span>';
-    if (a.kind === 'audio' && a.url) inner += '<audio controls src="' + a.url + '"></audio>';
     if (removable) inner += '<button type="button" class="att-x" data-remove="' + a.id + '" aria-label="Remove"><i data-lucide="x"></i></button>';
     return '<span class="att-chip" data-att="' + a.id + '">' + inner + '</span>';
   }
@@ -538,22 +537,20 @@
     });
   }
 
+  // Mic: dictates straight into the textarea via the Web Speech API (speech-to-text),
+  // rather than recording an audio attachment — matches how the button reads to users.
   var micBtn = document.getElementById('attach-mic-btn');
-  var mediaRecorder = null;
-  var mediaChunks = [];
-  var mediaStream = null;
-  var recordTimer = null;
-  var recordStart = 0;
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  var recognizing = false;
+  var dictationBase = '';
 
-  function formatElapsed(ms) {
-    var s = Math.floor(ms / 1000);
-    var m = Math.floor(s / 60);
-    s = s % 60;
-    return m + ':' + (s < 10 ? '0' : '') + s;
+  function langCodeFor(label) {
+    return { 'English': 'en-IN', 'हिन्दी': 'hi-IN', 'ಕನ್ನಡ': 'kn-IN', 'తెలుగు': 'te-IN' }[label] || 'en-IN';
   }
 
   function stopMicUi() {
-    clearInterval(recordTimer);
+    recognizing = false;
     if (micBtn) {
       micBtn.className = 'ctool';
       micBtn.innerHTML = '<i data-lucide="mic"></i>';
@@ -563,40 +560,42 @@
 
   if (micBtn) {
     micBtn.addEventListener('click', function () {
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
+      if (recognizing) {
+        recognition.stop();
         return;
       }
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
-        showStatus("Voice recording isn't available in this browser.", true);
+      if (!SpeechRecognitionCtor) {
+        showStatus("Voice dictation isn't available in this browser — try Chrome or Edge.", true);
         return;
       }
       showStatus('');
-      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-        mediaStream = stream;
-        mediaChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.addEventListener('dataavailable', function (e) {
-          if (e.data && e.data.size > 0) mediaChunks.push(e.data);
-        });
-        mediaRecorder.addEventListener('stop', function () {
-          var blob = new Blob(mediaChunks, { type: (mediaChunks[0] && mediaChunks[0].type) || 'audio/webm' });
-          addAttachment({ kind: 'audio', label: 'Voice note · ' + formatElapsed(Date.now() - recordStart), url: URL.createObjectURL(blob) });
-          mediaStream.getTracks().forEach(function (t) { t.stop(); });
-          stopMicUi();
-        });
-        mediaRecorder.start();
-        recordStart = Date.now();
-        micBtn.className = 'ctool rec pulse';
-        micBtn.innerHTML = '<i data-lucide="square"></i><span id="mic-timer">0:00</span>';
-        if (window.lucide) lucide.createIcons();
-        recordTimer = setInterval(function () {
-          var t = document.getElementById('mic-timer');
-          if (t) t.textContent = formatElapsed(Date.now() - recordStart);
-        }, 1000);
-      }).catch(function (err) {
-        showStatus('Microphone access was blocked — ' + (err.message || 'permission denied') + '.', true);
+      dictationBase = textarea.value ? textarea.value.replace(/\s+$/, '') + ' ' : '';
+      recognition = new SpeechRecognitionCtor();
+      recognition.lang = langCodeFor(langSelect ? langSelect.value : 'English');
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.addEventListener('result', function (e) {
+        var finalText = '';
+        var interim = '';
+        for (var i = 0; i < e.results.length; i++) {
+          var transcript = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += transcript + ' ';
+          else interim += transcript;
+        }
+        textarea.value = (dictationBase + finalText + interim).trim();
+        updateLiveClassification();
       });
+      recognition.addEventListener('error', function (e) {
+        showStatus('Voice dictation error — ' + (e.error || 'unknown') + '.', true);
+      });
+      recognition.addEventListener('end', stopMicUi);
+
+      recognition.start();
+      recognizing = true;
+      micBtn.className = 'ctool rec pulse';
+      micBtn.innerHTML = '<i data-lucide="square"></i><span>Listening…</span>';
+      if (window.lucide) lucide.createIcons();
     });
   }
 
