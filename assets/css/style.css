@@ -266,6 +266,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .tag.solid{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
 .tag.blue{background:var(--blue-soft);color:var(--blue);border-color:#d5e0ff}
 .tag.off{color:var(--faint)}
+.tag.danger{background:var(--red-soft);color:var(--red);border-color:#f6cdd7;font-size:.72rem}
 .tags{display:flex;flex-wrap:wrap;gap:.4rem}
 .badge{display:inline-block;padding:.24rem .7rem;color:#fff;font-size:.7rem;font-weight:700;border-radius:.35rem;letter-spacing:.02em}
 .b-forest{background:var(--t-forest)}.b-pasture{background:var(--t-pasture)}.b-water{background:var(--t-water)}
@@ -1212,6 +1213,22 @@ main{min-height:60vh;animation:fade .3s ease}
 .cm-h{font-size:.83rem;color:var(--muted);margin-bottom:.3rem}
 .cm-h b{color:var(--ink);font-weight:800}
 .cm-t{font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+.cm-t.muted a{color:var(--green-d);font-weight:700;text-decoration:underline}
+.pw-av.mod-av{background:var(--chip);color:var(--muted-2)}
+.hidden-reply .cm-h b{color:var(--muted-2)}
+
+/* Reusable "AI translation" card for a reply written in another language —
+   shown under the original text when the reader's translation toggle is on.
+   Not currently attached to any real reply on this page (the one real reply
+   here is already in English); ready for use once a non-English reply exists. */
+.reply-translation{display:none;margin-top:.75rem;padding:.85rem 1rem;background:var(--blue-soft);
+  border-left:3px solid var(--blue);border-radius:0 .5rem .5rem 0}
+.reply-translation.show{display:block}
+.reply-translation-head{display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:800;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem}
+.reply-translation-head i{width:.85rem;height:.85rem}
+.reply-translation-conf{margin-left:auto;color:var(--muted-2);font-weight:600;text-transform:none;letter-spacing:0}
+.reply-translation-text{font-size:.9rem;line-height:1.6;color:var(--ink-2)}
 
 
 /* ---- count tabs ---- */

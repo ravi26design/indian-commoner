@@ -259,7 +259,7 @@
         </div>
         <div class="prefrow">
           <div><b>Always show translations</b><p>Show an English translation alongside other languages.</p></div>
-          <button class="switch on" aria-label="Toggle translations"></button>
+          <button class="switch on" id="translate-toggle" aria-label="Toggle translations"></button>
         </div>
       </div>
     </aside>
@@ -357,11 +357,156 @@
     if (box) box.hidden = false;
   }
 
+  // "Always show translations" toggles the reusable .reply-translation cards
+  // (none are attached to a real reply on this thread right now, but the
+  // switch is fully wired for whenever one exists).
+  var translateToggle = document.getElementById('translate-toggle');
+  function applyTranslateToggle() {
+    var on = translateToggle && translateToggle.classList.contains('on');
+    document.querySelectorAll('.reply-translation').forEach(function (el) {
+      el.classList.toggle('show', !!on);
+    });
+  }
+  if (translateToggle) {
+    translateToggle.addEventListener('click', function () {
+      // the generic .switch handler in site.js already flips the "on" class;
+      // re-read it on the next tick so we pick up that change.
+      setTimeout(applyTranslateToggle, 0);
+    });
+    applyTranslateToggle();
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ---- Reply composer attachments (file/photo) + mic dictation — same
+  // real browser APIs as the Start a Conversation composer, scoped here.
+  var attachments = [];
+  var nextAttId = 1;
+  var attWrap = document.getElementById('reply-attachments');
+  var statusEl = document.getElementById('reply-status');
+
+  function showStatus(msg, isError) {
+    if (!statusEl) return;
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('err', !!isError);
+    statusEl.hidden = !msg;
+  }
+
+  function humanSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function iconForAttachment(kind) {
+    return { file: 'paperclip', photo: 'image' }[kind] || 'paperclip';
+  }
+
+  function renderAttachments() {
+    if (!attWrap) return;
+    attWrap.innerHTML = attachments.map(function (a) {
+      var inner = a.kind === 'photo' && a.url
+        ? '<img src="' + a.url + '" alt="">'
+        : '<i class="att-ic" data-lucide="' + iconForAttachment(a.kind) + '"></i>';
+      inner += '<span>' + escapeHtml(a.label) + '</span>';
+      inner += '<button type="button" class="att-x" data-remove="' + a.id + '" aria-label="Remove"><i data-lucide="x"></i></button>';
+      return '<span class="att-chip" data-att="' + a.id + '">' + inner + '</span>';
+    }).join('');
+    attWrap.querySelectorAll('[data-remove]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = +btn.getAttribute('data-remove');
+        var removed = attachments.filter(function (a) { return a.id === id; })[0];
+        if (removed && removed.url) URL.revokeObjectURL(removed.url);
+        attachments = attachments.filter(function (a) { return a.id !== id; });
+        renderAttachments();
+      });
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function addAttachment(att) {
+    att.id = nextAttId++;
+    attachments.push(att);
+    renderAttachments();
+  }
+
+  var fileBtn = document.getElementById('reply-file-btn');
+  var fileInput = document.getElementById('reply-file-input');
+  if (fileBtn && fileInput) {
+    fileBtn.addEventListener('click', function () { fileInput.click(); });
+    fileInput.addEventListener('change', function (e) {
+      Array.from(e.target.files).forEach(function (f) {
+        addAttachment({ kind: 'file', label: f.name + ' · ' + humanSize(f.size) });
+      });
+      e.target.value = '';
+    });
+  }
+
+  var photoBtn = document.getElementById('reply-photo-btn');
+  var photoInput = document.getElementById('reply-photo-input');
+  if (photoBtn && photoInput) {
+    photoBtn.addEventListener('click', function () { photoInput.click(); });
+    photoInput.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      addAttachment({ kind: 'photo', label: f.name, url: URL.createObjectURL(f) });
+      e.target.value = '';
+    });
+  }
+
+  // Mic: dictates into the reply textarea via the Web Speech API, same as
+  // the Start a Conversation composer.
+  var micBtn = document.getElementById('reply-mic-btn');
+  var replyText = document.getElementById('reply-text');
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  var recognizing = false;
+
+  function stopMicUi() {
+    recognizing = false;
+    if (micBtn) {
+      micBtn.className = 'ctool';
+      micBtn.innerHTML = '<i data-lucide="mic"></i>';
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+
+  if (micBtn) {
+    micBtn.addEventListener('click', function () {
+      if (recognizing) { recognition.stop(); return; }
+      if (!SpeechRecognitionCtor) { showStatus("Voice dictation isn't available in this browser — try Chrome or Edge.", true); return; }
+      showStatus('');
+      var base = replyText.value ? replyText.value.replace(/\s+$/, '') + ' ' : '';
+      recognition = new SpeechRecognitionCtor();
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.addEventListener('result', function (e) {
+        var finalText = '', interim = '';
+        for (var i = 0; i < e.results.length; i++) {
+          var t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += t + ' '; else interim += t;
+        }
+        replyText.value = (base + finalText + interim).trim();
+      });
+      recognition.addEventListener('error', function (e) {
+        showStatus('Voice dictation error — ' + (e.error || 'unknown') + '.', true);
+      });
+      recognition.addEventListener('end', stopMicUi);
+      recognition.start();
+      recognizing = true;
+      micBtn.className = 'ctool rec pulse';
+      micBtn.innerHTML = '<i data-lucide="square"></i><span>Listening…</span>';
+      if (window.lucide) lucide.createIcons();
+    });
+  }
+
   var sendBtn = document.getElementById('reply-send');
   if (sendBtn) {
     sendBtn.addEventListener('click', function () {
-      var ta = document.getElementById('reply-text');
-      if (!ta.value.trim()) { ta.focus(); return; }
+      if (!replyText.value.trim() && !attachments.length) { replyText.focus(); return; }
       sendBtn.disabled = true;
       sendBtn.textContent = 'Posted ✓';
     });
