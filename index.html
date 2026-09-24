@@ -300,8 +300,10 @@
 </div></section>
 
 <section class="section statecloud"><div class="mx">
-  <div id="commons-map" class="pinmap"></div>
-  <p class="mapstats" style="text-align:center;margin-top:1rem">Topics tagged across <b>17 states</b> — pin size and colour reflect how many discussions come from each.</p>
+  <div class="pinmap" style="padding:0">
+    <iframe src="https://maps.google.com/maps?q=India&z=5&output=embed" width="100%" height="100%" style="border:0;display:block" loading="lazy" title="Map of India"></iframe>
+  </div>
+  <p class="mapstats" style="text-align:center;margin-top:1rem">Commoners and discussions come from <b>17 states</b> across India.</p>
 </div></section>
 
 <section class="meetband" id="map"><div class="mx" style="text-align:center">
@@ -359,72 +361,5 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
-<script>
-  (function () {
-    var el = document.getElementById('commons-map');
-    if (!el) return;
-
-    // Real topic-tag counts per state, from indiancommoner.org's own
-    // state tag-cloud (forums/topic-tag archive). Positioned by real
-    // lat/lng on a simple flat projection — no external map tiles, so
-    // there's nothing here that can be rate-limited or blocked.
-    var STATES = [
-      { name: 'Andhra Pradesh',   count: 22, lat: 15.9129, lng: 79.7400 },
-      { name: 'Jharkhand',        count: 11, lat: 23.6102, lng: 85.2799 },
-      { name: 'Karnataka',        count: 11, lat: 15.3173, lng: 75.7139 },
-      { name: 'Rajasthan',        count: 7,  lat: 27.0238, lng: 74.2179 },
-      { name: 'Maharashtra',      count: 4,  lat: 19.7515, lng: 75.7139 },
-      { name: 'Madhya Pradesh',   count: 3,  lat: 22.9734, lng: 78.6569 },
-      { name: 'Gujarat',          count: 2,  lat: 22.2587, lng: 71.1924 },
-      { name: 'Kerala',           count: 2,  lat: 10.8505, lng: 76.2711 },
-      { name: 'Odisha',           count: 2,  lat: 20.9517, lng: 85.0985 },
-      { name: 'Punjab',           count: 2,  lat: 31.1471, lng: 75.3412 },
-      { name: 'Arunachal Pradesh',count: 1,  lat: 28.2180, lng: 94.7278 },
-      { name: 'Assam',            count: 1,  lat: 26.2006, lng: 92.9376 },
-      { name: 'Chhattisgarh',     count: 1,  lat: 21.2787, lng: 81.8661 },
-      { name: 'Meghalaya',        count: 1,  lat: 25.4670, lng: 91.3662 },
-      { name: 'Nagaland',         count: 1,  lat: 26.1584, lng: 94.5624 },
-      { name: 'Uttarakhand',      count: 1,  lat: 30.0668, lng: 79.0193 },
-      { name: 'Uttar Pradesh',    count: 1,  lat: 26.8467, lng: 80.9462 }
-    ];
-
-    // India's rough bounding box, used only to place dots — not a real projection.
-    var BOUNDS = { latMin: 8, latMax: 35.5, lngMin: 68, lngMax: 97.5 };
-
-    function tier(c) {
-      if (c >= 10) return { color: '#01796f', size: 40 };
-      if (c >= 3)  return { color: '#d4a24c', size: 34 };
-      return { color: '#1565C0', size: 28 };
-    }
-
-    STATES.forEach(function (s) {
-      var t = tier(s.count);
-      var x = (s.lng - BOUNDS.lngMin) / (BOUNDS.lngMax - BOUNDS.lngMin) * 100;
-      var y = (BOUNDS.latMax - s.lat) / (BOUNDS.latMax - BOUNDS.latMin) * 100;
-
-      var wrap = document.createElement('a');
-      wrap.href = 'state.html';
-      wrap.className = 'pinmap-pin';
-      wrap.style.left = x + '%';
-      wrap.style.top = y + '%';
-      wrap.title = s.name + ' — ' + s.count + ' topic' + (s.count === 1 ? '' : 's');
-
-      var pin = document.createElement('span');
-      pin.className = 'mkpin';
-      pin.style.background = t.color;
-      pin.style.width = t.size + 'px';
-      pin.style.height = t.size + 'px';
-      pin.textContent = s.count;
-      wrap.appendChild(pin);
-
-      var label = document.createElement('span');
-      label.className = 'pinmap-label';
-      label.textContent = s.name;
-      wrap.appendChild(label);
-
-      el.appendChild(wrap);
-    });
-  })();
-</script>
 </body>
 </html>
