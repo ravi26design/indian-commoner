@@ -43,6 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.lucide) lucide.createIcons();
   }
 
+  // "Start a Conversation": straight to the composer if already signed in,
+  // otherwise to login — landing back on the composer once signed in.
+  var startConvo = document.getElementById('start-convo-link');
+  if (startConvo) {
+    if (isLoggedIn()) {
+      startConvo.href = 'start-conversation.html';
+    } else {
+      startConvo.href = 'login.html?return=' + encodeURIComponent(new URL('start-conversation.html', location.href).href);
+    }
+  }
+
   // Every remaining link to login.html carries the current page as a return-to
   // param, so signing in lands the user back where they started (more reliable
   // than document.referrer, which browsers can drop or which changes across hops).
