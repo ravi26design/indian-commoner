@@ -300,12 +300,8 @@
 </div></section>
 
 <section class="section statecloud" style="padding:0">
-  <div class="pinmap" style="padding:0;border-radius:0;width:100%">
+  <div class="pinmap" id="commons-map" style="padding:0;border-radius:0;width:100%">
     <iframe src="https://maps.google.com/maps?q=India&z=5&output=embed" width="100%" height="100%" style="border:0;display:block" loading="lazy" title="Map of India"></iframe>
-    <a class="pinmap-pin" href="forum.html" style="left:50%;top:50%;z-index:3" title="Discuss — join the forum">
-      <span class="mkpin" style="background:var(--green);width:36px;height:36px"><i data-lucide="message-square"></i></span>
-      <span class="pinmap-label">Discuss</span>
-    </a>
   </div>
 </section>
 
@@ -363,5 +359,99 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+  (function () {
+    var el = document.getElementById('commons-map');
+    if (!el) return;
+
+    // Real topic-tag counts per state, from indiancommoner.org's own
+    // state tag-cloud (forums/topic-tag archive).
+    var STATES = [
+      { name: 'Andhra Pradesh',   count: 22, lat: 15.9129, lng: 79.7400 },
+      { name: 'Jharkhand',        count: 11, lat: 23.6102, lng: 85.2799 },
+      { name: 'Karnataka',        count: 11, lat: 15.3173, lng: 75.7139 },
+      { name: 'Rajasthan',        count: 7,  lat: 27.0238, lng: 74.2179 },
+      { name: 'Maharashtra',      count: 4,  lat: 19.7515, lng: 75.7139 },
+      { name: 'Madhya Pradesh',   count: 3,  lat: 22.9734, lng: 78.6569 },
+      { name: 'Gujarat',          count: 2,  lat: 22.2587, lng: 71.1924 },
+      { name: 'Kerala',           count: 2,  lat: 10.8505, lng: 76.2711 },
+      { name: 'Odisha',           count: 2,  lat: 20.9517, lng: 85.0985 },
+      { name: 'Punjab',           count: 2,  lat: 31.1471, lng: 75.3412 },
+      { name: 'Arunachal Pradesh',count: 1,  lat: 28.2180, lng: 94.7278 },
+      { name: 'Assam',            count: 1,  lat: 26.2006, lng: 92.9376 },
+      { name: 'Chhattisgarh',     count: 1,  lat: 21.2787, lng: 81.8661 },
+      { name: 'Meghalaya',        count: 1,  lat: 25.4670, lng: 91.3662 },
+      { name: 'Nagaland',         count: 1,  lat: 26.1584, lng: 94.5624 },
+      { name: 'Uttarakhand',      count: 1,  lat: 30.0668, lng: 79.0193 },
+      { name: 'Uttar Pradesh',    count: 1,  lat: 26.8467, lng: 80.9462 }
+    ];
+
+    // The embed URL is "q=India&z=5" — Google resolves the bare "India"
+    // query to the country's commonly cited geographic centroid, at
+    // zoom level 5. This is a best-effort alignment (we don't have API
+    // access to read the iframe's actual live viewport), using the
+    // same standard Web Mercator math real map tiles are built on.
+    var CENTER = { lat: 20.5937, lng: 78.9629 };
+    var ZOOM = 5;
+    var TILE = 256;
+
+    function project(lat, lng) {
+      var world = TILE * Math.pow(2, ZOOM);
+      var x = (lng + 180) / 360 * world;
+      var siny = Math.min(Math.max(Math.sin(lat * Math.PI / 180), -0.9999), 0.9999);
+      var y = (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)) * world;
+      return { x: x, y: y };
+    }
+
+    function tier(c) {
+      if (c >= 10) return { color: '#01796f', size: 38 };
+      if (c >= 3)  return { color: '#d4a24c', size: 32 };
+      return { color: '#1565C0', size: 26 };
+    }
+
+    var centerPx = project(CENTER.lat, CENTER.lng);
+    var pins = [];
+
+    STATES.forEach(function (s) {
+      var p = project(s.lat, s.lng);
+      var pin = document.createElement('a');
+      pin.href = 'state.html';
+      pin.className = 'pinmap-pin';
+      pin.title = s.name + ' — ' + s.count + ' topic' + (s.count === 1 ? '' : 's');
+      pin.dataset.dx = p.x - centerPx.x;
+      pin.dataset.dy = p.y - centerPx.y;
+
+      var t = tier(s.count);
+      var mk = document.createElement('span');
+      mk.className = 'mkpin';
+      mk.style.background = t.color;
+      mk.style.width = t.size + 'px';
+      mk.style.height = t.size + 'px';
+      mk.textContent = s.count;
+      pin.appendChild(mk);
+
+      var label = document.createElement('span');
+      label.className = 'pinmap-label';
+      label.textContent = s.name;
+      pin.appendChild(label);
+
+      el.appendChild(pin);
+      pins.push(pin);
+    });
+
+    function layout() {
+      var rect = el.getBoundingClientRect();
+      pins.forEach(function (pin) {
+        var dx = parseFloat(pin.dataset.dx);
+        var dy = parseFloat(pin.dataset.dy);
+        pin.style.left = (rect.width / 2 + dx) + 'px';
+        pin.style.top = (rect.height / 2 + dy) + 'px';
+      });
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
+  })();
+</script>
 </body>
 </html>
