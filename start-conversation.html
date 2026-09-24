@@ -246,6 +246,7 @@
       var ta = document.getElementById('convo-text');
       ta.value = chip.getAttribute('data-q');
       ta.focus();
+      updateLiveClassification();
     });
   });
 
@@ -292,7 +293,9 @@
   var textarea = document.getElementById('convo-text');
   var langSelect = document.querySelector('.composer-top select');
   var sendBtn = document.getElementById('convo-send');
-  var classifyState = { theme: null, sub: null, keyword: '' };
+  var classifyState = { theme: 'Governing the Commons', sub: null, keyword: '' };
+  var themeTouched = false;
+  var subTouched = false;
   var firstSendDone = false;
 
   function addUserMessage(text, lang) {
@@ -357,7 +360,9 @@
     html += '</div>';
 
     html += '<div class="classify-label">Keywords <span class="ai-badge sm"><i data-lucide="sparkles"></i> AI</span></div>';
-    html += '<div class="classify-pills"><span class="kw-chip">' + escapeHtml(classifyState.keyword) + '</span></div>';
+    html += classifyState.keyword
+      ? '<div class="classify-pills"><span class="kw-chip">' + escapeHtml(classifyState.keyword) + '</span></div>'
+      : '<p style="font-size:.8rem;color:var(--faint);font-style:italic;margin:0">Start typing below to detect keywords</p>';
 
     html += '<div class="matchbar"><div class="matchbar-top"><span>Theme match</span><b>88%</b></div>' +
       '<div class="matchbar-track"><div class="matchbar-fill" style="width:88%"></div></div></div>';
@@ -369,6 +374,8 @@
 
     card.querySelectorAll('[data-role="theme"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
+        themeTouched = true;
+        subTouched = false;
         classifyState.theme = btn.getAttribute('data-v');
         classifyState.sub = null;
         renderClassifyCard();
@@ -376,6 +383,7 @@
     });
     card.querySelectorAll('[data-role="sub"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
+        subTouched = true;
         classifyState.sub = btn.getAttribute('data-v');
         renderClassifyCard();
       });
@@ -432,6 +440,23 @@
     if (window.lucide) lucide.createIcons();
   }
 
+  function updateLiveClassification() {
+    var text = textarea.value;
+    classifyState.keyword = text.trim().slice(0, 40) + (text.trim().length > 40 ? '…' : '');
+    if (!themeTouched) {
+      var newTheme = classifyTheme(text);
+      if (newTheme !== classifyState.theme) {
+        classifyState.theme = newTheme;
+        subTouched = false;
+        classifyState.sub = null;
+      }
+    }
+    renderClassifyCard();
+  }
+
+  renderClassifyCard();
+  if (textarea) textarea.addEventListener('input', updateLiveClassification);
+
   if (sendBtn) {
     sendBtn.addEventListener('click', function () {
       var text = textarea.value.trim();
@@ -441,14 +466,11 @@
       addAssistantMessage(text);
       if (!firstSendDone) {
         firstSendDone = true;
-        classifyState.theme = classifyTheme(text);
-        classifyState.sub = null;
-        classifyState.keyword = text.trim().slice(0, 40) + (text.trim().length > 40 ? '…' : '');
-        renderClassifyCard();
         renderDuplicatesCard();
         renderPublishCard(text, lang);
       }
       textarea.value = '';
+      updateLiveClassification();
       textarea.focus();
     });
   }
