@@ -1573,9 +1573,9 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .postcard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);padding:1.75rem;
   min-height:23rem;display:flex;flex-direction:column}
 .post-head{display:flex;align-items:center;gap:.85rem;padding-bottom:1.1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--line)}
-.post-head .pw-av{width:2.9rem;height:2.9rem;font-size:.95rem}
+.post-head .pw-av{width:2.9rem;height:2.9rem;font-size:.95rem;display:grid;place-items:center}
 .post-head b{display:block;font-size:.95rem;color:var(--ink)}
-.post-head span{display:block;font-size:.8rem;color:var(--muted-2);margin-top:.1rem}
+.post-head span:not(.pw-av){display:block;font-size:.8rem;color:var(--muted-2);margin-top:.1rem}
 .post-body{font-size:.98rem;line-height:1.8;color:var(--ink-2);flex:1;display:flex;align-items:center}
 .post-body p{margin:0 0 1.1rem}
 .post-body p:last-child{margin-bottom:0}

@@ -2,6 +2,28 @@
 document.addEventListener('DOMContentLoaded', function () {
   if (window.lucide) lucide.createIcons();
 
+  // Deterministic per-author avatar colour, purely decorative — computed once
+  // from the author name so the same person always gets the same colour
+  // wherever their avatar appears across the site.
+  var AVATAR_TINTS = [
+    'linear-gradient(135deg,#0d9488,#14b8a6)',
+    'linear-gradient(135deg,#2563eb,#3b82f6)',
+    'linear-gradient(135deg,#7c3aed,#a78bfa)',
+    'linear-gradient(135deg,#d97706,#f59e0b)',
+    'linear-gradient(135deg,#be185d,#ec4899)',
+    'linear-gradient(135deg,#059669,#10b981)'
+  ];
+  function avatarTint(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+    return AVATAR_TINTS[hash % AVATAR_TINTS.length];
+  }
+  function tintAvatar(av, name) {
+    if (!av || !name) return;
+    av.style.background = avatarTint(name);
+    av.style.color = '#fff';
+  }
+
   // Signed-in state persists across pages/reloads until the user explicitly
   // signs out — a plain localStorage flag, since this prototype has no real backend.
   var LOGIN_KEY = 'ic-logged-in';
@@ -43,16 +65,42 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.lucide) lucide.createIcons();
   }
 
+  // Topic page: tint the post author, reply authors, and "Voices in this
+  // thread" avatars the same deterministic way as the forum list (moderator
+  // shield avatars and the "+N more" chip are left as-is — they're not tied
+  // to a real name). Names seen on the post/replies are remembered by their
+  // initial so the "Voices" avatar stack — which only shows an initial —
+  // still picks up the same colour as that person's full-name avatar above.
+  var namesByInitial = {};
+  document.querySelectorAll('.post-head .pw-av').forEach(function (av) {
+    var nameEl = av.parentElement && av.parentElement.querySelector('b');
+    if (!nameEl) return;
+    var name = nameEl.textContent;
+    namesByInitial[name.charAt(0).toUpperCase()] = name;
+    tintAvatar(av, name);
+  });
+  document.querySelectorAll('.cm-item:not(.hidden-reply) .pw-av').forEach(function (av) {
+    var nameEl = av.parentElement && av.parentElement.querySelector('.cm-h b');
+    if (!nameEl) return;
+    var name = nameEl.textContent;
+    namesByInitial[name.charAt(0).toUpperCase()] = name;
+    tintAvatar(av, name);
+  });
+  document.querySelectorAll('.avstack .pw-av').forEach(function (av) {
+    var text = av.textContent.trim();
+    if (!text || text.indexOf('+') === 0) return;
+    tintAvatar(av, namesByInitial[text.toUpperCase()] || text);
+  });
+
   // "Start a Conversation": straight to the composer if already signed in,
   // otherwise to login — landing back on the composer once signed in.
-  var startConvo = document.getElementById('start-convo-link');
-  if (startConvo) {
+  document.querySelectorAll('#start-convo-link, #forum-new-discussion').forEach(function (startConvo) {
     if (isLoggedIn()) {
       startConvo.href = 'start-conversation.html';
     } else {
       startConvo.href = 'login.html?return=' + encodeURIComponent(new URL('start-conversation.html', location.href).href);
     }
-  }
+  });
 
   // Every remaining link to login.html carries the current page as a return-to
   // param, so signing in lands the user back where they started (more reliable
@@ -267,25 +315,11 @@ document.addEventListener('DOMContentLoaded', function () {
   if (forumList) {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
 
-    // Deterministic per-author avatar colour, purely decorative — computed once
-    // from the author name so the same person always gets the same colour.
-    var AVATAR_TINTS = [
-      'linear-gradient(135deg,#0d9488,#14b8a6)',
-      'linear-gradient(135deg,#2563eb,#3b82f6)',
-      'linear-gradient(135deg,#7c3aed,#a78bfa)',
-      'linear-gradient(135deg,#d97706,#f59e0b)',
-      'linear-gradient(135deg,#be185d,#ec4899)',
-      'linear-gradient(135deg,#059669,#10b981)'
-    ];
     forumRows.forEach(function (row) {
       var nameEl = row.querySelector('.tr-meta b');
       var av = row.querySelector('.pw-av');
       if (!nameEl || !av) return;
-      var name = nameEl.textContent;
-      var hash = 0;
-      for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-      av.style.background = AVATAR_TINTS[hash % AVATAR_TINTS.length];
-      av.style.color = '#fff';
+      tintAvatar(av, nameEl.textContent);
     });
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');

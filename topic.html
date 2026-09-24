@@ -187,7 +187,7 @@
       </div>
 
       <div class="cm-box reply-composer" id="reply-box" style="margin-top:1.5rem" hidden>
-        <span class="pw-av">PS</span>
+        <span class="pw-av" style="background:var(--blue)">PS</span>
         <div class="cm-grow">
           <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.6rem">
             <div class="selw" style="max-width:11rem">
@@ -504,11 +504,43 @@
   }
 
   var sendBtn = document.getElementById('reply-send');
+  var cmList = document.querySelector('.cm-list');
+  var repliesTag = document.querySelector('.post-foot .tag i[data-lucide="message-square"]');
+  if (repliesTag) repliesTag = repliesTag.parentElement;
+  var anonCheck = document.getElementById('reply-anon');
+
+  function bumpReplyCount() {
+    if (!repliesTag) return;
+    var n = parseInt(repliesTag.textContent, 10);
+    if (!isNaN(n)) repliesTag.lastChild.textContent = ' ' + (n + 1) + ' Replies';
+  }
+
   if (sendBtn) {
     sendBtn.addEventListener('click', function () {
-      if (!replyText.value.trim() && !attachments.length) { replyText.focus(); return; }
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Posted ✓';
+      var text = replyText.value.trim();
+      if (!text && !attachments.length) {
+        showStatus('Write a reply, or attach a file, before posting.', true);
+        replyText.focus();
+        return;
+      }
+      if (cmList) {
+        var item = document.createElement('div');
+        item.className = 'cm-item';
+        item.style.padding = '1.5rem';
+        var isAnon = anonCheck && anonCheck.checked;
+        item.innerHTML = '<span class="pw-av" style="background:var(--blue)">' + (isAnon ? '?' : 'PS') + '</span>' +
+          '<div class="cm-grow">' +
+          '<div class="cm-h"><b>' + (isAnon ? 'Anonymous' : 'You') + '</b> · just now</div>' +
+          '<div class="cm-t">' + escapeHtml(text) + '</div>' +
+          '</div>';
+        cmList.appendChild(item);
+      }
+      bumpReplyCount();
+      replyText.value = '';
+      attachments.forEach(function (a) { if (a.url) URL.revokeObjectURL(a.url); });
+      attachments = [];
+      renderAttachments();
+      showStatus('Your reply was posted.', false);
     });
   }
 })();
