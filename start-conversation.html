@@ -133,6 +133,8 @@
         </div>
       </div>
 
+      <div class="convo-thread" id="convo-thread"></div>
+
       <div class="composer">
         <div class="composer-top">
           <div class="selw" style="max-width:9.5rem">
@@ -164,15 +166,15 @@
     </div>
 
     <aside>
-      <div class="sidecard">
+      <div class="sidecard" id="card-classify">
         <h4>Suggested classification <span class="ai-badge"><i data-lucide="sparkles"></i> AI</span></h4>
         <p>Theme, sub-theme and keywords are suggested as soon as you send your first message. You can change any of them before publishing.</p>
       </div>
-      <div class="sidecard">
+      <div class="sidecard" id="card-duplicates">
         <h4><span class="qi"><i data-lucide="help-circle"></i></span> Before you post</h4>
         <p>Once you have written your question, existing threads that already cover it will be listed here.</p>
       </div>
-      <div class="sidecard">
+      <div class="sidecard" id="card-publish">
         <h4>Publish this conversation</h4>
         <p>When you are ready, you can publish the conversation as a discussion thread — or keep it private as a draft.</p>
       </div>
@@ -238,6 +240,7 @@
 
 <script src="assets/js/site.js"></script>
 <script>
+(function () {
   document.querySelectorAll('.qchip').forEach(function (chip) {
     chip.addEventListener('click', function () {
       var ta = document.getElementById('convo-text');
@@ -245,16 +248,204 @@
       ta.focus();
     });
   });
+
+  // Real theme taxonomy used across the site (forum.html filters, forum-theme-*.html);
+  // sub-themes below are original UI copy for this prototype's demo classifier,
+  // not a scraped or verified taxonomy.
+  var THEME_SHORT = {
+    'Governing the Commons': 'Governing',
+    'Commons as Culture': 'Culture',
+    'Commons as Micro Habitats': 'Micro Habitats',
+    'Livelihoods, Subsistence & Valuation of Commons': 'Livelihoods',
+    'Gender and Commons': 'Gender',
+    'Power and Commons': 'Power',
+    'Conversion of Commons': 'Conversion',
+    'Others': 'Others'
+  };
+  var THEMES = Object.keys(THEME_SHORT);
+  var THEME_SUBS = {
+    'Governing the Commons': ['Grazing rights & calendars', 'Gram sabha process', 'Conflict & dispute resolution', 'Institutional design', 'Monitoring & sanctions'],
+    'Commons as Culture': ['Sacred sites & rituals', 'Craft & material traditions', 'Oral history & memory', 'Festivals & commoning practice'],
+    'Commons as Micro Habitats': ['Sacred groves', 'Urban commons & wetlands', 'Pollinator & bird habitat', 'Restoration ecology'],
+    'Livelihoods, Subsistence & Valuation of Commons': ['NTFP & forest produce', 'Grazing & fodder economy', 'Valuation of commons', 'Market access & pricing'],
+    'Gender and Commons': ["Women's access & control", 'Gendered knowledge systems', 'Representation in institutions'],
+    'Power and Commons': ['Elite capture', 'Social movements', 'Caste & exclusion'],
+    'Conversion of Commons': ['Land-use change', 'Encroachment', 'Infrastructure & acquisition'],
+    'Others': ['Uncategorised']
+  };
+  var STATES = ['Andhra Pradesh', 'Gujarat', 'Karnataka', 'Madhya Pradesh', 'Maharashtra', 'Meghalaya',
+    'Odisha', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'];
+
+  function classifyTheme(text) {
+    var t = text.toLowerCase();
+    if (/pond|tank|water|irrigat|reveget/.test(t)) return 'Livelihoods, Subsistence & Valuation of Commons';
+    if (/festival|ritual|sacred|culture|craft/.test(t)) return 'Commons as Culture';
+    if (/bird|habitat|wildlife|forest|ecolog/.test(t)) return 'Commons as Micro Habitats';
+    return 'Governing the Commons';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  var thread = document.getElementById('convo-thread');
+  var textarea = document.getElementById('convo-text');
+  var langSelect = document.querySelector('.composer-top select');
   var sendBtn = document.getElementById('convo-send');
-  if (sendBtn) {
-    sendBtn.addEventListener('click', function () {
-      var ta = document.getElementById('convo-text');
-      if (!ta.value.trim()) { ta.focus(); return; }
-      sendBtn.disabled = true;
-      sendBtn.innerHTML = 'Sent <i data-lucide="check"></i>';
+  var classifyState = { theme: null, sub: null, keyword: '' };
+  var firstSendDone = false;
+
+  function addUserMessage(text, lang) {
+    var row = document.createElement('div');
+    row.className = 'msg-row you';
+    row.innerHTML = '<span class="msg-av you"><i data-lucide="user"></i></span>' +
+      '<div class="msg-body"><div class="msg-meta">You · ' + escapeHtml(lang) + ' · Just now</div>' +
+      '<div class="msg-text">' + escapeHtml(text) + '</div></div>';
+    thread.appendChild(row);
+  }
+
+  function addAssistantMessage() {
+    var row = document.createElement('div');
+    row.className = 'msg-row ai';
+    row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
+      '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
+      '<div class="msg-text">Nothing on the platform covers this yet — which is itself worth knowing. If you publish it as a discussion, it becomes the first entry, and anyone working on the same question will find it.</div>' +
+      '<div class="msg-actions">' +
+      '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
+      '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
+      '<a class="msg-act" href="forum.html"><i data-lucide="search"></i> See all results</a>' +
+      '</div></div>';
+    thread.appendChild(row);
+
+    var helpfulBtn = row.querySelector('[data-act="helpful"]');
+    if (helpfulBtn) helpfulBtn.addEventListener('click', function () { helpfulBtn.classList.toggle('on'); });
+    var listenBtn = row.querySelector('[data-act="listen"]');
+    if (listenBtn) listenBtn.addEventListener('click', function () {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance(row.querySelector('.msg-text').textContent));
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderClassifyCard() {
+    var card = document.getElementById('card-classify');
+    if (!card) return;
+    var subs = THEME_SUBS[classifyState.theme] || ['General'];
+    if (subs.indexOf(classifyState.sub) === -1) classifyState.sub = subs[0];
+
+    var html = '<h4>Suggested classification <span class="ai-badge"><i data-lucide="sparkles"></i> AI</span></h4>';
+    html += '<div class="classify-label">Theme <span class="req">*</span></div><div class="classify-pills">';
+    html += THEMES.map(function (th) {
+      return '<button type="button" class="seg-tab' + (th === classifyState.theme ? ' on' : '') +
+        '" data-role="theme" data-v="' + escapeHtml(th) + '">' + escapeHtml(THEME_SHORT[th]) + '</button>';
+    }).join('');
+    html += '</div>';
+
+    html += '<div class="classify-label">Sub-theme</div><div class="classify-pills">';
+    html += subs.map(function (s) {
+      return '<button type="button" class="seg-tab' + (s === classifyState.sub ? ' on' : '') +
+        '" data-role="sub" data-v="' + escapeHtml(s) + '">' + escapeHtml(s) + '</button>';
+    }).join('');
+    html += '</div>';
+
+    html += '<div class="classify-label">Keywords <span class="ai-badge sm"><i data-lucide="sparkles"></i> AI</span></div>';
+    html += '<div class="classify-pills"><span class="kw-chip">' + escapeHtml(classifyState.keyword) + '</span></div>';
+
+    html += '<div class="matchbar"><div class="matchbar-top"><span>Theme match</span><b>88%</b></div>' +
+      '<div class="matchbar-track"><div class="matchbar-fill" style="width:88%"></div></div></div>';
+    html += '<div class="matchbar"><div class="matchbar-top"><span>Language detect</span><b>99%</b></div>' +
+      '<div class="matchbar-track"><div class="matchbar-fill" style="width:99%"></div></div></div>';
+
+    html += '<p class="classify-note">Suggested from what you wrote — change anything before publishing. These are what readers filter the forum by.</p>';
+    card.innerHTML = html;
+
+    card.querySelectorAll('[data-role="theme"]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        classifyState.theme = btn.getAttribute('data-v');
+        classifyState.sub = null;
+        renderClassifyCard();
+      });
+    });
+    card.querySelectorAll('[data-role="sub"]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        classifyState.sub = btn.getAttribute('data-v');
+        renderClassifyCard();
+      });
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderDuplicatesCard() {
+    var card = document.getElementById('card-duplicates');
+    if (!card) return;
+    card.innerHTML = '<h4><span class="qi"><i data-lucide="help-circle"></i></span> Before you post</h4>' +
+      '<p>Nothing similar found — this looks like a new question.</p>';
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderPublishCard(text, lang) {
+    var card = document.getElementById('card-publish');
+    if (!card) return;
+    var title = text.trim().slice(0, 80);
+    var langs = ['English', 'हिन्दी', 'ಕನ್ನಡ', 'తెలుగు'];
+
+    var html = '<h4>Publish this conversation</h4>';
+    html += '<div class="field"><label for="pub-title">Thread title <span style="color:var(--red)">*</span></label>' +
+      '<input id="pub-title" type="text" value="' + escapeHtml(title) + '"></div>';
+    html += '<div class="field selw"><label for="pub-lang">Language of this post</label><select id="pub-lang">' +
+      langs.map(function (l) { return '<option' + (l === lang ? ' selected' : '') + '>' + l + '</option>'; }).join('') +
+      '</select><i data-lucide="chevron-down" class="cv"></i></div>';
+    html += '<div class="field selw"><label for="pub-state">State</label><select id="pub-state">' +
+      '<option value="">Select a state</option>' + STATES.map(function (s) { return '<option>' + s + '</option>'; }).join('') +
+      '</select><i data-lucide="chevron-down" class="cv"></i></div>';
+    html += '<div class="field"><label for="pub-district">District <span class="muted">(optional)</span></label>' +
+      '<input id="pub-district" type="text" placeholder="e.g. Pali"></div>';
+    html += '<label style="display:flex;gap:.55rem;align-items:flex-start;font-size:.85rem;margin:.9rem 0">' +
+      '<input type="checkbox" checked style="accent-color:var(--green-d);margin-top:.15rem">' +
+      '<span><b style="display:block;color:var(--ink)">Publish a translation alongside</b>' +
+      '<small style="color:var(--muted-2)">Readers see the original and the translation</small></span></label>';
+    html += '<label style="display:flex;gap:.55rem;align-items:flex-start;font-size:.85rem;margin-bottom:1.1rem">' +
+      '<input type="checkbox" style="accent-color:var(--green-d);margin-top:.15rem">' +
+      '<span><b style="display:block;color:var(--ink)">Post anonymously</b>' +
+      '<small style="color:var(--muted-2)">Shown as "A Commoner"</small></span></label>';
+    html += '<button type="button" class="btn btn-primary block" id="convo-publish">Publish as a discussion</button>';
+    html += '<button type="button" id="convo-draft" style="display:block;width:100%;text-align:center;' +
+      'margin-top:.7rem;background:none;border:0;color:var(--green-d);font-weight:700;font-size:.85rem;cursor:pointer;padding:.4rem">Save as draft</button>';
+    card.innerHTML = html;
+
+    document.getElementById('convo-publish').addEventListener('click', function () {
+      this.disabled = true;
+      this.innerHTML = 'Published <i data-lucide="check"></i>';
       if (window.lucide) lucide.createIcons();
     });
+    document.getElementById('convo-draft').addEventListener('click', function () {
+      this.textContent = 'Draft saved ✓';
+    });
+    if (window.lucide) lucide.createIcons();
   }
+
+  if (sendBtn) {
+    sendBtn.addEventListener('click', function () {
+      var text = textarea.value.trim();
+      if (!text) { textarea.focus(); return; }
+      var lang = langSelect ? langSelect.value : 'English';
+      addUserMessage(text, lang);
+      if (!firstSendDone) {
+        firstSendDone = true;
+        addAssistantMessage();
+        classifyState.theme = classifyTheme(text);
+        classifyState.sub = null;
+        classifyState.keyword = text.trim().slice(0, 40) + (text.trim().length > 40 ? '…' : '');
+        renderClassifyCard();
+        renderDuplicatesCard();
+        renderPublishCard(text, lang);
+      }
+      textarea.value = '';
+      textarea.focus();
+    });
+  }
+})();
 </script>
 </body>
 </html>
