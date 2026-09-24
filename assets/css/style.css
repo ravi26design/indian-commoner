@@ -1531,6 +1531,16 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .topicrow:hover{background:var(--bg-soft)}
 .topicrow .pw-av{width:2.6rem;height:2.6rem;font-size:.85rem;flex:none}
 .topicrow .tr-tx{flex:1;min-width:0}
+.tr-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.45rem}
+.tr-tags .tag{font-size:.72rem;padding:.15rem .55rem;font-weight:700}
+.tag.tint-teal{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
+.tag.tint-blue{background:var(--t-water-s);color:var(--t-water);border-color:#c7dbfb}
+.tag.tint-purple{background:var(--t-cultural-s);color:var(--t-cultural);border-color:#ddd0fb}
+.tag.tint-green{background:var(--t-forest-s);color:var(--t-forest);border-color:#cdeed4}
+.tag.tint-amber{background:var(--amber-soft);color:var(--amber-d);border-color:var(--amber-line)}
+.tag.tint-rose{background:#fde8ef;color:#be185d;border-color:#f8cddf}
+.tag.tint-slate{background:var(--chip);color:var(--muted-2);border-color:var(--line-2)}
+.tag.tint-pin{background:var(--amber-soft);color:var(--amber-d);border-color:var(--amber-line);display:inline-flex;align-items:center;gap:.25rem}
 .topicrow h3{font-size:1rem;line-height:1.4;margin:0 0 .3rem}
 .topicrow:hover h3{color:var(--green-d)}
 .topicrow .tr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted-2)}
@@ -1940,3 +1950,15 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .classify-label .req{color:var(--red)}
 .classify-pills{display:flex;flex-wrap:wrap;gap:.4rem}
 .classify-pills .seg-tab{font-size:.78rem;padding:.35rem .7rem}
+
+/* ---- INDIAN COMMONER ADD: Discussion forum — rounded, tighter panels ---- */
+.forum-filter{border-radius:1rem;padding:1.3rem}
+.forum-list-panel{border-radius:1rem}
+.forum-list-panel .topicrow{position:relative;padding-right:1.5rem}
+.forum-list-panel .topicrow::after{content:'';position:absolute;right:0;top:50%;width:.55rem;height:.55rem;
+  border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:translateY(-50%) rotate(-45deg);
+  opacity:0;transition:opacity .15s,right .15s}
+.forum-list-panel .topicrow:hover::after{opacity:1;right:.15rem}
+@media(max-width:700px){.forum-list-panel .topicrow::after{display:none}}
+.forum-list-panel .topicrow.alt{background:var(--bg-soft)}
+.forum-list-panel .topicrow.alt:hover{background:var(--green-soft)}

@@ -266,6 +266,27 @@ document.addEventListener('DOMContentLoaded', function () {
   var forumList = document.getElementById('forum-list');
   if (forumList) {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
+
+    // Deterministic per-author avatar colour, purely decorative — computed once
+    // from the author name so the same person always gets the same colour.
+    var AVATAR_TINTS = [
+      'linear-gradient(135deg,#0d9488,#14b8a6)',
+      'linear-gradient(135deg,#2563eb,#3b82f6)',
+      'linear-gradient(135deg,#7c3aed,#a78bfa)',
+      'linear-gradient(135deg,#d97706,#f59e0b)',
+      'linear-gradient(135deg,#be185d,#ec4899)',
+      'linear-gradient(135deg,#059669,#10b981)'
+    ];
+    forumRows.forEach(function (row) {
+      var nameEl = row.querySelector('.tr-meta b');
+      var av = row.querySelector('.pw-av');
+      if (!nameEl || !av) return;
+      var name = nameEl.textContent;
+      var hash = 0;
+      for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+      av.style.background = AVATAR_TINTS[hash % AVATAR_TINTS.length];
+      av.style.color = '#fff';
+    });
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
@@ -325,8 +346,9 @@ document.addEventListener('DOMContentLoaded', function () {
       } else if (forumSort === 'unanswered') {
         sorted = sorted.filter(function (row) { return (+row.getAttribute('data-replies') || 0) === 0; });
       }
-      sorted.forEach(function (row) {
+      sorted.forEach(function (row, i) {
         row.style.display = '';
+        row.classList.toggle('alt', i % 2 === 1);
         forumList.appendChild(row);
       });
 
