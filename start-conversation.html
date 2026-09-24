@@ -182,6 +182,16 @@
   </div>
 </div></section>
 
+<div class="modal-back" id="publishConfirmModal">
+  <div class="modal-card">
+    <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
+    <span class="modal-ic"><i data-lucide="check"></i></span>
+    <h3>Published as a discussion</h3>
+    <p style="color:var(--muted);font-size:.92rem;margin-top:.5rem;line-height:1.6">Your conversation is now a discussion thread on the forum. Other commoners working on the same question will be able to find it.</p>
+    <button class="btn btn-primary block" style="margin-top:1.5rem" data-close-modal>Done</button>
+  </div>
+</div>
+
 </main>
 
 <footer class="site">
@@ -412,6 +422,8 @@
       this.disabled = true;
       this.innerHTML = 'Published <i data-lucide="check"></i>';
       if (window.lucide) lucide.createIcons();
+      var modal = document.getElementById('publishConfirmModal');
+      if (modal) modal.classList.add('open');
     });
     document.getElementById('convo-draft').addEventListener('click', function () {
       this.textContent = 'Draft saved ✓';
