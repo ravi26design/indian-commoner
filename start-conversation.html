@@ -304,12 +304,19 @@
     thread.appendChild(row);
   }
 
-  function addAssistantMessage() {
+  var ASSISTANT_REPLIES = [
+    'Nothing on the platform covers this yet — which is itself worth knowing. If you publish it as a discussion, it becomes the first entry, and anyone working on the same question will find it.',
+    "This hasn't come up before in the threads I can search. Publish it as a discussion and the next person asking the same thing finds your question instead of starting from scratch.",
+    "No existing thread matches this closely. Once you publish, it's classified and searchable — other commoners working on similar questions will be able to find it."
+  ];
+
+  function addAssistantMessage(forText) {
+    var reply = ASSISTANT_REPLIES[(forText || '').length % ASSISTANT_REPLIES.length];
     var row = document.createElement('div');
     row.className = 'msg-row ai';
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">Nothing on the platform covers this yet — which is itself worth knowing. If you publish it as a discussion, it becomes the first entry, and anyone working on the same question will find it.</div>' +
+      '<div class="msg-text">' + escapeHtml(reply) + '</div>' +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
@@ -431,9 +438,9 @@
       if (!text) { textarea.focus(); return; }
       var lang = langSelect ? langSelect.value : 'English';
       addUserMessage(text, lang);
+      addAssistantMessage(text);
       if (!firstSendDone) {
         firstSendDone = true;
-        addAssistantMessage();
         classifyState.theme = classifyTheme(text);
         classifyState.sub = null;
         classifyState.keyword = text.trim().slice(0, 40) + (text.trim().length > 40 ? '…' : '');
