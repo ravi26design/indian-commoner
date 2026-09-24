@@ -165,21 +165,19 @@
 
     <aside>
       <div class="sidecard">
-        <h4>Where this will sit</h4>
-        <p class="rail-hint">Filled in automatically once you send your first message — you can change any of it before publishing.</p>
-        <div class="railrow between"><span class="muted">Theme</span><span class="tbd">Suggested after posting</span></div>
-        <div class="railrow between"><span class="muted">Sub-theme</span><span class="tbd">—</span></div>
-        <div class="railrow between"><span class="muted">Language</span><span id="rail-lang">English</span></div>
-        <div class="railrow between"><span class="muted">Status</span><span class="tag draft">Draft</span></div>
-        <div class="rail-div"></div>
-        <h6 class="rail-kicker">Keywords <span class="ai-badge sm"><i data-lucide="sparkles"></i> AI</span></h6>
-        <div class="chiprow sm">
-          <span class="tag static">Suggested after you write your message</span>
-        </div>
+        <h4>Suggested classification <span class="ai-badge"><i data-lucide="sparkles"></i> AI</span></h4>
+        <p>Theme, sub-theme and keywords are suggested as soon as you send your first message. You can change any of them before publishing.</p>
       </div>
-
       <div class="sidecard">
-        <h4>People who may help</h4>
+        <h4><span class="qi"><i data-lucide="help-circle"></i></span> Before you post</h4>
+        <p>Once you have written your question, existing threads that already cover it will be listed here.</p>
+      </div>
+      <div class="sidecard">
+        <h4>Publish this conversation</h4>
+        <p>When you are ready, you can publish the conversation as a discussion thread — or keep it private as a draft.</p>
+      </div>
+      <div class="helpcard">
+        <h4><i data-lucide="users"></i> People who may help</h4>
         <div class="helprow">
           <span class="pw-av" style="background:linear-gradient(135deg,#d97706,#f59e0b)">KM</span>
           <div><b>Kavitha Murthy</b><span>Tank revival · Anantapur</span></div>
@@ -187,26 +185,6 @@
         <div class="helprow">
           <span class="pw-av" style="background:linear-gradient(135deg,#78350f,#92400e)">DP</span>
           <div><b>Devendra Purohit</b><span>CRP · Sirohi</span></div>
-        </div>
-      </div>
-
-      <div class="sidecard">
-        <h4>Related on the platform</h4>
-        <a class="raillink" href="forum.html"><i data-lucide="message-square"></i><span><b>Similar discussions on the forum</b><small>Browse existing threads before you post</small></span></a>
-        <a class="raillink" href="resources-laws.html"><i data-lucide="scale"></i><span><b>Laws and Regulations</b><small>Relevant acts, policies and rules</small></span></a>
-        <a class="raillink" href="resources-literature.html"><i data-lucide="book-open"></i><span><b>Literature</b><small>Papers and field case studies</small></span></a>
-        <a class="raillink" href="index.html#map"><i data-lucide="map"></i><span><b>Map exploration</b><small>Find discussions near your location</small></span></a>
-      </div>
-
-      <div class="sidecard">
-        <h4>Accessibility</h4>
-        <div class="prefrow">
-          <div><b>Read this page aloud</b><p>Hear the prompts and guidance read out.</p></div>
-          <button class="switch" aria-label="Toggle read aloud"></button>
-        </div>
-        <div class="prefrow">
-          <div><b>Always show translations</b><p>Show an English translation alongside other languages.</p></div>
-          <button class="switch on" aria-label="Toggle translations"></button>
         </div>
       </div>
     </aside>
@@ -260,11 +238,6 @@
 
 <script src="assets/js/site.js"></script>
 <script>
-  var langSel = document.querySelector('.composer-top select');
-  var railLang = document.getElementById('rail-lang');
-  if (langSel && railLang) {
-    langSel.addEventListener('change', function () { railLang.textContent = langSel.value; });
-  }
   document.querySelectorAll('.qchip').forEach(function (chip) {
     chip.addEventListener('click', function () {
       var ta = document.getElementById('convo-text');

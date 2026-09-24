@@ -254,4 +254,83 @@ document.addEventListener('DOMContentLoaded', function () {
       box.addEventListener('change', applyLawFilters);
     });
   }
+
+  // Discussion forum: Theme/State radio filters + free-text search narrow the
+  // thread list; the Recent/Most replies/Unanswered segment re-sorts it.
+  // Rows carry their real reply count in data-replies (unset -> 0, i.e. no
+  // replies yet) rather than a count invented for rows with no source data.
+  var forumList = document.getElementById('forum-list');
+  if (forumList) {
+    var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
+    var forumSearch = document.getElementById('forum-q');
+    var forumCount = document.getElementById('forum-count');
+    var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
+    var forumSort = 'recent';
+
+    function applyForumFilters() {
+      var themeSel = document.querySelector('input[name="fx-theme"]:checked');
+      var stateSel = document.querySelector('input[name="fx-state"]:checked');
+      var theme = themeSel ? themeSel.value : 'all';
+      var state = stateSel ? stateSel.value : 'all';
+      var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
+
+      var visible = forumRows.filter(function (row) {
+        if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
+        if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
+        if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+      });
+
+      forumRows.forEach(function (row) { row.style.display = 'none'; });
+
+      var sorted = visible.slice();
+      if (forumSort === 'replies') {
+        sorted.sort(function (a, b) { return (+b.getAttribute('data-replies') || 0) - (+a.getAttribute('data-replies') || 0); });
+      } else if (forumSort === 'unanswered') {
+        sorted = sorted.filter(function (row) { return (+row.getAttribute('data-replies') || 0) === 0; });
+      }
+      sorted.forEach(function (row) {
+        row.style.display = '';
+        forumList.appendChild(row);
+      });
+
+      if (forumCount) forumCount.textContent = sorted.length + (sorted.length === 1 ? ' discussion' : ' discussions');
+    }
+
+    document.querySelectorAll('input[name="fx-theme"], input[name="fx-state"]').forEach(function (r) {
+      r.addEventListener('change', applyForumFilters);
+    });
+    if (forumSearch) forumSearch.addEventListener('input', applyForumFilters);
+
+    if (forumSortSeg) {
+      forumSortSeg.querySelectorAll('.seg-tab').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          forumSortSeg.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.remove('on'); });
+          btn.classList.add('on');
+          forumSort = btn.getAttribute('data-sort');
+          applyForumFilters();
+        });
+      });
+    }
+
+    var forumReset = document.getElementById('forum-reset');
+    if (forumReset) {
+      forumReset.addEventListener('click', function () {
+        var allTheme = document.querySelector('input[name="fx-theme"][value="all"]');
+        var allState = document.querySelector('input[name="fx-state"][value="all"]');
+        if (allTheme) allTheme.checked = true;
+        if (allState) allState.checked = true;
+        if (forumSearch) forumSearch.value = '';
+        if (forumSortSeg) {
+          forumSortSeg.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.remove('on'); });
+          var recentTab = forumSortSeg.querySelector('.seg-tab[data-sort="recent"]');
+          if (recentTab) recentTab.classList.add('on');
+        }
+        forumSort = 'recent';
+        applyForumFilters();
+      });
+    }
+
+    applyForumFilters();
+  }
 });

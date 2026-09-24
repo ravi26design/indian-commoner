@@ -1834,8 +1834,12 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 
 /* ---- INDIAN COMMONER ADD: Start a Conversation composer ---- */
 .convo-hero{margin-bottom:1.75rem}
-.convo-layout{display:grid;grid-template-columns:1fr 21rem;gap:2rem;align-items:start}
-@media(max-width:960px){.convo-layout{grid-template-columns:1fr}}
+.convo-layout,.rail-layout{display:grid;grid-template-columns:1fr 21rem;gap:2rem;align-items:start}
+@media(max-width:960px){.convo-layout,.rail-layout{grid-template-columns:1fr}}
+
+.avstack{display:flex}
+.avstack .pw-av{margin-left:-.6rem;border:2px solid #fff}
+.avstack .pw-av:first-child{margin-left:0}
 
 .convo-card{background:#fff;border:1px solid var(--line);border-left:5px solid var(--cta);border-radius:0;
   padding:1.5rem 1.6rem;box-shadow:var(--shadow-card);margin-bottom:1.75rem}
@@ -1875,29 +1879,22 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .convo-note i{width:1rem;height:1rem;flex:none;margin-top:.15rem;color:var(--green-d)}
 .convo-note a{color:var(--green-d);font-weight:700;text-decoration:underline}
 
-.convo-layout aside{position:sticky;top:5.75rem}
+.convo-layout aside,.rail-layout aside{position:sticky;top:5.75rem}
 
 .sidecard{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;box-shadow:var(--shadow-card);margin-bottom:1.25rem}
 .sidecard h4{display:flex;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.92rem;font-weight:800;color:var(--ink);margin-bottom:.6rem}
+.sidecard h4 .qi{width:1.3rem;height:1.3rem;border-radius:50%;background:var(--chip);color:var(--muted-2);
+  display:grid;place-items:center;flex:none}
+.sidecard h4 .qi i{width:.75rem;height:.75rem}
 .sidecard p{font-size:.85rem;color:var(--muted);line-height:1.6}
 .sidecard .switch.on{background:var(--green-d)}
 .sidecard .prefrow{padding:.85rem 0}
 .sidecard .prefrow b{font-size:.87rem}
 .sidecard .prefrow p{font-size:.78rem}
 
-.rail-hint{font-size:.8rem;color:var(--muted);margin:-.15rem 0 .9rem;line-height:1.55}
 .railrow{padding:.5rem 0;font-size:.85rem;border-top:1px solid var(--line)}
 .railrow:first-of-type{border-top:0;padding-top:0}
 .railrow .muted{color:var(--muted-2)}
-.railrow .tbd{color:var(--faint);font-style:italic;font-size:.8rem}
-.rail-div{height:1px;background:var(--line);margin:.9rem 0}
-.rail-kicker{font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
-  display:flex;align-items:center;gap:.4rem;margin:0 0 .65rem}
-.ai-badge.sm{padding:.16rem .55rem;font-size:.62rem}
-.ai-badge.sm i{width:.65rem;height:.65rem}
-.chiprow.sm{gap:.4rem}
-.tag.draft{background:var(--amber-soft);color:var(--amber-d);border-color:var(--amber-line)}
-.tag.static{cursor:default;font-size:.76rem;color:var(--faint);font-style:italic;border-style:dashed}
 
 .raillink{display:flex;align-items:flex-start;gap:.65rem;padding:.6rem 0}
 .raillink+.raillink{border-top:1px solid var(--line)}
@@ -1905,8 +1902,12 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .raillink b{display:block;font-size:.85rem;font-weight:700;color:var(--ink)}
 .raillink small{color:var(--muted-2);font-size:.76rem}
 
+.helpcard{background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;border-radius:1rem;
+  padding:1.3rem;box-shadow:var(--shadow-card)}
+.helpcard h4{display:flex;align-items:center;gap:.5rem;font-family:var(--sans);font-size:.92rem;font-weight:800;margin-bottom:1rem;color:#fff}
+.helpcard h4 i{width:1rem;height:1rem;color:#fff}
 .helprow{display:flex;align-items:center;gap:.7rem}
 .helprow+.helprow{margin-top:1rem}
 .helprow .pw-av{width:2.6rem;height:2.6rem;font-size:.85rem;color:#fff}
-.helprow b{display:block;font-size:.88rem;font-weight:800;color:var(--ink)}
-.helprow span{font-size:.78rem;color:var(--muted-2)}
+.helprow b{display:block;font-size:.88rem;font-weight:800}
+.helprow span{font-size:.78rem;color:rgba(255,255,255,.78)}
