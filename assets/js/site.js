@@ -162,30 +162,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function () { langw.classList.remove('open'); });
   }
 
-  document.querySelectorAll('.dd').forEach(function (dd) {
-    var ddBtn = dd.querySelector('.dd-btn');
-    var ddLabel = dd.querySelector('.dd-btn .lf');
-    if (!ddBtn) return;
-    ddBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var willOpen = !dd.classList.contains('open');
-      document.querySelectorAll('.dd.open').forEach(function (o) { o.classList.remove('open'); });
-      dd.classList.toggle('open', willOpen);
-    });
-    dd.querySelectorAll('.dd-opt').forEach(function (opt) {
+  document.querySelectorAll('[data-levelgroup]').forEach(function (group) {
+    group.querySelectorAll('.seg-tab').forEach(function (opt) {
       opt.addEventListener('click', function () {
-        dd.querySelectorAll('.dd-opt').forEach(function (o) { o.classList.remove('on'); });
+        group.querySelectorAll('.seg-tab').forEach(function (o) { o.classList.remove('on'); });
         opt.classList.add('on');
-        if (ddLabel) ddLabel.innerHTML = opt.innerHTML;
-        dd.classList.remove('open');
 
         // Beginner/Intermediate/Advanced sort: cards tagged with the chosen
         // real difficulty level move to the front of the grid (in their
         // original relative order); everything else follows after, still
         // visible — cards with no known real level are never hidden, since
         // we don't want to guess a level for them.
-        var level = opt.textContent.trim().toLowerCase();
-        if (['beginner', 'intermediate', 'advanced'].indexOf(level) === -1) return;
+        var level = opt.getAttribute('data-level');
         document.querySelectorAll('.grid').forEach(function (grid) {
           var cards = Array.from(grid.querySelectorAll(':scope > a, :scope > article'));
           if (!cards.some(function (c) { return c.hasAttribute('data-level'); })) return;
@@ -200,9 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
     });
-  });
-  document.addEventListener('click', function () {
-    document.querySelectorAll('.dd.open').forEach(function (dd) { dd.classList.remove('open'); });
   });
 
   var searchIcon = document.querySelector('.nav-ic[data-search]');
