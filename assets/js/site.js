@@ -255,27 +255,63 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Discussion forum: Theme/State radio filters + free-text search narrow the
-  // thread list; the Recent/Most replies/Unanswered segment re-sorts it.
-  // Rows carry their real reply count in data-replies (unset -> 0, i.e. no
-  // replies yet) rather than a count invented for rows with no source data.
+  // Discussion forum: Theme/Language pill groups + State/Activity dropdowns +
+  // free-text search narrow the thread list; the Recent/Most replies/
+  // Unanswered segment re-sorts it. Rows carry their real reply count in
+  // data-replies (unset -> 0, i.e. no replies yet) rather than a count
+  // invented for rows with no source data. The "Content in thread" checkboxes
+  // and Activity dropdown mirror the reference design but aren't backed by
+  // any real per-thread data on this prototype, so they don't narrow results
+  // — only Theme, Language, State and the search box do.
   var forumList = document.getElementById('forum-list');
   if (forumList) {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
+    var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
+    var langGroup = document.querySelector('.seg-tabs[data-pillgroup="lang"]');
+    var stateSel = document.getElementById('fx-state');
+    var activitySel = document.getElementById('fx-activity');
+    var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel #fx-activity');
+    var forumReset = document.getElementById('forum-reset');
     var forumSort = 'recent';
 
+    function pillValue(group) {
+      if (!group) return 'all';
+      var on = group.querySelector('.seg-tab.on');
+      return on ? on.getAttribute('data-v') : 'all';
+    }
+
+    function setPill(group, value) {
+      if (!group) return;
+      group.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === value); });
+    }
+
+    function hasActiveFilters() {
+      if (pillValue(themeGroup) !== 'all') return true;
+      if (pillValue(langGroup) !== 'all') return true;
+      if (stateSel && stateSel.value !== 'all') return true;
+      if (activitySel && activitySel.value !== 'any') return true;
+      if (forumSearch && forumSearch.value.trim()) return true;
+      var translated = document.getElementById('fx-translated');
+      if (translated && !translated.checked) return true;
+      var boxChecked = Array.from(document.querySelectorAll('.filterpanel input[type="checkbox"]')).some(function (c) {
+        return c.id !== 'fx-translated' && c.checked;
+      });
+      if (boxChecked) return true;
+      return false;
+    }
+
     function applyForumFilters() {
-      var themeSel = document.querySelector('input[name="fx-theme"]:checked');
-      var stateSel = document.querySelector('input[name="fx-state"]:checked');
-      var theme = themeSel ? themeSel.value : 'all';
+      var theme = pillValue(themeGroup);
+      var lang = pillValue(langGroup);
       var state = stateSel ? stateSel.value : 'all';
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
 
       var visible = forumRows.filter(function (row) {
         if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
+        if (lang !== 'all' && row.getAttribute('data-lang') !== lang) return false;
         if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
         return true;
@@ -295,11 +331,20 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       if (forumCount) forumCount.textContent = sorted.length + (sorted.length === 1 ? ' discussion' : ' discussions');
+      if (forumReset) forumReset.hidden = !hasActiveFilters();
     }
 
-    document.querySelectorAll('input[name="fx-theme"], input[name="fx-state"]').forEach(function (r) {
-      r.addEventListener('change', applyForumFilters);
+    [themeGroup, langGroup].forEach(function (group) {
+      if (!group) return;
+      group.querySelectorAll('.seg-tab').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setPill(group, btn.getAttribute('data-v'));
+          applyForumFilters();
+        });
+      });
     });
+    if (stateSel) stateSel.addEventListener('change', applyForumFilters);
+    otherFilterInputs.forEach(function (el) { el.addEventListener('change', applyForumFilters); });
     if (forumSearch) forumSearch.addEventListener('input', applyForumFilters);
 
     if (forumSortSeg) {
@@ -313,13 +358,15 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    var forumReset = document.getElementById('forum-reset');
     if (forumReset) {
       forumReset.addEventListener('click', function () {
-        var allTheme = document.querySelector('input[name="fx-theme"][value="all"]');
-        var allState = document.querySelector('input[name="fx-state"][value="all"]');
-        if (allTheme) allTheme.checked = true;
-        if (allState) allState.checked = true;
+        setPill(themeGroup, 'all');
+        setPill(langGroup, 'all');
+        if (stateSel) stateSel.value = 'all';
+        if (activitySel) activitySel.value = 'any';
+        document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
+          c.checked = c.id === 'fx-translated';
+        });
         if (forumSearch) forumSearch.value = '';
         if (forumSortSeg) {
           forumSortSeg.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.remove('on'); });

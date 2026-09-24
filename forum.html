@@ -121,30 +121,75 @@
   <div class="layout-wide">
 
     <aside class="filterpanel">
-      <div class="fp-head"><i data-lucide="sliders-horizontal"></i><b>Filter</b></div>
+      <div class="fp-head"><i data-lucide="sliders-horizontal"></i><b>Filter</b><button type="button" class="clearbtn" id="forum-reset" hidden>Reset</button></div>
 
-      <div class="fp-cat" data-cat="theme">
+      <div class="fp-cat">
         <div class="fp-cat-head"><b>Theme</b></div>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="all" checked> All themes</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Governing the Commons"> Governing the Commons</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Commons as Culture"> Commons as Culture</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Commons as Micro Habitats"> Commons as Micro Habitats</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Livelihoods, Subsistence &amp; Valuation of Commons"> Livelihoods &amp; Valuation</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Gender and Commons"> Gender and Commons</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Power and Commons"> Power and Commons</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Conversion of Commons"> Conversion of Commons</label>
-        <label class="fp-check"><input type="radio" name="fx-theme" value="Others"> Others</label>
+        <div class="seg-tabs" data-pillgroup="theme" style="margin-bottom:0">
+          <button type="button" class="seg-tab on" data-v="all">All</button>
+          <button type="button" class="seg-tab" data-v="Governing the Commons">Governing</button>
+          <button type="button" class="seg-tab" data-v="Commons as Culture">Culture</button>
+          <button type="button" class="seg-tab" data-v="Commons as Micro Habitats">Micro Habitats</button>
+          <button type="button" class="seg-tab" data-v="Livelihoods, Subsistence &amp; Valuation of Commons">Livelihoods</button>
+          <button type="button" class="seg-tab" data-v="Gender and Commons">Gender</button>
+          <button type="button" class="seg-tab" data-v="Power and Commons">Power</button>
+          <button type="button" class="seg-tab" data-v="Conversion of Commons">Conversion</button>
+          <button type="button" class="seg-tab" data-v="Others">Others</button>
+        </div>
+      </div>
+
+      <div class="fp-cat">
+        <div class="fp-cat-head"><b>Language</b></div>
+        <div class="seg-tabs" data-pillgroup="lang" style="margin-bottom:0">
+          <button type="button" class="seg-tab on" data-v="all">Any</button>
+          <button type="button" class="seg-tab" data-v="en">English</button>
+          <button type="button" class="seg-tab" data-v="hi">हिन्दी</button>
+          <button type="button" class="seg-tab" data-v="kn">ಕನ್ನಡ</button>
+          <button type="button" class="seg-tab" data-v="te">తెలుగు</button>
+        </div>
+        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.7rem 0 0">
+          <input type="checkbox" id="fx-translated" checked style="accent-color:var(--green-d)"> Include translated threads</label>
       </div>
 
       <div class="fp-cat" data-cat="state">
-        <div class="fp-cat-head"><b>State</b></div>
-        <label class="fp-check"><input type="radio" name="fx-state" value="all" checked> All of India</label>
-        <label class="fp-check"><input type="radio" name="fx-state" value="Andhra Pradesh"> Andhra Pradesh</label>
-        <label class="fp-check"><input type="radio" name="fx-state" value="Odisha"> Odisha</label>
-        <label class="fp-check"><input type="radio" name="fx-state" value="Meghalaya"> Meghalaya</label>
+        <div class="fp-cat-head"><b>State or district</b></div>
+        <div class="selw">
+          <select id="fx-state">
+            <option value="all">All of India</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Meghalaya">Meghalaya</option>
+          </select>
+          <i data-lucide="chevron-down" class="cv"></i>
+        </div>
       </div>
 
-      <button type="button" class="btn btn-outline block" id="forum-reset" style="margin-top:.5rem"><i data-lucide="refresh-ccw"></i> Reset filters</button>
+      <div class="fp-cat">
+        <div class="fp-cat-head"><b>Content in thread</b></div>
+        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
+          <input type="checkbox" style="accent-color:var(--green-d)"> Has images or video</label>
+        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
+          <input type="checkbox" style="accent-color:var(--green-d)"> Has audio with transcript</label>
+        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
+          <input type="checkbox" style="accent-color:var(--green-d)"> Has attached documents</label>
+        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
+          <input type="checkbox" style="accent-color:var(--green-d)"> Geotagged</label>
+      </div>
+
+      <div class="fp-cat" style="border-bottom:0">
+        <div class="fp-cat-head"><b>Activity</b></div>
+        <div class="selw">
+          <select id="fx-activity">
+            <option value="any">Any time</option>
+            <option value="1d">Last 24 hours</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="365d">This year</option>
+          </select>
+          <i data-lucide="chevron-down" class="cv"></i>
+        </div>
+      </div>
+
     </aside>
 
     <div>
@@ -164,7 +209,7 @@
       <div class="panel" style="padding:.5rem 1.5rem">
         <div class="topiclist" id="forum-list">
 
-          <a class="topicrow" href="topic.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="4">
+          <a class="topicrow" href="topic.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="4" data-lang="en">
             <span class="pw-av">I</span>
             <div class="tr-tx">
               <h3><i data-lucide="pin" style="width:.8rem;height:.8rem;margin-right:.35rem;color:var(--cta);vertical-align:-1px"></i>Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)</h3>
@@ -173,7 +218,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>5</b><span>Voices</span></div><div class="tr-stat"><b>4</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Livelihoods, Subsistence &amp; Valuation of Commons" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Livelihoods, Subsistence &amp; Valuation of Commons" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">R</span>
             <div class="tr-tx">
               <h3>Guardians of Forests in the Changing World – A Story of a Women NTFP Collector</h3>
@@ -182,7 +227,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>1</b><span>Voice</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Governing the Commons" data-state="Andhra Pradesh" data-replies="3">
+          <a class="topicrow" href="topic-empty.html" data-theme="Governing the Commons" data-state="Andhra Pradesh" data-replies="3" data-lang="en">
             <span class="pw-av">M</span>
             <div class="tr-tx">
               <h3>Tokenistic Representation of Women in Village Institutions</h3>
@@ -191,7 +236,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>3</b><span>Voices</span></div><div class="tr-stat"><b>3</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="2">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="2" data-lang="en">
             <span class="pw-av">R</span>
             <div class="tr-tx">
               <h3>Keeping Alive Ancient Tradition of Planting Trees and Worshiping Them</h3>
@@ -200,7 +245,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>2</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">L</span>
             <div class="tr-tx">
               <h3>Fire Ecology</h3>
@@ -209,7 +254,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>1</b><span>Voice</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Governing the Commons" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Governing the Commons" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Legal Methods to Protect Common Land</h3>
@@ -218,7 +263,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Livelihoods, Subsistence &amp; Valuation of Commons" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Livelihoods, Subsistence &amp; Valuation of Commons" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Burning the Commons: Forest Fires and Their Effects</h3>
@@ -227,7 +272,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">C</span>
             <div class="tr-tx">
               <h3>The Symbiotic Relationship Between Commons And Cultre</h3>
@@ -236,7 +281,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Power and Commons" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Power and Commons" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Commons as Playground</h3>
@@ -245,7 +290,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">V</span>
             <div class="tr-tx">
               <h3>Quarantining in the Commons: A Unique Practice in Enamaravaripalle</h3>
@@ -254,7 +299,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats" data-state="Andhra Pradesh" data-replies="2">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats" data-state="Andhra Pradesh" data-replies="2" data-lang="en">
             <span class="pw-av">Y</span>
             <div class="tr-tx">
               <h3>An Account of the Impact of Restoration Projects in Common Lands</h3>
@@ -263,7 +308,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>2</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="1" data-lang="en">
             <span class="pw-av">I</span>
             <div class="tr-tx">
               <h3>Andhra Pradesh-Culture and Commons: The Temple of Sri Siddeshwara Swami.</h3>
@@ -272,7 +317,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>1</b><span>Reply</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="3">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Culture" data-state="Andhra Pradesh" data-replies="3" data-lang="en">
             <span class="pw-av">V</span>
             <div class="tr-tx">
               <h3>Jatres and the Culture of Commons</h3>
@@ -281,7 +326,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>3</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Gender and Commons" data-state="Andhra Pradesh" data-replies="2">
+          <a class="topicrow" href="topic-empty.html" data-theme="Gender and Commons" data-state="Andhra Pradesh" data-replies="2" data-lang="en">
             <span class="pw-av">L</span>
             <div class="tr-tx">
               <h3>Seed Preservation Methods Practiced by Women in Andhra Pradesh</h3>
@@ -290,7 +335,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>2</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Power and Commons" data-state="Andhra Pradesh" data-replies="2">
+          <a class="topicrow" href="topic-empty.html" data-theme="Power and Commons" data-state="Andhra Pradesh" data-replies="2" data-lang="en">
             <span class="pw-av">M</span>
             <div class="tr-tx">
               <h3>Eco-Feminist Movements</h3>
@@ -299,7 +344,7 @@
             <div class="tr-stats"><div class="tr-stat"><b>0</b><span>Voices</span></div><div class="tr-stat"><b>2</b><span>Replies</span></div></div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Others" data-state="Odisha">
+          <a class="topicrow" href="topic-empty.html" data-theme="Others" data-state="Odisha" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Cultural traditions linked with Sustainable harvesting principles among Santhals</h3>
@@ -307,7 +352,7 @@
             </div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Others" data-state="Meghalaya">
+          <a class="topicrow" href="topic-empty.html" data-theme="Others" data-state="Meghalaya" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Customary Tenure and land management of the Khasi people in Meghalaya</h3>
@@ -315,7 +360,7 @@
             </div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats">
+          <a class="topicrow" href="topic-empty.html" data-theme="Commons as Micro Habitats" data-lang="en">
             <span class="pw-av">A</span>
             <div class="tr-tx">
               <h3>Low-cost Revegetation</h3>
@@ -323,7 +368,7 @@
             </div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Others">
+          <a class="topicrow" href="topic-empty.html" data-theme="Others" data-lang="en">
             <span class="pw-av">H</span>
             <div class="tr-tx">
               <h3>Boost Your Immunity: Fruits for Breakfast to Eat and Avoid on an Empty Stomach</h3>
@@ -331,7 +376,7 @@
             </div>
           </a>
 
-          <a class="topicrow" href="topic-empty.html" data-theme="Conversion of Commons">
+          <a class="topicrow" href="topic-empty.html" data-theme="Conversion of Commons" data-lang="en">
             <span class="pw-av">S</span>
             <div class="tr-tx">
               <h3>The Golden Horizon of Bahardanri</h3>
