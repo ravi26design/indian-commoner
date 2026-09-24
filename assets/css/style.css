@@ -1873,6 +1873,22 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .ctool i{width:1.05rem;height:1.05rem}
 .ctool.rec{width:auto;padding:0 .85rem;gap:.4rem;color:var(--red);border-color:var(--red-soft);background:var(--red-soft);font-size:.78rem;font-weight:700}
 .ctool.rec i{width:.95rem;height:.95rem}
+.ctool.rec.pulse{animation:ctool-pulse 1.4s ease-in-out infinite}
+@keyframes ctool-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.composer-attachments{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
+.composer-attachments:empty{margin-top:0}
+.att-chip{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--line-2);background:var(--bg-soft);
+  border-radius:.6rem;padding:.4rem .55rem .4rem .7rem;font-size:.8rem;color:var(--ink-2);max-width:100%}
+.att-chip img{width:1.8rem;height:1.8rem;border-radius:.4rem;object-fit:cover;flex:none}
+.att-chip i.att-ic{width:1rem;height:1rem;flex:none;color:var(--muted-2)}
+.att-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:12rem}
+.att-chip audio{height:1.9rem;max-width:11rem}
+.att-x{flex:none;display:grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;border:0;
+  background:none;color:var(--faint);cursor:pointer}
+.att-x:hover{background:var(--line-2);color:var(--ink)}
+.att-x i{width:.8rem;height:.8rem}
+.composer-status{font-size:.78rem;color:var(--muted-2);margin-top:.6rem}
+.composer-status.err{color:var(--red)}
 .composer-hint{font-size:.78rem;color:var(--faint)}
 .composer-send{margin-left:auto}
 .composer-send i{width:.95rem;height:.95rem}

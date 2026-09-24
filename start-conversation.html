@@ -150,13 +150,18 @@
           <span class="savenote">Drafts save automatically</span>
         </div>
         <textarea id="convo-text" placeholder="Ask something, share what you saw in the field, or describe a problem your village is facing…"></textarea>
+        <div class="composer-attachments" id="composer-attachments"></div>
+        <div class="composer-status" id="composer-status" hidden></div>
         <div class="composer-tools">
-          <button type="button" class="ctool" title="Attach a file"><i data-lucide="paperclip"></i></button>
-          <button type="button" class="ctool" title="Add a photo"><i data-lucide="camera"></i></button>
-          <button type="button" class="ctool" title="Add a video"><i data-lucide="video"></i></button>
-          <button type="button" class="ctool" title="Add a location"><i data-lucide="map-pin"></i></button>
-          <button type="button" class="ctool rec" title="Recording"><i data-lucide="mic"></i> 0:08</button>
-          <span class="composer-hint">Uploads up to 25 MB · media is compressed for low bandwidth</span>
+          <input type="file" id="attach-file-input" hidden>
+          <input type="file" id="attach-photo-input" accept="image/*" hidden>
+          <input type="file" id="attach-video-input" accept="video/*" hidden>
+          <button type="button" class="ctool" id="attach-file-btn" title="Attach a file"><i data-lucide="paperclip"></i></button>
+          <button type="button" class="ctool" id="attach-photo-btn" title="Add a photo"><i data-lucide="camera"></i></button>
+          <button type="button" class="ctool" id="attach-video-btn" title="Add a video"><i data-lucide="video"></i></button>
+          <button type="button" class="ctool" id="attach-geo-btn" title="Add a location"><i data-lucide="map-pin"></i></button>
+          <button type="button" class="ctool" id="attach-mic-btn" title="Record voice"><i data-lucide="mic"></i></button>
+          <span class="composer-hint" id="composer-hint">Uploads up to 25 MB · media is compressed for low bandwidth</span>
           <button type="button" class="btn btn-primary composer-send" id="convo-send">Send <i data-lucide="send"></i></button>
         </div>
       </div>
@@ -298,13 +303,31 @@
   var subTouched = false;
   var firstSendDone = false;
 
-  function addUserMessage(text, lang) {
+  function iconForAttachment(kind) {
+    return { file: 'paperclip', photo: 'image', video: 'video', location: 'map-pin', audio: 'mic' }[kind] || 'paperclip';
+  }
+
+  function attachmentChipHtml(a, removable) {
+    var inner = '';
+    if (a.kind === 'photo' && a.url) inner += '<img src="' + a.url + '" alt="">';
+    else inner += '<i class="att-ic" data-lucide="' + iconForAttachment(a.kind) + '"></i>';
+    inner += '<span>' + escapeHtml(a.label) + '</span>';
+    if (a.kind === 'audio' && a.url) inner += '<audio controls src="' + a.url + '"></audio>';
+    if (removable) inner += '<button type="button" class="att-x" data-remove="' + a.id + '" aria-label="Remove"><i data-lucide="x"></i></button>';
+    return '<span class="att-chip" data-att="' + a.id + '">' + inner + '</span>';
+  }
+
+  function addUserMessage(text, lang, atts) {
     var row = document.createElement('div');
     row.className = 'msg-row you';
+    var attHtml = (atts && atts.length)
+      ? '<div class="composer-attachments" style="margin-top:.6rem">' + atts.map(function (a) { return attachmentChipHtml(a, false); }).join('') + '</div>'
+      : '';
     row.innerHTML = '<span class="msg-av you"><i data-lucide="user"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">You · ' + escapeHtml(lang) + ' · Just now</div>' +
-      '<div class="msg-text">' + escapeHtml(text) + '</div></div>';
+      (text ? '<div class="msg-text">' + escapeHtml(text) + '</div>' : '') + attHtml + '</div>';
     thread.appendChild(row);
+    if (window.lucide) lucide.createIcons();
   }
 
   var ASSISTANT_REPLIES = [
@@ -457,12 +480,166 @@
   renderClassifyCard();
   if (textarea) textarea.addEventListener('input', updateLiveClassification);
 
+  // ---- Attachments: real File/Geolocation/MediaRecorder APIs, no upload — everything stays local to the page.
+  var attachments = [];
+  var nextAttId = 1;
+  var attWrap = document.getElementById('composer-attachments');
+  var statusEl = document.getElementById('composer-status');
+
+  function showStatus(msg, isError) {
+    if (!statusEl) return;
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('err', !!isError);
+    statusEl.hidden = !msg;
+  }
+
+  function humanSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function renderComposerAttachments() {
+    if (!attWrap) return;
+    attWrap.innerHTML = attachments.map(function (a) { return attachmentChipHtml(a, true); }).join('');
+    attWrap.querySelectorAll('[data-remove]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = +btn.getAttribute('data-remove');
+        var removed = attachments.filter(function (a) { return a.id === id; })[0];
+        if (removed && removed.url) URL.revokeObjectURL(removed.url);
+        attachments = attachments.filter(function (a) { return a.id !== id; });
+        renderComposerAttachments();
+      });
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function addAttachment(att) {
+    att.id = nextAttId++;
+    attachments.push(att);
+    renderComposerAttachments();
+  }
+
+  var fileBtn = document.getElementById('attach-file-btn');
+  var fileInput = document.getElementById('attach-file-input');
+  if (fileBtn && fileInput) {
+    fileBtn.addEventListener('click', function () { fileInput.click(); });
+    fileInput.addEventListener('change', function (e) {
+      Array.from(e.target.files).forEach(function (f) {
+        addAttachment({ kind: 'file', label: f.name + ' · ' + humanSize(f.size) });
+      });
+      e.target.value = '';
+    });
+  }
+
+  var photoBtn = document.getElementById('attach-photo-btn');
+  var photoInput = document.getElementById('attach-photo-input');
+  if (photoBtn && photoInput) {
+    photoBtn.addEventListener('click', function () { photoInput.click(); });
+    photoInput.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      addAttachment({ kind: 'photo', label: f.name, url: URL.createObjectURL(f) });
+      e.target.value = '';
+    });
+  }
+
+  var videoBtn = document.getElementById('attach-video-btn');
+  var videoInput = document.getElementById('attach-video-input');
+  if (videoBtn && videoInput) {
+    videoBtn.addEventListener('click', function () { videoInput.click(); });
+    videoInput.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      addAttachment({ kind: 'video', label: f.name + ' · ' + humanSize(f.size) });
+      e.target.value = '';
+    });
+  }
+
+  var geoBtn = document.getElementById('attach-geo-btn');
+  if (geoBtn) {
+    geoBtn.addEventListener('click', function () {
+      if (!navigator.geolocation) { showStatus("Location isn't available in this browser.", true); return; }
+      showStatus('Getting your location…');
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        showStatus('');
+        addAttachment({ kind: 'location', label: pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4) });
+      }, function (err) {
+        showStatus('Could not get your location — ' + (err.message || 'permission denied') + '.', true);
+      }, { timeout: 10000 });
+    });
+  }
+
+  var micBtn = document.getElementById('attach-mic-btn');
+  var mediaRecorder = null;
+  var mediaChunks = [];
+  var mediaStream = null;
+  var recordTimer = null;
+  var recordStart = 0;
+
+  function formatElapsed(ms) {
+    var s = Math.floor(ms / 1000);
+    var m = Math.floor(s / 60);
+    s = s % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function stopMicUi() {
+    clearInterval(recordTimer);
+    if (micBtn) {
+      micBtn.className = 'ctool';
+      micBtn.innerHTML = '<i data-lucide="mic"></i>';
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+
+  if (micBtn) {
+    micBtn.addEventListener('click', function () {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+        showStatus("Voice recording isn't available in this browser.", true);
+        return;
+      }
+      showStatus('');
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        mediaStream = stream;
+        mediaChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.addEventListener('dataavailable', function (e) {
+          if (e.data && e.data.size > 0) mediaChunks.push(e.data);
+        });
+        mediaRecorder.addEventListener('stop', function () {
+          var blob = new Blob(mediaChunks, { type: (mediaChunks[0] && mediaChunks[0].type) || 'audio/webm' });
+          addAttachment({ kind: 'audio', label: 'Voice note · ' + formatElapsed(Date.now() - recordStart), url: URL.createObjectURL(blob) });
+          mediaStream.getTracks().forEach(function (t) { t.stop(); });
+          stopMicUi();
+        });
+        mediaRecorder.start();
+        recordStart = Date.now();
+        micBtn.className = 'ctool rec pulse';
+        micBtn.innerHTML = '<i data-lucide="square"></i><span id="mic-timer">0:00</span>';
+        if (window.lucide) lucide.createIcons();
+        recordTimer = setInterval(function () {
+          var t = document.getElementById('mic-timer');
+          if (t) t.textContent = formatElapsed(Date.now() - recordStart);
+        }, 1000);
+      }).catch(function (err) {
+        showStatus('Microphone access was blocked — ' + (err.message || 'permission denied') + '.', true);
+      });
+    });
+  }
+
   if (sendBtn) {
     sendBtn.addEventListener('click', function () {
       var text = textarea.value.trim();
-      if (!text) { textarea.focus(); return; }
+      if (!text && !attachments.length) { textarea.focus(); return; }
       var lang = langSelect ? langSelect.value : 'English';
-      addUserMessage(text, lang);
+      addUserMessage(text, lang, attachments);
+      attachments = [];
+      renderComposerAttachments();
       addAssistantMessage(text);
       if (!firstSendDone) {
         firstSendDone = true;
