@@ -1982,6 +1982,11 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .forum-list-panel .topicrow:hover{background:#fff;box-shadow:var(--shadow-lift);transform:translateY(-1px)}
 .forum-list-panel .topicrow h3{font-family:var(--sans);font-weight:800;color:var(--ink)}
 .forum-list-panel .topicrow:hover h3{color:var(--green-d)}
+.forum-empty{text-align:center;padding:3rem 2rem;background:#fff;border:1px solid var(--line);
+  border-radius:1rem;box-shadow:var(--shadow-card)}
+.forum-empty .ic-tile{margin:0 auto}
+.forum-empty h3{font-family:var(--sans)}
+.forum-empty p{max-width:26rem;margin-left:auto;margin-right:auto}
 .forum-list-panel .topicrow::after{content:'';position:absolute;right:1.1rem;top:1.35rem;width:.55rem;height:.55rem;
   border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(-45deg);
   opacity:0;transition:opacity .15s,right .15s}

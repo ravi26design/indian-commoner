@@ -315,6 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var activitySel = document.getElementById('fx-activity');
     var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel #fx-activity');
     var forumReset = document.getElementById('forum-reset');
+    var forumEmpty = document.getElementById('forum-empty');
     var forumSort = 'recent';
 
     function pillValue(group) {
@@ -379,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (forumCount) forumCount.textContent = sorted.length + (sorted.length === 1 ? ' discussion' : ' discussions');
       if (forumReset) forumReset.hidden = !hasActiveFilters();
+      if (forumEmpty) forumEmpty.hidden = sorted.length !== 0;
     }
 
     [themeGroup, langGroup, stateGroup].forEach(function (group) {
