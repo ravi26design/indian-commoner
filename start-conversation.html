@@ -211,6 +211,50 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // Real threads already on the platform (titles/authors/hrefs match the
+  // real topicrow list on forum.html) — used to surface genuine matches
+  // instead of always claiming nothing exists yet.
+  var REAL_THREADS = [
+    { title: 'Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)', href: 'topic.html', author: 'Indu' },
+    { title: 'Guardians of Forests in the Changing World – A Story of a Women NTFP Collector', href: 'topic-empty.html', author: 'Ramesh Babu' },
+    { title: 'Tokenistic Representation of Women in Village Institutions', href: 'topic-empty.html', author: 'Malavika' },
+    { title: 'Keeping Alive Ancient Tradition of Planting Trees and Worshiping Them', href: 'topic-empty.html', author: 'Ramesh Babu' },
+    { title: 'Fire Ecology', href: 'topic-empty.html', author: 'Lakshmi' },
+    { title: 'Legal Methods to Protect Common Land', href: 'topic-empty.html', author: 'Anonymous' },
+    { title: 'Burning the Commons: Forest Fires and Their Effects', href: 'topic-empty.html', author: 'Aditya' },
+    { title: 'The Symbiotic Relationship Between Commons And Cultre', href: 'topic-empty.html', author: 'Charan.A' },
+    { title: 'Commons as Playground', href: 'topic-empty.html', author: 'Ayush' },
+    { title: 'Quarantining in the Commons: A Unique Practice in Enamaravaripalle', href: 'topic-empty.html', author: 'Vishno' },
+    { title: 'An Account of the Impact of Restoration Projects in Common Lands', href: 'topic-empty.html', author: 'Yazhini' },
+    { title: 'Andhra Pradesh-Culture and Commons: The Temple of Sri Siddeshwara Swami.', href: 'topic-empty.html', author: 'Indu' },
+    { title: 'Jatres and the Culture of Commons', href: 'topic-empty.html', author: 'Vishno' },
+    { title: 'Seed Preservation Methods Practiced by Women in Andhra Pradesh', href: 'topic-empty.html', author: 'Lakshmi' },
+    { title: 'Eco-Feminist Movements', href: 'topic-empty.html', author: 'Malavika' },
+    { title: 'Cultural traditions linked with Sustainable harvesting principles among Santhals', href: 'topic-empty.html', author: 'anjali' },
+    { title: 'Customary Tenure and land management of the Khasi people in Meghalaya', href: 'topic-empty.html', author: 'anjali' },
+    { title: 'Low-cost Revegetation', href: 'topic-empty.html', author: 'Anil' },
+    { title: 'Boost Your Immunity: Fruits for Breakfast to Eat and Avoid on an Empty Stomach', href: 'topic-empty.html', author: 'HiiMS Hospital' },
+    { title: 'The Golden Horizon of Bahardanri', href: 'topic-empty.html', author: 'Sujata' },
+    { title: 'खोये हुए देवता', href: 'topic-empty.html', author: 'Aman Singh' }
+  ];
+  var MATCH_STOPWORDS = ['the', 'a', 'an', 'of', 'and', 'in', 'on', 'to', 'for', 'with', 'is', 'are', 'by',
+    'at', 'as', 'commons', 'common', 'your', 'you', 'we', 'how', 'what', 'who', 'do', 'does', 'this', 'that'];
+  function tokenize(s) {
+    return (s.toLowerCase().match(/[a-z0-9ऀ-ॿ]+/g) || [])
+      .filter(function (w) { return w.length > 2 && MATCH_STOPWORDS.indexOf(w) === -1; });
+  }
+  function findMatches(text) {
+    var qWords = tokenize(text);
+    if (!qWords.length) return [];
+    var scored = REAL_THREADS.map(function (t) {
+      var tWords = tokenize(t.title);
+      var score = qWords.filter(function (w) { return tWords.indexOf(w) !== -1; }).length;
+      return { t: t, score: score };
+    }).filter(function (r) { return r.score > 0; });
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored.slice(0, 3).map(function (r) { return r.t; });
+  }
+
   var thread = document.getElementById('convo-thread');
   var textarea = document.getElementById('convo-text');
   var langSelect = document.querySelector('.composer-top select');
@@ -253,12 +297,21 @@
   ];
 
   function addAssistantMessage(forText) {
-    var reply = ASSISTANT_REPLIES[(forText || '').length % ASSISTANT_REPLIES.length];
+    var matches = findMatches(forText || '');
+    var reply = matches.length
+      ? (matches.length === 1 ? 'Found a thread that may already cover this:' : 'Found ' + matches.length + ' threads that may already cover this:')
+      : ASSISTANT_REPLIES[(forText || '').length % ASSISTANT_REPLIES.length];
     var row = document.createElement('div');
     row.className = 'msg-row ai';
+    var resultsHtml = matches.length
+      ? '<div class="msg-results">' + matches.map(function (m) {
+          return '<a class="msg-result" href="' + escapeHtml(m.href) + '"><i data-lucide="message-square"></i>' +
+            '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + '</small></span></a>';
+        }).join('') + '</div>'
+      : '';
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + escapeHtml(reply) + '</div>' +
+      '<div class="msg-text">' + escapeHtml(reply) + '</div>' + resultsHtml +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
