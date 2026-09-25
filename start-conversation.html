@@ -471,12 +471,11 @@
   renderClassifyCard();
   if (textarea) textarea.addEventListener('input', updateLiveClassification);
 
-  // Auto-grow: starts as a single line, expands to fit what's typed, and
-  // stops growing past a sane cap (the textarea scrolls beyond that).
+  // Auto-grow: starts as a single line and keeps expanding to fit
+  // whatever's typed — no cap, no internal scrollbar.
   function autoGrowTextarea() {
     textarea.style.height = 'auto';
-    var max = 14 * parseFloat(getComputedStyle(document.documentElement).fontSize);
-    textarea.style.height = Math.min(textarea.scrollHeight, max) + 'px';
+    textarea.style.height = textarea.scrollHeight + 'px';
   }
   if (textarea) {
     textarea.addEventListener('input', autoGrowTextarea);
