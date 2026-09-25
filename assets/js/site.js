@@ -50,8 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
       drop.className = 'navdrop dd-right';
       drop.innerHTML = '<div class="navdrop-in">' +
         '<a href="member-profile.html"><span class="nd-ic"><i data-lucide="user"></i></span><span class="nd-tx"><b>My Profile</b><small>Your account details and preferences</small></span></a>' +
-        '<a href="#"><span class="nd-ic"><i data-lucide="file-text"></i></span><span class="nd-tx"><b>My Contributions</b><small>Content you\'ve added to the forum</small></span></a>' +
-        '<a href="#"><span class="nd-ic"><i data-lucide="check-circle"></i></span><span class="nd-tx"><b>Approvals</b><small>Items waiting on your review</small></span></a>' +
         '<a href="users-roles.html"><span class="nd-ic"><i data-lucide="users-round"></i></span><span class="nd-tx"><b>Users &amp; Roles</b><small>Manage member permissions</small></span></a>' +
         '<a href="change-password.html"><span class="nd-ic"><i data-lucide="key-round"></i></span><span class="nd-tx"><b>Change Password</b><small>Update your login credentials</small></span></a>' +
         '<a id="signout-link-nav" href="index.html"><span class="nd-ic"><i data-lucide="log-out"></i></span><span class="nd-tx"><b>Sign out</b></span></a>' +
