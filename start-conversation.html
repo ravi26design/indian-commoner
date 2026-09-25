@@ -341,17 +341,23 @@
     if (window.lucide) lucide.createIcons();
   }
 
-  var ASSISTANT_REPLIES = [
-    'Nothing on the platform covers this yet — which is itself worth knowing. If you publish it as a discussion, it becomes the first entry, and anyone working on the same question will find it.',
-    "This hasn't come up before in the threads I can search. Publish it as a discussion and the next person asking the same thing finds your question instead of starting from scratch.",
-    "No existing thread matches this closely. Once you publish, it's classified and searchable — other commoners working on similar questions will be able to find it."
-  ];
+  // No thread matched — reply still names the real auto-classified theme
+  // (same logic that drives the "Suggested classification" card) so it reads
+  // as a response to what was actually asked, not a one-size-fits-all line.
+  function noMatchReply(forText, theme) {
+    var variants = [
+      'Nothing under ' + theme + ' covers this yet — which is itself worth knowing. Publish it as a discussion and it becomes the first entry there, so anyone working on the same question finds it.',
+      "This hasn't come up before in the " + theme + " threads I can search. Publish it and the next person asking the same thing finds your question instead of starting from scratch.",
+      "No existing " + theme + " thread matches this closely. Once you publish, it's classified there and searchable — other commoners facing the same issue will be able to find it."
+    ];
+    return variants[(forText || '').length % variants.length];
+  }
 
   function addAssistantMessage(forText) {
     var matches = findMatches(forText || '');
     var reply = matches.length
       ? (matches.length === 1 ? 'Found a thread that may already cover this:' : 'Found ' + matches.length + ' threads that may already cover this:')
-      : ASSISTANT_REPLIES[(forText || '').length % ASSISTANT_REPLIES.length];
+      : noMatchReply(forText, classifyTheme(forText || ''));
     var row = document.createElement('div');
     row.className = 'msg-row ai';
     var resultsHtml = matches.length
