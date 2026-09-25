@@ -92,6 +92,13 @@ document.addEventListener('DOMContentLoaded', function () {
     tintAvatar(av, namesByInitial[text.toUpperCase()] || text);
   });
 
+  // Forum Members directory: same deterministic per-name colour as everywhere else.
+  document.querySelectorAll('.membercard .pw-av').forEach(function (av) {
+    var nameEl = av.parentElement && av.parentElement.querySelector('b');
+    if (!nameEl) return;
+    tintAvatar(av, nameEl.textContent);
+  });
+
   // "Start a Conversation": straight to the composer if already signed in,
   // otherwise to login — landing back on the composer once signed in.
   document.querySelectorAll('#start-convo-link, #forum-new-discussion').forEach(function (startConvo) {
