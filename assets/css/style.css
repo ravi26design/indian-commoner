@@ -1641,8 +1641,6 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 /* ---- avatar with a real photo (team grid, id card) ---- */
 .pw-av.photo{overflow:hidden;padding:0}
 .pw-av.photo img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
-.membercard.spam{opacity:.45}
-.membercard.spam:hover{opacity:.7}
 
 /* ---- footer partner-logo row (CenSE / FES) ---- */
 .footer-partners{display:flex;align-items:center;gap:1.75rem;flex-wrap:wrap;margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.14)}
