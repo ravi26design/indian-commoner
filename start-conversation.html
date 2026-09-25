@@ -402,10 +402,17 @@
       : noMatchReply(forText, classifyTheme(forText || ''));
     var row = document.createElement('div');
     row.className = 'msg-row ai';
+    // Each match gets its own direct actions (view the thread, or jump
+    // straight to replying on it) instead of one generic "see all results"
+    // link for the whole set.
     var resultsHtml = matches.length
       ? '<div class="msg-results">' + matches.map(function (m) {
-          return '<a class="msg-result" href="' + escapeHtml(m.href) + '"><i data-lucide="message-square"></i>' +
-            '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + '</small></span></a>';
+          return '<div class="msg-result"><i data-lucide="message-square"></i>' +
+            '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + '</small></span>' +
+            '<span class="msg-result-cta">' +
+            '<a class="msg-result-btn" href="' + escapeHtml(m.href) + '">View</a>' +
+            '<a class="msg-result-btn primary" href="' + escapeHtml(m.href) + '#reply">Reply</a>' +
+            '</span></div>';
         }).join('') + '</div>'
       : '';
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +

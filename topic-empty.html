@@ -336,6 +336,20 @@
     if (box) box.hidden = false;
   }
 
+  // Deep link from a "Reply" CTA elsewhere (e.g. a matched-thread result in
+  // Start a Conversation) — jump straight to the reply composer if signed
+  // in, or to the sign-in prompt otherwise, instead of landing at the top.
+  if (location.hash === '#reply') {
+    var replyTarget = loggedIn ? box : gate;
+    if (replyTarget) {
+      replyTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (loggedIn) {
+        var replyField = document.getElementById('reply-text');
+        if (replyField) replyField.focus();
+      }
+    }
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
