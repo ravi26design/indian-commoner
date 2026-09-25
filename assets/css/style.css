@@ -1609,6 +1609,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
   text-align:left;transition:transform .15s,box-shadow .2s}
 .peoplecard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}
 .peoplecard .ic-photo{aspect-ratio:4/3}
+.peoplecard .ic-photo img{filter:grayscale(100%)}
 .peoplecard .pcard-body{padding:1.1rem 1.25rem 1.35rem}
 .peoplecard h3{font-size:1.02rem;margin:0 0 .2rem}
 .peoplecard span{display:block;font-size:.78rem;color:var(--muted-2);font-weight:600}
