@@ -606,11 +606,11 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .stepbar i.on{background:var(--green)}
 
 /* pill tabs */
-.tabbar{display:inline-flex;flex-wrap:wrap;gap:.25rem;background:var(--bg-soft);border-radius:.8rem;padding:.35rem}
+.tabbar{display:inline-flex;flex-wrap:wrap;gap:.25rem;background:#fff;border:1px solid var(--line-2);border-radius:.8rem;padding:.35rem}
 .tabbar .tab{border:none;background:transparent;padding:.6rem 1.1rem;border-radius:999px;font:inherit;font-size:.88rem;
   font-weight:700;color:var(--muted);transition:.15s;display:inline-flex;align-items:center;gap:.45rem}
 .tabbar .tab i,.tabbar .tab svg.lucide{width:1rem;height:1rem}
-.tabbar .tab:hover{color:var(--green-d);background:#fff}
+.tabbar .tab:hover{color:var(--green-d);background:var(--bg-soft)}
 .tabbar .tab.active{background:var(--green);color:#fff;box-shadow:0 3px 10px -3px rgba(46,133,64,.5)}
 
 /* resource section switcher — underline style, sits above the difficulty pills */
