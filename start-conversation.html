@@ -126,21 +126,26 @@
           <span class="ai-badge"><i data-lucide="sparkles"></i> AI-Assisted</span>
           <span class="savenote">Drafts save automatically</span>
         </div>
-        <textarea id="convo-text" rows="1" placeholder="Ask something, share what you saw in the field, or describe a problem your village is facing…"></textarea>
-        <div class="composer-attachments" id="composer-attachments"></div>
-        <div class="composer-status" id="composer-status" hidden></div>
-        <div class="composer-tools">
+        <div class="composer-bar">
           <input type="file" id="attach-file-input" hidden>
           <input type="file" id="attach-photo-input" accept="image/*" hidden>
           <input type="file" id="attach-video-input" accept="video/*" hidden>
-          <button type="button" class="ctool" id="attach-file-btn" title="Attach a file"><i data-lucide="paperclip"></i></button>
-          <button type="button" class="ctool" id="attach-photo-btn" title="Add a photo"><i data-lucide="camera"></i></button>
-          <button type="button" class="ctool" id="attach-video-btn" title="Add a video"><i data-lucide="video"></i></button>
-          <button type="button" class="ctool" id="attach-geo-btn" title="Add a location"><i data-lucide="map-pin"></i></button>
+          <div class="composer-plusw">
+            <button type="button" class="ctool composer-plus" id="attach-menu-btn" title="Add attachment" aria-haspopup="true" aria-expanded="false"><i data-lucide="plus"></i></button>
+            <div class="composer-attach-menu" id="attach-menu" hidden>
+              <button type="button" id="attach-file-btn"><i data-lucide="paperclip"></i> Attach a file</button>
+              <button type="button" id="attach-photo-btn"><i data-lucide="camera"></i> Add a photo</button>
+              <button type="button" id="attach-video-btn"><i data-lucide="video"></i> Add a video</button>
+              <button type="button" id="attach-geo-btn"><i data-lucide="map-pin"></i> Add a location</button>
+              <span class="composer-hint" id="composer-hint">Uploads up to 25 MB · media is compressed for low bandwidth</span>
+            </div>
+          </div>
+          <textarea id="convo-text" rows="1" placeholder="Ask something, share what you saw in the field, or describe a problem your village is facing…"></textarea>
           <button type="button" class="ctool" id="attach-mic-btn" title="Record voice"><i data-lucide="mic"></i></button>
-          <span class="composer-hint" id="composer-hint">Uploads up to 25 MB · media is compressed for low bandwidth</span>
           <button type="button" class="btn btn-primary composer-send" id="convo-send" aria-label="Send" title="Send"><i data-lucide="send"></i></button>
         </div>
+        <div class="composer-attachments" id="composer-attachments"></div>
+        <div class="composer-status" id="composer-status" hidden></div>
       </div>
 
     </div>
@@ -523,6 +528,30 @@
     renderComposerAttachments();
   }
 
+  // "+" opens the attachment menu (file / photo / video / location); closes
+  // on selecting an option or clicking anywhere outside it.
+  var attachMenuBtn = document.getElementById('attach-menu-btn');
+  var attachMenu = document.getElementById('attach-menu');
+  function closeAttachMenu() {
+    if (!attachMenu || attachMenu.hidden) return;
+    attachMenu.hidden = true;
+    attachMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+  if (attachMenuBtn && attachMenu) {
+    attachMenuBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var willOpen = attachMenu.hidden;
+      attachMenu.hidden = !willOpen;
+      attachMenuBtn.setAttribute('aria-expanded', String(willOpen));
+    });
+    attachMenu.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', closeAttachMenu);
+    });
+    document.addEventListener('click', function (e) {
+      if (!attachMenu.contains(e.target) && e.target !== attachMenuBtn) closeAttachMenu();
+    });
+  }
+
   var fileBtn = document.getElementById('attach-file-btn');
   var fileInput = document.getElementById('attach-file-input');
   if (fileBtn && fileInput) {
@@ -649,6 +678,7 @@
         renderPublishCard(text, lang);
       }
       textarea.value = '';
+      autoGrowTextarea();
       updateLiveClassification();
       textarea.focus();
     });
