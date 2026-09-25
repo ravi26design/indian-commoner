@@ -341,11 +341,27 @@
     if (window.lucide) lucide.createIcons();
   }
 
+  // A genuine question ("what should we do...", "how can I...", trailing "?")
+  // needs a different honest framing than a statement/observation does — the
+  // assistant searches real threads, it doesn't have an answer of its own to
+  // give, and pointing someone with a question at "publish an observation"
+  // phrasing reads as a non-answer.
+  function looksLikeQuestion(text) {
+    var t = (text || '').trim().toLowerCase();
+    if (/\?\s*$/.test(t)) return true;
+    if (/^(is|are|do|does|can|could|should|will|would)\b/.test(t)) return true;
+    return /\b(what|how|why|when|where|which|who)\b[\s\S]*\b(do|does|should|can|could|would|need|needs)\b/.test(t);
+  }
+
   // No thread matched — reply still names the real auto-classified theme
   // (same logic that drives the "Suggested classification" card) so it reads
   // as a response to what was actually asked, not a one-size-fits-all line.
   function noMatchReply(forText, theme) {
-    var variants = [
+    var variants = looksLikeQuestion(forText) ? [
+      "I can only search existing discussions, I don't have an answer of my own — nothing under " + theme + " covers this yet. Post it as a question and commoners with real experience can reply.",
+      "That's not something I can answer directly, and no " + theme + " thread has covered it yet either. Publish it as a question — someone with hands-on experience may weigh in.",
+      "I search threads rather than answer questions myself, and this one hasn't come up under " + theme + " yet. Ask it as a discussion and see who responds."
+    ] : [
       'Nothing under ' + theme + ' covers this yet — which is itself worth knowing. Publish it as a discussion and it becomes the first entry there, so anyone working on the same question finds it.',
       "This hasn't come up before in the " + theme + " threads I can search. Publish it and the next person asking the same thing finds your question instead of starting from scratch.",
       "No existing " + theme + " thread matches this closely. Once you publish, it's classified there and searchable — other commoners facing the same issue will be able to find it."
