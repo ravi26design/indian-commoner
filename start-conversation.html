@@ -237,8 +237,13 @@
     { title: 'The Golden Horizon of Bahardanri', href: 'topic-empty.html', author: 'Sujata' },
     { title: 'खोये हुए देवता', href: 'topic-empty.html', author: 'Aman Singh' }
   ];
+  // Words too generic in this platform's own context to signal real topical
+  // overlap (almost every real thread touches "village"/"commons"/"land" in
+  // some way) — excluding them keeps matches to genuinely shared, specific
+  // terms instead of tying on filler words.
   var MATCH_STOPWORDS = ['the', 'a', 'an', 'of', 'and', 'in', 'on', 'to', 'for', 'with', 'is', 'are', 'by',
-    'at', 'as', 'commons', 'common', 'your', 'you', 'we', 'how', 'what', 'who', 'do', 'does', 'this', 'that'];
+    'at', 'as', 'commons', 'common', 'your', 'you', 'we', 'how', 'what', 'who', 'do', 'does', 'this', 'that',
+    'village', 'villages', 'land', 'lands', 'day', 'days', 'people', 'community'];
   function tokenize(s) {
     return (s.toLowerCase().match(/[a-z0-9ऀ-ॿ]+/g) || [])
       .filter(function (w) { return w.length > 2 && MATCH_STOPWORDS.indexOf(w) === -1; });
@@ -248,9 +253,12 @@
     if (!qWords.length) return [];
     var scored = REAL_THREADS.map(function (t) {
       var tWords = tokenize(t.title);
-      var score = qWords.filter(function (w) { return tWords.indexOf(w) !== -1; }).length;
+      // Weight by word length so longer, more specific shared terms
+      // (e.g. "institutions") count for more than short ones.
+      var shared = qWords.filter(function (w) { return tWords.indexOf(w) !== -1; });
+      var score = shared.reduce(function (sum, w) { return sum + w.length; }, 0);
       return { t: t, score: score };
-    }).filter(function (r) { return r.score > 0; });
+    }).filter(function (r) { return r.score >= 4; });
     scored.sort(function (a, b) { return b.score - a.score; });
     return scored.slice(0, 3).map(function (r) { return r.t; });
   }
