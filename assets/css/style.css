@@ -1604,6 +1604,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .peoplegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
 @media(max-width:900px){.peoplegrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.peoplegrid{grid-template-columns:1fr}}
+[data-team-panel][hidden]{display:none}
 .peoplecard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);padding:0;overflow:hidden;
   text-align:left;transition:transform .15s,box-shadow .2s}
 .peoplecard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}

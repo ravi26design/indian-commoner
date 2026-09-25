@@ -111,17 +111,20 @@
   </div>
 </div></div>
 
-<div class="crumbbar"><div class="mx"><div class="crumb">
-  <a href="index.html"><i data-lucide="house"></i>Home</a><span class="sep">/</span>
-  <span class="here">IC Team</span>
-</div></div></div>
+<div class="mx" style="padding-top:1.5rem">
+  <div class="tabbar" id="team-tabs">
+    <button type="button" class="tab active" data-team-tab="core">Core/Operations Team</button>
+    <button type="button" class="tab" data-team-tab="dev">Development Team</button>
+    <button type="button" class="tab" data-team-tab="advisory">Advisory Board</button>
+  </div>
+</div>
 
 <section class="section"><div class="mx">
 
-  <div class="sechead">
+  <div class="sechead" data-team-panel="core">
     <div><h2>Core/Operations Team</h2></div>
   </div>
-  <div class="peoplegrid">
+  <div class="peoplegrid" data-team-panel="core">
     <article class="peoplecard">
       <div class="ic-photo"><img src="https://indiancommoner.org/wp-content/uploads/2023/01/WhatsApp-Image-2022-02-01-at-4.11.02-PM-1.jpeg" alt="Himani Sharma" loading="lazy"></div>
       <div class="pcard-body">
@@ -180,10 +183,10 @@
     </article>
   </div>
 
-  <div class="sechead" style="margin-top:2.75rem">
+  <div class="sechead" data-team-panel="dev" style="margin-top:2.75rem" hidden>
     <div><h2>Development Team</h2></div>
   </div>
-  <div class="peoplegrid">
+  <div class="peoplegrid" data-team-panel="dev" hidden>
     <article class="peoplecard">
       <div class="ic-photo"><img src="https://indiancommoner.org/wp-content/uploads/2023/01/WhatsApp-Image-2022-02-01-at-4.11.02-PM.jpeg" alt="Hemalatha Reddy" loading="lazy"></div>
       <div class="pcard-body">
@@ -226,10 +229,10 @@
     </article>
   </div>
 
-  <div class="sechead" style="margin-top:2.75rem">
+  <div class="sechead" data-team-panel="advisory" style="margin-top:2.75rem" hidden>
     <div><h2>Advisory Board</h2></div>
   </div>
-  <div class="peoplegrid">
+  <div class="peoplegrid" data-team-panel="advisory" hidden>
     <article class="peoplecard">
       <div class="ic-photo"><img src="https://indiancommoner.org/wp-content/uploads/2023/01/img2-2.jpg" alt="Jagdeesh Rao" loading="lazy"></div>
       <div class="pcard-body">
@@ -332,5 +335,20 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var tabs = document.querySelectorAll('#team-tabs .tab');
+  tabs.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabs.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var key = btn.getAttribute('data-team-tab');
+      document.querySelectorAll('[data-team-panel]').forEach(function (el) {
+        el.hidden = el.getAttribute('data-team-panel') !== key;
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
