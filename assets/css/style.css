@@ -1601,17 +1601,17 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .resrow .rr-go i,.resrow .rr-go svg.lucide{width:1.1rem;height:1.1rem}
 
 /* ---- people: team + member cards ---- */
-.peoplegrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem}
-@media(max-width:980px){.peoplegrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:700px){.peoplegrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:460px){.peoplegrid{grid-template-columns:1fr 1fr}}
-.peoplecard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);padding:1.35rem 1.1rem;
-  text-align:center;transition:transform .15s,box-shadow .2s}
+.peoplegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
+@media(max-width:900px){.peoplegrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.peoplegrid{grid-template-columns:1fr}}
+.peoplecard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);padding:0;overflow:hidden;
+  text-align:left;transition:transform .15s,box-shadow .2s}
 .peoplecard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift)}
-.peoplecard .pw-av{width:4.2rem;height:4.2rem;font-size:1.3rem;margin:0 auto .9rem}
-.peoplecard h3{font-size:.95rem;margin:0 0 .2rem}
+.peoplecard .ic-photo{aspect-ratio:4/3}
+.peoplecard .pcard-body{padding:1.1rem 1.25rem 1.35rem}
+.peoplecard h3{font-size:1.02rem;margin:0 0 .2rem}
 .peoplecard span{display:block;font-size:.78rem;color:var(--muted-2);font-weight:600}
-.peoplecard p{font-size:.8rem;color:var(--muted);text-align:left;line-height:1.6;margin:.85rem 0 0;padding-top:.85rem;border-top:1px solid var(--line)}
+.peoplecard p{font-size:.85rem;color:var(--muted);text-align:left;line-height:1.65;margin:.85rem 0 0;padding-top:.85rem;border-top:1px solid var(--line)}
 .membergrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1rem}
 @media(max-width:980px){.membergrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:640px){.membergrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
