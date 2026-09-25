@@ -1933,6 +1933,11 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
   background:none;color:var(--faint);cursor:pointer}
 .att-x:hover{background:var(--line-2);color:var(--ink)}
 .att-x i{width:.8rem;height:.8rem}
+.att-chip.photo-preview{position:relative;display:block;width:6rem;height:6rem;padding:0;border-radius:.9rem;overflow:hidden}
+.att-chip.photo-preview img{width:100%;height:100%;border-radius:0}
+.att-chip.photo-preview .att-x{position:absolute;top:.3rem;right:.3rem;width:1.4rem;height:1.4rem;
+  background:rgba(20,20,20,.65);color:#fff}
+.att-chip.photo-preview .att-x:hover{background:rgba(20,20,20,.85);color:#fff}
 .composer-status{font-size:.78rem;color:var(--muted-2);margin-top:.6rem}
 .composer-status.err{color:var(--red)}
 .composer-hint{font-size:.78rem;color:var(--faint)}

@@ -316,12 +316,16 @@
   }
 
   function attachmentChipHtml(a, removable) {
+    // A photo still being composed gets a large thumbnail preview (with an
+    // overlay "x" to remove it) instead of the compact icon+label chip used
+    // for other attachment kinds and for attachments on an already-posted message.
+    var isPreview = removable && a.kind === 'photo' && a.url;
     var inner = '';
     if (a.kind === 'photo' && a.url) inner += '<img src="' + a.url + '" alt="">';
     else inner += '<i class="att-ic" data-lucide="' + iconForAttachment(a.kind) + '"></i>';
-    inner += '<span>' + escapeHtml(a.label) + '</span>';
+    if (!isPreview) inner += '<span>' + escapeHtml(a.label) + '</span>';
     if (removable) inner += '<button type="button" class="att-x" data-remove="' + a.id + '" aria-label="Remove"><i data-lucide="x"></i></button>';
-    return '<span class="att-chip" data-att="' + a.id + '">' + inner + '</span>';
+    return '<span class="att-chip' + (isPreview ? ' photo-preview' : '') + '" data-att="' + a.id + '">' + inner + '</span>';
   }
 
   function addUserMessage(text, lang, atts) {
