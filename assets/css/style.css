@@ -2019,17 +2019,17 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .classify-pills{display:flex;flex-wrap:wrap;gap:.4rem}
 .classify-pills .seg-tab{font-size:.78rem;padding:.35rem .7rem}
 
-/* ---- INDIAN COMMONER ADD: Discussion forum — rounded, tighter panels ---- */
-.forum-filter{border-radius:1rem;padding:1.3rem}
+/* ---- INDIAN COMMONER ADD: Discussion forum — tighter panels ---- */
+.forum-filter{border-radius:0;padding:1.3rem}
 .forum-list-panel{background:none;border:0;box-shadow:none;padding:0}
 .forum-list-panel .topiclist{gap:.9rem}
 .forum-list-panel .topicrow{position:relative;padding:1.2rem 1.6rem 1.2rem 1.3rem;background:#fff;
-  border:1px solid var(--line);border-radius:1rem;box-shadow:var(--shadow-card);transition:box-shadow .15s,transform .15s,background .15s}
+  border:1px solid var(--line);border-radius:0;box-shadow:var(--shadow-card);transition:box-shadow .15s,transform .15s,background .15s}
 .forum-list-panel .topicrow:hover{background:#fff;box-shadow:var(--shadow-lift);transform:translateY(-1px)}
 .forum-list-panel .topicrow h3{font-family:var(--sans);font-weight:800;color:var(--ink)}
 .forum-list-panel .topicrow:hover h3{color:var(--green-d)}
 .forum-empty{text-align:center;padding:3rem 2rem;background:#fff;border:1px solid var(--line);
-  border-radius:1rem;box-shadow:var(--shadow-card)}
+  border-radius:0;box-shadow:var(--shadow-card)}
 .forum-empty .ic-tile{margin:0 auto}
 .forum-empty h3{font-family:var(--sans)}
 .forum-empty p{max-width:26rem;margin-left:auto;margin-right:auto}
