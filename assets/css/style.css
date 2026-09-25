@@ -1984,6 +1984,12 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .msg-meta{font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem}
 .msg-text{font-size:.92rem;line-height:1.65;color:var(--ink)}
 .msg-row.you .msg-text{background:var(--green);color:#fff;border-radius:.8rem;padding:.85rem 1rem}
+.msg-replyquote{display:flex;align-items:center;gap:.4rem;background:var(--bg-soft);border-left:3px solid var(--green);
+  border-radius:0;padding:.4rem .65rem;margin-bottom:.4rem;max-width:100%}
+.msg-replyquote i{flex:none;width:.8rem;height:.8rem;color:var(--green-d)}
+.msg-replyquote span{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.msg-replyquote b{font-size:.72rem;font-weight:800;color:var(--green-d)}
+.msg-replyquote small{font-size:.72rem;color:var(--muted-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:16rem}
 .msg-row.ai .msg-body{background:#fff;border:1px solid var(--line);border-radius:.8rem;padding:.9rem 1rem}
 .msg-results{display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem}
 .msg-result{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;background:var(--bg-soft);border:1px solid var(--line-2);

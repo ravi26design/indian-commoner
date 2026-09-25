@@ -324,8 +324,10 @@
   var replyContextWho = document.getElementById('reply-context-who');
   var replyContextSnippet = document.getElementById('reply-context-snippet');
   var replyContextClear = document.getElementById('reply-context-clear');
+  var activeReply = null;
   function setReplyContext(who, snippet) {
     if (!replyContext) return;
+    activeReply = { who: who, snippet: snippet };
     replyContextWho.textContent = who;
     replyContextSnippet.textContent = snippet ? ' — "' + snippet + '"' : '';
     replyContext.hidden = false;
@@ -333,6 +335,7 @@
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   function clearReplyContext() {
+    activeReply = null;
     if (replyContext) replyContext.hidden = true;
   }
   if (replyContextClear) replyContextClear.addEventListener('click', clearReplyContext);
@@ -354,15 +357,22 @@
     return '<span class="att-chip' + (isPreview ? ' photo-preview' : '') + '" data-att="' + a.id + '">' + inner + '</span>';
   }
 
-  function addUserMessage(text, lang, atts) {
+  function addUserMessage(text, lang, atts, replyingTo) {
     var row = document.createElement('div');
     row.className = 'msg-row you';
     var attHtml = (atts && atts.length)
       ? '<div class="composer-attachments" style="margin-top:.6rem">' + atts.map(function (a) { return attachmentChipHtml(a, false); }).join('') + '</div>'
       : '';
+    // If this was sent via "Reply" on a message, show what it's replying to
+    // as a quoted strip above the text, same idea as a quote-reply in a
+    // normal chat app.
+    var replyHtml = replyingTo
+      ? '<div class="msg-replyquote"><i data-lucide="corner-up-left"></i><span><b>' + escapeHtml(replyingTo.who) + '</b>' +
+        (replyingTo.snippet ? '<small>' + escapeHtml(replyingTo.snippet) + '</small>' : '') + '</span></div>'
+      : '';
     row.innerHTML = '<span class="msg-av you"><i data-lucide="user"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">You · ' + escapeHtml(lang) + ' · Just now</div>' +
-      (text ? '<div class="msg-text">' + escapeHtml(text) + '</div>' : '') + attHtml + '</div>';
+      replyHtml + (text ? '<div class="msg-text">' + escapeHtml(text) + '</div>' : '') + attHtml + '</div>';
     thread.appendChild(row);
     if (window.lucide) lucide.createIcons();
   }
@@ -734,7 +744,8 @@
       var text = textarea.value.trim();
       if (!text && !attachments.length) { textarea.focus(); return; }
       var lang = langSelect ? langSelect.value : 'English';
-      addUserMessage(text, lang, attachments);
+      var replyingTo = activeReply;
+      addUserMessage(text, lang, attachments, replyingTo);
       attachments = [];
       renderComposerAttachments();
       addAssistantMessage(text);
