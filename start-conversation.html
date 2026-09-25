@@ -126,7 +126,7 @@
           <span class="ai-badge"><i data-lucide="sparkles"></i> AI-Assisted</span>
           <span class="savenote">Drafts save automatically</span>
         </div>
-        <textarea id="convo-text" placeholder="Ask something, share what you saw in the field, or describe a problem your village is facing…"></textarea>
+        <textarea id="convo-text" rows="1" placeholder="Ask something, share what you saw in the field, or describe a problem your village is facing…"></textarea>
         <div class="composer-attachments" id="composer-attachments"></div>
         <div class="composer-status" id="composer-status" hidden></div>
         <div class="composer-tools">
@@ -453,6 +453,18 @@
 
   renderClassifyCard();
   if (textarea) textarea.addEventListener('input', updateLiveClassification);
+
+  // Auto-grow: starts as a single line, expands to fit what's typed, and
+  // stops growing past a sane cap (the textarea scrolls beyond that).
+  function autoGrowTextarea() {
+    textarea.style.height = 'auto';
+    var max = 14 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+    textarea.style.height = Math.min(textarea.scrollHeight, max) + 'px';
+  }
+  if (textarea) {
+    textarea.addEventListener('input', autoGrowTextarea);
+    autoGrowTextarea();
+  }
 
   // ---- Attachments: real File/Geolocation/MediaRecorder APIs, no upload — everything stays local to the page.
   var attachments = [];
