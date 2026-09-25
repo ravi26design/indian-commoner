@@ -1618,7 +1618,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 @media(max-width:980px){.membergrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:640px){.membergrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .membercard{display:flex;flex-direction:column;align-items:center;gap:.7rem;text-align:center;padding:1.6rem 1rem 1.3rem;
-  background:#fff;border:1px solid var(--line);border-radius:1rem;box-shadow:var(--shadow-card);
+  background:#fff;border:1px solid var(--line);border-radius:0;box-shadow:var(--shadow-card);
   transition:transform .15s,box-shadow .2s,border-color .15s}
 .membercard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--green)}
 .membercard .pw-av{width:4rem;height:4rem;font-size:1.3rem}
