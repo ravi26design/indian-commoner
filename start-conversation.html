@@ -126,6 +126,11 @@
           <span class="ai-badge"><i data-lucide="sparkles"></i> AI-Assisted</span>
           <span class="savenote">Drafts save automatically</span>
         </div>
+        <div class="reply-context" id="reply-context" hidden>
+          <i data-lucide="corner-up-left"></i>
+          <span>Replying to <b id="reply-context-who"></b><small id="reply-context-snippet"></small></span>
+          <button type="button" id="reply-context-clear" aria-label="Cancel reply"><i data-lucide="x"></i></button>
+        </div>
         <div class="composer-bar">
           <input type="file" id="attach-file-input" hidden>
           <input type="file" id="attach-photo-input" accept="image/*" hidden>
@@ -311,6 +316,27 @@
   var subTouched = false;
   var firstSendDone = false;
 
+  // "Reply" on a message shows who/what you're replying to above the
+  // composer (this is a linear thread, so it's a visible cue rather than an
+  // actual quote-link) and focuses the composer; the "x" or sending a
+  // message clears it.
+  var replyContext = document.getElementById('reply-context');
+  var replyContextWho = document.getElementById('reply-context-who');
+  var replyContextSnippet = document.getElementById('reply-context-snippet');
+  var replyContextClear = document.getElementById('reply-context-clear');
+  function setReplyContext(who, snippet) {
+    if (!replyContext) return;
+    replyContextWho.textContent = who;
+    replyContextSnippet.textContent = snippet ? ' — "' + snippet + '"' : '';
+    replyContext.hidden = false;
+    textarea.focus();
+    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function clearReplyContext() {
+    if (replyContext) replyContext.hidden = true;
+  }
+  if (replyContextClear) replyContextClear.addEventListener('click', clearReplyContext);
+
   function iconForAttachment(kind) {
     return { file: 'paperclip', photo: 'image', video: 'video', location: 'map-pin' }[kind] || 'paperclip';
   }
@@ -395,11 +421,17 @@
 
     var replyBtn = row.querySelector('[data-act="reply"]');
     if (replyBtn) replyBtn.addEventListener('click', function () {
-      textarea.focus();
-      textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      var snippet = reply.length > 60 ? reply.slice(0, 60).trim() + '…' : reply;
+      setReplyContext('Platform Assistant', snippet);
     });
     var helpfulBtn = row.querySelector('[data-act="helpful"]');
-    if (helpfulBtn) helpfulBtn.addEventListener('click', function () { helpfulBtn.classList.toggle('on'); });
+    if (helpfulBtn) helpfulBtn.addEventListener('click', function () {
+      var marked = helpfulBtn.classList.toggle('on');
+      helpfulBtn.innerHTML = marked
+        ? '<i data-lucide="check-check"></i> Marked helpful'
+        : '<i data-lucide="check"></i> Helpful';
+      if (window.lucide) lucide.createIcons();
+    });
     var listenBtn = row.querySelector('[data-act="listen"]');
     if (listenBtn) listenBtn.addEventListener('click', function () {
       if (!window.speechSynthesis) return;
@@ -706,6 +738,7 @@
       textarea.value = '';
       autoGrowTextarea();
       updateLiveClassification();
+      clearReplyContext();
       textarea.focus();
     });
   }
