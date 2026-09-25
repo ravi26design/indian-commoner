@@ -139,7 +139,7 @@
           <button type="button" class="ctool" id="attach-geo-btn" title="Add a location"><i data-lucide="map-pin"></i></button>
           <button type="button" class="ctool" id="attach-mic-btn" title="Record voice"><i data-lucide="mic"></i></button>
           <span class="composer-hint" id="composer-hint">Uploads up to 25 MB · media is compressed for low bandwidth</span>
-          <button type="button" class="btn btn-primary composer-send" id="convo-send">Send <i data-lucide="send"></i></button>
+          <button type="button" class="btn btn-primary composer-send" id="convo-send" aria-label="Send" title="Send"><i data-lucide="send"></i></button>
         </div>
       </div>
 
@@ -474,6 +474,7 @@
   // Auto-grow: starts as a single line and keeps expanding to fit
   // whatever's typed — no cap, no internal scrollbar.
   function autoGrowTextarea() {
+    if (!textarea.value) { textarea.style.height = ''; return; }
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
   }
