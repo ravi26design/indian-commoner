@@ -110,7 +110,7 @@
   <div class="convo-layout" style="grid-template-columns:1fr">
     <div>
 
-      <div class="convo-thread" id="convo-thread" style="padding-bottom:14rem"></div>
+      <div class="convo-thread" id="convo-thread"></div>
 
       <div class="composer fixed-bottom">
         <div class="composer-top">
@@ -285,6 +285,23 @@
   var langSelect = document.querySelector('.composer-top select');
   var sendBtn = document.getElementById('convo-send');
   var classifyState = { theme: 'Governing the Commons', sub: null };
+
+  // The fixed composer's own height varies (attachments, the textarea
+  // growing, the language/AI-Assisted row wrapping on narrow screens) —
+  // keep the thread's bottom padding in sync so the last message is never
+  // covered by it, instead of a fixed guess that only fit one layout.
+  var composerEl = document.querySelector('.composer.fixed-bottom');
+  if (composerEl && thread) {
+    var syncThreadPadding = function () {
+      thread.style.paddingBottom = (composerEl.offsetHeight + 24) + 'px';
+    };
+    syncThreadPadding();
+    if (window.ResizeObserver) {
+      new ResizeObserver(syncThreadPadding).observe(composerEl);
+    } else {
+      window.addEventListener('resize', syncThreadPadding);
+    }
+  }
   var themeTouched = false;
   var subTouched = false;
   var firstSendDone = false;
