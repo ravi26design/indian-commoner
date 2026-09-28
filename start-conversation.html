@@ -405,11 +405,47 @@
     return variants[(forText || '').length % variants.length];
   }
 
+  // For a genuine question with no matching thread, give a practical starting
+  // answer keyed to what was asked — so any question gets a real response — then
+  // still nudge toward posting so commoners can add lived experience.
+  function answerReply(text, theme) {
+    var t = (text || '').toLowerCase();
+    var tail = ' This is a starting point — post it as a question under ' + theme + ' so commoners who have faced it can share what actually worked.';
+    var K = [
+      [/(drinking water|handpump|hand pump|borewell|bore well|groundwater|ground water|\bwell\b|water scarc|no water|water short|dry)/,
+       'For failing wells and summer water stress, villages have revived supply by desilting and recharging their tank or pond, building small check-dams and recharge pits, and having the gram sabha agree a simple water budget. Jal Jeevan Mission and the watershed works under MGNREGA can fund most of this.'],
+      [/(graz|pasture|gauchar|oran|charnoi|gochar|overgraz)/,
+       'Degraded pasture usually recovers when the gram sabha agrees rotational grazing, rests over-used patches, and caps numbers in the lean season — recorded as a resolution so it is enforceable. Reseeding native grasses and clearing invasives speeds the recovery.'],
+      [/(forest rights|\bfra\b|\bcfr\b|\bifr\b|claim|patta|land title)/,
+       'Community Forest Resource rights are claimed by the gram sabha through its Forest Rights Committee with maps and evidence of traditional use, then verified by the sub-divisional and district committees. Keep dated copies of every submission and follow up in writing when there is no response.'],
+      [/(deforest|timber|felling|tree cut|logging|forest loss)/,
+       'Where a community forest is being cut, the strongest lever is a gram sabha resolution plus a Joint Forest Management or CFR claim, so the village has recognised authority to protect it. Documenting the felling with dates and photos matters if you escalate to the forest department.'],
+      [/(boar|elephant|wildlife|crop damage|human.?animal|monkey|nilgai|raid)/,
+       'For crop-raiding, villages combine early-warning and community watch with low-cost barriers (solar fencing, trenches) and formal compensation claims to the forest department — file each incident promptly with photos so claims are not rejected for lack of proof.'],
+      [/(encroach|privatis|privatiz|land grab|grab|lease to|sold to|diverted|conversion)/,
+       'To resist encroachment or diversion of common land, get the gram sabha to pass a resolution asserting its common status, check the revenue records (khasra, wajib-ul-arz) for how the plot is classified, and file a written objection with the tehsildar so there is a record to escalate.'],
+      [/(garbage|waste|plastic|dump|sanitation|toilet|open defec)/,
+       'For waste on common land, the gram panchayat can set a collection-and-segregation routine under the Swachh Bharat Mission, mark the common as protected, and penalise repeat dumping — a small SHG-run composting point often works better than one-off clean-ups.'],
+      [/(women|gender|mahila|widow|girl)/,
+       'Where women are left out of commons decisions, the practical routes are reserved seats on the forest and water committees, meetings held at times women can attend, and routing the work through women\'s SHGs so they hold real budget and voice.'],
+      [/(mgnrega|nrega|wage|job card|payment delay)/,
+       'For delayed MGNREGA wages, file a written grievance with the programme officer and use the social-audit process to flag it — the law entitles workers to delay compensation, and keeping muster-roll and job-card copies makes the claim hard to refuse.'],
+      [/(sand min|mining|quarry|stone crush)/,
+       'Illegal sand or stone mining on the commons can be reported to the district collector and the State Environment authority, and the National Green Tribunal has acted on such complaints. A dated photo record plus a gram sabha resolution strengthens the case.'],
+      [/(fish|tank lease|pond lease|fisher)/,
+       'Fishing-rights conflicts on a village tank are usually settled by the gram sabha leasing rights transparently to a local fishers\' cooperative with agreed seasons and no-take periods, rather than to an outside contractor — put the terms in a resolution everyone can see.'],
+      [/(migrat|youth leav|no one left|labour short)/,
+       'Out-migration and lost stewardship ease when caring for the commons becomes paid work — channel MGNREGA and watershed funds into restoration and give returning youth a defined role (nursery, monitoring) so the commons stay tended.']
+    ];
+    for (var i = 0; i < K.length; i++) { if (K[i][0].test(t)) return K[i][1] + tail; }
+    return 'Here is a starting point: most village-commons problems move fastest when the gram sabha records a clear resolution, the relevant records or officials are approached in writing, and the work is funded through schemes like MGNREGA, the watershed programme or Jal Jeevan Mission.' + tail;
+  }
+
   function addAssistantMessage(forText) {
     var matches = findMatches(forText || '');
     var reply = matches.length
       ? (matches.length === 1 ? 'Found a thread that may already cover this:' : 'Found ' + matches.length + ' threads that may already cover this:')
-      : noMatchReply(forText, classifyTheme(forText || ''));
+      : (looksLikeQuestion(forText) ? answerReply(forText, classifyTheme(forText || '')) : noMatchReply(forText, classifyTheme(forText || '')));
     var row = document.createElement('div');
     row.className = 'msg-row ai';
     // Each match gets its own direct actions (view the thread, or jump
