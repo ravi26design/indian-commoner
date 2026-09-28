@@ -164,7 +164,8 @@
     <span class="modal-ic"><i data-lucide="check"></i></span>
     <h3>Published as a discussion</h3>
     <p style="color:var(--muted);font-size:.92rem;margin-top:.5rem;line-height:1.6">Your conversation is now a discussion thread on the forum. Other commoners working on the same question will be able to find it.</p>
-    <button class="btn btn-primary block" style="margin-top:1.5rem" data-close-modal>Done</button>
+    <a class="btn btn-primary block" style="margin-top:1.5rem" href="forum.html">View in the Discussion forum →</a>
+    <button style="display:block;width:100%;text-align:center;margin-top:.7rem;background:none;border:0;color:var(--green-d);font-weight:700;font-size:.85rem;cursor:pointer;padding:.4rem" data-close-modal>Stay here</button>
   </div>
 </div>
 
@@ -441,6 +442,22 @@
     return 'Here is a starting point: most village-commons problems move fastest when the gram sabha records a clear resolution, the relevant records or officials are approached in writing, and the work is funded through schemes like MGNREGA, the watershed programme or Jal Jeevan Mission.' + tail;
   }
 
+  // Post the asked question into the Discussion forum: persist it so forum.html
+  // renders it as a new thread, then show the confirmation modal (whose CTA
+  // opens the forum).
+  function postToForum(text) {
+    var t = (text || '').trim();
+    if (!t) return;
+    try {
+      var arr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]');
+      arr.unshift({ title: t.slice(0, 120), theme: classifyTheme(t), state: '', district: '', author: 'You', ts: Date.now() });
+      localStorage.setItem('ic_pending_threads', JSON.stringify(arr));
+    } catch (e) {}
+    var modal = document.getElementById('publishConfirmModal');
+    if (modal) modal.classList.add('open');
+    else location.href = 'forum.html';
+  }
+
   function addAssistantMessage(forText) {
     var matches = findMatches(forText || '');
     var reply = matches.length
@@ -461,9 +478,13 @@
             '</span></div>';
         }).join('') + '</div>'
       : '';
+    var postCta = '<div class="post-forum-cta">' +
+      '<span><i data-lucide="megaphone"></i> Want other commoners to respond? Post this to the Public Forum under <b>' + escapeHtml(classifyTheme(forText || '')) + '</b>.</span>' +
+      '<button type="button" class="btn btn-primary" data-act="postforum"><i data-lucide="send"></i> Post to Public Forum</button>' +
+      '</div>';
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + escapeHtml(reply) + '</div>' + resultsHtml +
+      '<div class="msg-text">' + escapeHtml(reply) + '</div>' + resultsHtml + postCta +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
@@ -471,6 +492,9 @@
       '<a class="msg-act" href="forum.html"><i data-lucide="search"></i> See all results</a>' +
       '</div></div>';
     thread.appendChild(row);
+
+    var postBtn = row.querySelector('[data-act="postforum"]');
+    if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText); });
 
     var replyBtn = row.querySelector('[data-act="reply"]');
     if (replyBtn) replyBtn.addEventListener('click', function () {
@@ -562,6 +586,23 @@
       this.disabled = true;
       this.innerHTML = 'Published <i data-lucide="check"></i>';
       if (window.lucide) lucide.createIcons();
+      // Move this asked question into the Discussion forum: persist it so the
+      // forum page can render it as a new thread at the top of the list.
+      try {
+        var titleEl = document.getElementById('pub-title');
+        var stateEl = document.getElementById('pub-state');
+        var distEl = document.getElementById('pub-district');
+        var arr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]');
+        arr.unshift({
+          title: (titleEl && titleEl.value.trim()) || text.trim().slice(0, 80),
+          theme: classifyState.theme || 'Others',
+          state: (stateEl && stateEl.value) || '',
+          district: (distEl && distEl.value.trim()) || '',
+          author: 'You',
+          ts: Date.now()
+        });
+        localStorage.setItem('ic_pending_threads', JSON.stringify(arr));
+      } catch (e) {}
       var modal = document.getElementById('publishConfirmModal');
       if (modal) modal.classList.add('open');
     });

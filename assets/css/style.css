@@ -2048,3 +2048,31 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
   opacity:0;transition:opacity .15s,right .15s}
 .forum-list-panel .topicrow:hover::after{opacity:1;right:.85rem}
 @media(max-width:700px){.forum-list-panel .topicrow::after{display:none}}
+
+/* ============================================================
+   Responsive hardening — mobile & tablet
+   ============================================================ */
+/* When the wide 2-col layout stacks, let the grid children shrink to
+   the viewport instead of forcing their content min-width (which was
+   pushing the filter panel / chips off-screen on phones). */
+@media (max-width: 1080px){
+  .layout-wide > *{ min-width: 0; }
+}
+/* Filter/search fields that were given a fixed width inline should go
+   full-width once the toolbar wraps on small screens. */
+@media (max-width: 700px){
+  .pagetoolbar{ align-items: stretch; }
+  .pagetoolbar .tsearch{ width: 100% !important; max-width: 100%; flex: 1 1 100%; }
+  .seg-tabs[data-fseg]{ margin-left: 0 !important; }
+}
+/* Belt-and-braces: media never forces horizontal scroll. */
+img, svg, video, iframe, canvas, table{ max-width: 100%; }
+
+/* "Post to Public Forum" CTA shown under an assistant reply in Start a Conversation */
+.post-forum-cta{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  margin-top:.9rem;padding:.85rem 1rem;background:#fbf6ea;border:1px solid #e6d9b8;border-radius:.7rem;
+  font-size:.9rem;color:var(--ink-2);line-height:1.5}
+.post-forum-cta > span{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:12rem}
+.post-forum-cta > span > i{width:1.05rem;height:1.05rem;flex:none;margin-top:.1rem;color:var(--cta,#c79a3f)}
+.post-forum-cta .btn{flex:none;white-space:nowrap}
+@media(max-width:600px){.post-forum-cta{flex-direction:column;align-items:stretch}.post-forum-cta .btn{width:100%;justify-content:center}}

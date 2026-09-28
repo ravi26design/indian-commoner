@@ -1219,6 +1219,49 @@
   </div>
 </footer>
 
+<script>
+/* Threads published from "Start a Conversation" are stored in localStorage and
+   rendered here at the top of the list, so an asked question moves into the
+   Discussion forum. Runs before site.js so filters/sort/count include them. */
+(function () {
+  var list = document.getElementById('forum-list');
+  if (!list) return;
+  var TAG = {
+    'Commons as Culture': ['tint-purple', 'Culture'],
+    'Livelihoods, Subsistence & Valuation of Commons': ['tint-amber', 'Livelihoods'],
+    'Governing the Commons': ['tint-teal', 'Governing'],
+    'Commons as Micro Habitats': ['tint-green', 'Micro Habitats'],
+    'Power and Commons': ['tint-blue', 'Power'],
+    'Gender and Commons': ['tint-rose', 'Gender'],
+    'Conversion of Commons': ['tint-slate', 'Conversion'],
+    'Others': ['tint-slate', 'Others']
+  };
+  function esc(s){ return (s || '').replace(/[&<>"]/g, function (c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); }
+  var arr = [];
+  try { arr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]'); } catch (e) {}
+  arr.forEach(function (t) {
+    var tag = TAG[t.theme] || TAG['Others'];
+    var st = t.state || '';
+    var loc = st ? '<span>·</span><span class="tr-loc"><i data-lucide="map-pin" style="width:.75rem;height:.75rem;vertical-align:-1px"></i> ' + esc(st + (t.district ? ', ' + t.district : '')) + '</span>' : '';
+    var a = document.createElement('a');
+    a.className = 'topicrow';
+    a.href = 'topic-empty.html';
+    a.setAttribute('data-theme', t.theme || 'Others');
+    a.setAttribute('data-state', st);
+    a.setAttribute('data-replies', '0');
+    a.setAttribute('data-lang', 'en');
+    a.innerHTML =
+      '<span class="pw-av">' + esc((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
+      '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
+      '<span class="tag tint-slate">New · via Start a Conversation</span></div>' +
+      '<h3>' + esc(t.title) + '</h3>' +
+      '<div class="tr-meta"><span>by <b>' + esc(t.author || 'You') + '</b></span>' + loc + '<span>·</span><span>just now</span></div></div>' +
+      '<div class="tr-stats"><div class="tr-stat"><b>0</b><span>Replies</span></div><div class="tr-stat"><b>1</b><span>Voice</span></div></div>';
+    list.insertBefore(a, list.firstChild);
+  });
+  if (window.lucide) lucide.createIcons();
+})();
+</script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>
