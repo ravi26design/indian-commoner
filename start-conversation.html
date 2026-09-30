@@ -377,68 +377,88 @@
     if (window.lucide) lucide.createIcons();
   }
 
-  // A genuine question ("what should we do...", "how can I...", trailing "?")
-  // needs a different honest framing than a statement/observation does — the
-  // assistant searches real threads, it doesn't have an answer of its own to
-  // give, and pointing someone with a question at "publish an observation"
-  // phrasing reads as a non-answer.
-  function looksLikeQuestion(text) {
-    var t = (text || '').trim().toLowerCase();
-    if (/\?\s*$/.test(t)) return true;
-    if (/^(is|are|do|does|can|could|should|will|would)\b/.test(t)) return true;
-    return /\b(what|how|why|when|where|which|who)\b[\s\S]*\b(do|does|should|can|could|would|need|needs)\b/.test(t);
-  }
-
-  // No thread matched — reply still names the real auto-classified theme
-  // (same logic that drives the "Suggested classification" card) so it reads
-  // as a response to what was actually asked, not a one-size-fits-all line.
-  function noMatchReply(forText, theme) {
-    var variants = looksLikeQuestion(forText) ? [
-      "I can only search existing discussions, I don't have an answer of my own — nothing under " + theme + " covers this yet. Post it as a question and commoners with real experience can reply.",
-      "That's not something I can answer directly, and no " + theme + " thread has covered it yet either. Publish it as a question — someone with hands-on experience may weigh in.",
-      "I search threads rather than answer questions myself, and this one hasn't come up under " + theme + " yet. Ask it as a discussion and see who responds."
-    ] : [
-      'Nothing under ' + theme + ' covers this yet — which is itself worth knowing. Publish it as a discussion and it becomes the first entry there, so anyone working on the same question finds it.',
-      "This hasn't come up before in the " + theme + " threads I can search. Publish it and the next person asking the same thing finds your question instead of starting from scratch.",
-      "No existing " + theme + " thread matches this closely. Once you publish, it's classified there and searchable — other commoners facing the same issue will be able to find it."
-    ];
-    return variants[(forText || '').length % variants.length];
-  }
-
-  // For a genuine question with no matching thread, give a practical starting
-  // answer keyed to what was asked — so any question gets a real response — then
-  // still nudge toward posting so commoners can add lived experience.
-  function answerReply(text, theme) {
+  // Every message gets a short practical paragraph about the topic itself
+  // (below), then — separately — any real matching threads. Previously a
+  // matched-thread reply skipped straight to "Found N threads...", so
+  // anything with a match got no actual answer text, and anything without
+  // one got a generic "publish it" line rather than a substantive response.
+  // Returns an array of paragraph strings (at least 3 about the topic, plus
+  // a closing line) rather than one dense sentence, so the reply reads as an
+  // actual short answer rather than a one-line deflection.
+  function answerReply(text, theme, hasMatches) {
     var t = (text || '').toLowerCase();
-    var tail = ' This is a starting point — post it as a question under ' + theme + ' so commoners who have faced it can share what actually worked.';
+    var tail = hasMatches
+      ? 'A few related threads are already on the forum — see below.'
+      : 'This is a starting point — post it as a question under ' + theme + ' so commoners who have faced it can share what actually worked.';
     var K = [
-      [/(drinking water|handpump|hand pump|borewell|bore well|groundwater|ground water|\bwell\b|water scarc|no water|water short|dry)/,
-       'For failing wells and summer water stress, villages have revived supply by desilting and recharging their tank or pond, building small check-dams and recharge pits, and having the gram sabha agree a simple water budget. Jal Jeevan Mission and the watershed works under MGNREGA can fund most of this.'],
-      [/(graz|pasture|gauchar|oran|charnoi|gochar|overgraz)/,
-       'Degraded pasture usually recovers when the gram sabha agrees rotational grazing, rests over-used patches, and caps numbers in the lean season — recorded as a resolution so it is enforceable. Reseeding native grasses and clearing invasives speeds the recovery.'],
-      [/(forest rights|\bfra\b|\bcfr\b|\bifr\b|claim|patta|land title)/,
-       'Community Forest Resource rights are claimed by the gram sabha through its Forest Rights Committee with maps and evidence of traditional use, then verified by the sub-divisional and district committees. Keep dated copies of every submission and follow up in writing when there is no response.'],
-      [/(deforest|timber|felling|tree cut|logging|forest loss)/,
-       'Where a community forest is being cut, the strongest lever is a gram sabha resolution plus a Joint Forest Management or CFR claim, so the village has recognised authority to protect it. Documenting the felling with dates and photos matters if you escalate to the forest department.'],
-      [/(boar|elephant|wildlife|crop damage|human.?animal|monkey|nilgai|raid)/,
-       'For crop-raiding, villages combine early-warning and community watch with low-cost barriers (solar fencing, trenches) and formal compensation claims to the forest department — file each incident promptly with photos so claims are not rejected for lack of proof.'],
-      [/(encroach|privatis|privatiz|land grab|grab|lease to|sold to|diverted|conversion)/,
-       'To resist encroachment or diversion of common land, get the gram sabha to pass a resolution asserting its common status, check the revenue records (khasra, wajib-ul-arz) for how the plot is classified, and file a written objection with the tehsildar so there is a record to escalate.'],
-      [/(garbage|waste|plastic|dump|sanitation|toilet|open defec)/,
-       'For waste on common land, the gram panchayat can set a collection-and-segregation routine under the Swachh Bharat Mission, mark the common as protected, and penalise repeat dumping — a small SHG-run composting point often works better than one-off clean-ups.'],
-      [/(women|gender|mahila|widow|girl)/,
-       'Where women are left out of commons decisions, the practical routes are reserved seats on the forest and water committees, meetings held at times women can attend, and routing the work through women\'s SHGs so they hold real budget and voice.'],
-      [/(mgnrega|nrega|wage|job card|payment delay)/,
-       'For delayed MGNREGA wages, file a written grievance with the programme officer and use the social-audit process to flag it — the law entitles workers to delay compensation, and keeping muster-roll and job-card copies makes the claim hard to refuse.'],
-      [/(sand min|mining|quarry|stone crush)/,
-       'Illegal sand or stone mining on the commons can be reported to the district collector and the State Environment authority, and the National Green Tribunal has acted on such complaints. A dated photo record plus a gram sabha resolution strengthens the case.'],
-      [/(fish|tank lease|pond lease|fisher)/,
-       'Fishing-rights conflicts on a village tank are usually settled by the gram sabha leasing rights transparently to a local fishers\' cooperative with agreed seasons and no-take periods, rather than to an outside contractor — put the terms in a resolution everyone can see.'],
-      [/(migrat|youth leav|no one left|labour short)/,
-       'Out-migration and lost stewardship ease when caring for the commons becomes paid work — channel MGNREGA and watershed funds into restoration and give returning youth a defined role (nursery, monitoring) so the commons stay tended.']
+      [/(drinking water|handpump|hand pump|borewell|bore well|groundwater|ground water|\bwell\b|water scarc|no water|water short|dry)/, [
+        "A dry handpump or falling water table is one of the most common commons problems villages report — it usually means the aquifer feeding it isn't being recharged as fast as it's drawn down, often worsened when a nearby pond or tank that used to feed groundwater has silted up or been encroached.",
+        'For failing wells and summer water stress, villages have revived supply by desilting and recharging their tank or pond, building small check-dams and recharge pits upstream of the source, and having the gram sabha agree a simple water budget so no single use drains the shared source.',
+        'Jal Jeevan Mission and the watershed works under MGNREGA can fund most of this restoration work, and a formal water-use resolution from the gram sabha makes the arrangement enforceable rather than just a verbal understanding.'
+      ]],
+      [/(graz|pasture|gauchar|oran|charnoi|gochar|overgraz)/, [
+        'Degraded grazing land is usually the result of open, unmanaged access — too many animals on too little land with no rest period lets invasive species take over and native grasses disappear.',
+        "Pasture usually recovers when the gram sabha agrees rotational grazing, rests over-used patches in turn, and caps numbers in the lean season — recorded as a resolution so it's enforceable rather than just a suggestion.",
+        'Reseeding native grasses and clearing invasive species speeds up recovery, and many villages have done this work through MGNREGA labour, turning restoration into paid work rather than an unfunded extra burden.'
+      ]],
+      [/(forest rights|\bfra\b|\bcfr\b|\bifr\b|claim|patta|land title)/, [
+        "Community Forest Resource (CFR) rights exist precisely so that villages have a legal claim over forest land they've traditionally used and managed, not just informal access that can be withdrawn.",
+        'These are claimed by the gram sabha through its Forest Rights Committee, backed by maps and evidence of traditional use, then verified by the sub-divisional and district-level committees — the process is slow but well-established under the Forest Rights Act.',
+        "Keep dated copies of every submission and follow up in writing whenever there's no response — a paper trail matters most when a claim stalls or is contested, and it's what makes an appeal possible later."
+      ]],
+      [/(deforest|timber|felling|tree cut|logging|forest loss)/, [
+        "When a community forest is being cut — whether by outsiders, a contractor, or through a permit the village never agreed to — the underlying issue is usually that no one has formal, recognised authority to say no.",
+        'The strongest lever is a gram sabha resolution plus a Joint Forest Management or CFR claim, so the village has recognised standing to protect the forest rather than just an informal objection.',
+        'Documenting the felling with dates, photos and, where possible, witnesses matters if you need to escalate to the forest department or file a formal complaint — undocumented felling is much harder to act on after the fact.'
+      ]],
+      [/(boar|elephant|wildlife|crop damage|human.?animal|monkey|nilgai|raid)/, [
+        "Crop-raiding by wildlife is often worst where forest habitat has shrunk or a corridor has been cut off, pushing animals into cultivated land they wouldn't otherwise enter.",
+        'Villages combine early-warning and community watch with low-cost barriers — solar fencing, trenches, or coordinated harvesting schedules — and file formal compensation claims to the forest department for damage that does happen.',
+        'File each incident promptly with photos and, if possible, a witness — compensation claims are frequently rejected for lack of timely proof, so the paperwork matters as much as the barrier itself.'
+      ]],
+      [/(encroach|privatis|privatiz|land grab|grab|lease to|sold to|diverted|conversion)/, [
+        "Common land gets quietly converted to private use one small step at a time — a fence extended, a boundary redrawn, a lease signed without the village's knowledge — and by the time it's noticed, reversing it is much harder.",
+        "To resist encroachment or diversion, get the gram sabha to pass a resolution asserting the land's common status, and check the revenue records (khasra, wajib-ul-arz) for how the plot is officially classified — that classification is your strongest evidence.",
+        "File a written objection with the tehsildar so there's an official record to escalate if needed — a verbal complaint leaves no trail, while a written one can be followed up, appealed, or cited later."
+      ]],
+      [/(garbage|waste|plastic|dump|sanitation|toilet|open defec)/, [
+        "Common land often ends up as the default dumping ground simply because no one owns the problem — it isn't anyone's private responsibility, so it isn't anyone's job to fix.",
+        'The gram panchayat can set up a collection-and-segregation routine under the Swachh Bharat Mission, formally mark the common as protected from dumping, and penalise repeat offenders once the rule is public.',
+        'A small SHG-run composting point tends to work better long-term than one-off clean-up drives, since it gives someone an ongoing stake in keeping the space clear rather than a single day of effort that quietly reverses.'
+      ]],
+      [/(women|gender|mahila|widow|girl)/, [
+        'Women are often the heaviest users of commons — for fuel, fodder, and water — but are the least represented when decisions about those same commons get made.',
+        "The practical routes are reserved seats on forest and water committees, meetings scheduled at times women can actually attend, and routing project funds through women's SHGs so they hold real budget and voice, not just a token seat.",
+        "Where this has worked, it wasn't a one-time rule change but a sustained effort — reserved seats alone don't shift decisions if meetings are still timed and run in ways that exclude the women holding them."
+      ]],
+      [/(mgnrega|nrega|wage|job card|payment delay)/, [
+        "Delayed MGNREGA wages are a common and well-documented problem, and the law itself provides for compensation when payment is late — most workers just aren't aware the entitlement exists.",
+        'File a written grievance with the programme officer and use the social-audit process to formally flag the delay — a verbal complaint at the panchayat office rarely moves as fast as a documented one.',
+        'Keep copies of the muster roll and job card — with that paperwork in hand, the delay-compensation claim is hard for officials to refuse outright, even if it still takes follow-up to resolve.'
+      ]],
+      [/(sand min|mining|quarry|stone crush)/, [
+        "Illegal sand or stone mining on common land is both an environmental and a legal issue — it typically violates both the land's protected status and environmental clearance rules, which gives you more than one route to act.",
+        'It can be reported to the district collector and the State Environment authority, and the National Green Tribunal has acted on such complaints when villages have brought clear evidence.',
+        'A dated photo record plus a gram sabha resolution significantly strengthens the case — authorities are far more responsive to a documented, formally-backed complaint than an informal one.'
+      ]],
+      [/(fish|tank lease|pond lease|fisher)/, [
+        'Fishing rights on a village tank often become contested when an outside contractor is granted exclusive access, cutting out the local fishing community that has used it for generations.',
+        "These conflicts are usually settled by the gram sabha leasing rights transparently to a local fishers' cooperative, with agreed seasons and no-take periods, rather than to an outside bidder with no stake in the tank's long-term health.",
+        "Put the terms in a written resolution that's visible to everyone in the village — disputes tend to resurface when the arrangement exists only as an informal understanding between a few people."
+      ]],
+      [/(migrat|youth leav|no one left|labour short)/, [
+        'When young people leave for work elsewhere, the commons often lose their most active stewards — the people who would normally notice encroachment early or show up to maintain a tank or forest patch.',
+        'This eases when caring for the commons becomes paid work rather than unpaid duty — channel MGNREGA and watershed funds into restoration work, and give returning youth a defined, paid role such as nursery care or monitoring.',
+        'Villages that have done this find it also gives migrant youth a reason to stay connected and return periodically, rather than the commons being left to whoever happens to still be in the village.'
+      ]]
     ];
-    for (var i = 0; i < K.length; i++) { if (K[i][0].test(t)) return K[i][1] + tail; }
-    return 'Here is a starting point: most village-commons problems move fastest when the gram sabha records a clear resolution, the relevant records or officials are approached in writing, and the work is funded through schemes like MGNREGA, the watershed programme or Jal Jeevan Mission.' + tail;
+    for (var i = 0; i < K.length; i++) { if (K[i][0].test(t)) return K[i][1].concat([tail]); }
+    return [
+      "This hasn't come up in a way the existing keyword matches on this platform recognise, but most commons problems share a similar shape underneath the specifics.",
+      'They move fastest when the gram sabha records a clear, written resolution — a verbal agreement is easy to dispute later, while a resolution gives the village standing to act and to escalate if needed.',
+      'The relevant records or officials are approached in writing, and the work itself is usually fundable through existing schemes like MGNREGA, the watershed programme, or Jal Jeevan Mission, rather than needing new money from scratch.',
+      tail
+    ];
   }
 
   // Post the asked question into the Discussion forum: persist it so forum.html
@@ -459,16 +479,18 @@
 
   function addAssistantMessage(forText) {
     var matches = findMatches(forText || '');
-    var reply = matches.length
-      ? (matches.length === 1 ? 'Found a thread that may already cover this:' : 'Found ' + matches.length + ' threads that may already cover this:')
-      : (looksLikeQuestion(forText) ? answerReply(forText, classifyTheme(forText || '')) : noMatchReply(forText, classifyTheme(forText || '')));
+    var theme = classifyTheme(forText || '');
+    // Always lead with a short practical paragraph about what was actually
+    // asked, then — separately, below it — any real matching threads.
+    var reply = answerReply(forText, theme, matches.length > 0);
     var row = document.createElement('div');
     row.className = 'msg-row ai';
     // Each match gets its own direct actions (view the thread, or jump
     // straight to replying on it) instead of one generic "see all results"
     // link for the whole set.
     var resultsHtml = matches.length
-      ? '<div class="msg-results">' + matches.map(function (m) {
+      ? '<div class="msg-related-head">' + (matches.length === 1 ? 'Related thread already on the forum:' : matches.length + ' related threads already on the forum:') + '</div>' +
+        '<div class="msg-results">' + matches.map(function (m) {
           return '<div class="msg-result"><i data-lucide="message-square"></i>' +
             '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + '</small></span>' +
             '<span class="msg-result-cta">' +
@@ -478,12 +500,13 @@
         }).join('') + '</div>'
       : '';
     var postCta = '<div class="post-forum-cta">' +
-      '<span><i data-lucide="megaphone"></i> Want other commoners to respond? Post this to the Public Forum under <b>' + escapeHtml(classifyTheme(forText || '')) + '</b>.</span>' +
+      '<span><i data-lucide="megaphone"></i> Want other commoners to respond? Post this to the Public Forum under <b>' + escapeHtml(theme) + '</b>.</span>' +
       '<button type="button" class="btn btn-primary" data-act="postforum"><i data-lucide="send"></i> Post to Public Forum</button>' +
       '</div>';
+    var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + escapeHtml(reply) + '</div>' + resultsHtml + postCta +
+      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + postCta +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
@@ -497,7 +520,8 @@
 
     var replyBtn = row.querySelector('[data-act="reply"]');
     if (replyBtn) replyBtn.addEventListener('click', function () {
-      var snippet = reply.length > 60 ? reply.slice(0, 60).trim() + '…' : reply;
+      var first = reply[0] || '';
+      var snippet = first.length > 60 ? first.slice(0, 60).trim() + '…' : first;
       setReplyContext('Platform Assistant', snippet);
     });
     var helpfulBtn = row.querySelector('[data-act="helpful"]');
