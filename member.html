@@ -108,15 +108,21 @@
     <div class="mx">
 
       <div class="mp-id">
-        <span class="mp-avatar" id="mp-initial">R</span>
+        <span class="mp-avatar" id="mp-initial"><i data-lucide="user"></i></span>
         <div class="mp-idtx"><h1 id="mp-name">Ravi</h1><span class="mp-status">Offline</span></div>
       </div>
 
-      <div class="mp-tabs" role="tablist">
-        <button class="mp-tab on" data-tab="info"><i data-lucide="info"></i> Info</button>
-        <button class="mp-tab" data-tab="friends"><i data-lucide="users"></i> Friends <span class="mp-badge">0</span></button>
-        <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
-        <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
+      <div class="mp-tabsrow">
+        <div class="mp-tabs" role="tablist">
+          <button class="mp-tab on" data-tab="info"><i data-lucide="info"></i> Info</button>
+          <button class="mp-tab" data-tab="friends"><i data-lucide="users"></i> Friends <span class="mp-badge">0</span></button>
+          <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
+          <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
+        </div>
+        <div class="mp-tabsrow-actions">
+          <button type="button" class="btn btn-primary sm"><i data-lucide="user-plus"></i> Add Friend</button>
+          <button type="button" class="btn btn-outline sm"><i data-lucide="mail"></i> Message</button>
+        </div>
       </div>
 
       <div class="mp-grid">
@@ -137,11 +143,6 @@
         </div>
 
         <aside class="mp-side">
-          <a class="mp-signin" href="login.html">
-            <span class="mp-signin-ic"><i data-lucide="user"></i></span>
-            <span class="mp-signin-tx">Sign in to your account</span>
-            <i data-lucide="log-in" class="mp-signin-arrow"></i>
-          </a>
           <div class="mp-media-box">
             <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="image"></i></span> Media</div>
             <div class="mp-media-tabs">
@@ -162,13 +163,10 @@
   (function () {
     var p = new URLSearchParams(location.search);
     var name = (p.get('name') || 'Member').trim();
-    var initial = (p.get('i') || name.charAt(0) || 'M').trim().toUpperCase().slice(0, 1);
     var nameEl = document.getElementById('mp-name');
     var firstEl = document.getElementById('mp-first');
-    var initEl = document.getElementById('mp-initial');
     if (nameEl) nameEl.textContent = name;
     if (firstEl) firstEl.textContent = name.split(' ')[0];
-    if (initEl) initEl.textContent = initial;
     document.title = name + ' — Indian Commoner';
     document.querySelectorAll('.mp-tab').forEach(function (t) {
       t.addEventListener('click', function () {
@@ -182,6 +180,16 @@
       b.addEventListener('click', function () {
         document.querySelectorAll('.mp-mt').forEach(function (x) { x.classList.remove('on'); });
         b.classList.add('on');
+      });
+    });
+    /* Add Friend / Message CTAs are prototype-only — acknowledge the click
+       rather than navigating away or doing nothing silently. */
+    document.querySelectorAll('.mp-tabsrow-actions .btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var isFriend = btn.classList.contains('btn-primary');
+        btn.innerHTML = isFriend ? '<i data-lucide="check"></i> Request Sent' : '<i data-lucide="check"></i> Sent';
+        btn.disabled = true;
+        if (window.lucide) lucide.createIcons();
       });
     });
     if (window.lucide) lucide.createIcons();

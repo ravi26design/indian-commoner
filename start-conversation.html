@@ -571,12 +571,9 @@
     var resultsHtml = matches.length
       ? '<div class="msg-related-head">' + (matches.length === 1 ? 'Related thread already on the forum:' : matches.length + ' related threads already on the forum:') + '</div>' +
         '<div class="msg-results">' + matches.map(function (m) {
-          return '<div class="msg-result"><i data-lucide="message-square"></i>' +
+          return '<a class="msg-result" href="' + escapeHtml(m.href) + '"><i data-lucide="message-square"></i>' +
             '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + (m.state ? ' &middot; ' + escapeHtml(m.state) : '') + '</small></span>' +
-            '<span class="msg-result-cta">' +
-            '<a class="msg-result-btn" href="' + escapeHtml(m.href) + '">View</a>' +
-            '<a class="msg-result-btn primary" href="' + escapeHtml(m.href) + '#reply">Reply</a>' +
-            '</span></div>';
+            '<i data-lucide="chevron-right" class="msg-result-go"></i></a>';
         }).join('') + '</div>' +
         (matches[0].state
           ? '<a class="msg-map-link" href="map.html?state=' + encodeURIComponent(matches[0].state) + '"><i data-lucide="map-pin"></i> Explore ' + escapeHtml(matches[0].state) + ' on the map</a>'
