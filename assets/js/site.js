@@ -54,6 +54,19 @@ document.addEventListener('DOMContentLoaded', function () {
     cover.style.backgroundPosition = 'center';
   });
 
+  // No member has a real uploaded profile photo in this prototype, so the
+  // Members Directory grid and profile page fall back to a name-based
+  // placeholder avatar — first initial on the same deterministic colour
+  // used for every other avatar on the site — instead of a generic icon.
+  document.querySelectorAll('.mc-avatar, .mp-avatar').forEach(function (av) {
+    var card = av.closest('.membercard');
+    var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    if (!name) return;
+    av.textContent = name.charAt(0).toUpperCase();
+    tintAvatar(av, name);
+  });
+
   // Signed-in state persists across pages/reloads until the user explicitly
   // signs out — a plain localStorage flag, since this prototype has no real backend.
   var LOGIN_KEY = 'ic-logged-in';
