@@ -2072,15 +2072,6 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 /* Belt-and-braces: media never forces horizontal scroll. */
 img, svg, video, iframe, canvas, table{ max-width: 100%; }
 
-/* "Post to Public Forum" CTA shown under an assistant reply in Start a Conversation */
-.post-forum-cta{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-  margin-top:.9rem;padding:.85rem 1rem;background:#fbf6ea;border:1px solid #e6d9b8;border-radius:.7rem;
-  font-size:.9rem;color:var(--ink-2);line-height:1.5}
-.post-forum-cta > span{display:flex;align-items:flex-start;gap:.5rem;flex:1;min-width:12rem}
-.post-forum-cta > span > i{width:1.05rem;height:1.05rem;flex:none;margin-top:.1rem;color:var(--cta,#c79a3f)}
-.post-forum-cta .btn{flex:none;white-space:nowrap}
-@media(max-width:600px){.post-forum-cta{flex-direction:column;align-items:stretch}.post-forum-cta .btn{width:100%;justify-content:center}}
-
 /* ============ Public member profile (member.html) ============ */
 .mp-cover{background:linear-gradient(120deg,#01796f,#015c54);height:220px;position:relative}
 .mp-cover:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 18% 30%,rgba(255,255,255,.10),transparent 42%),radial-gradient(circle at 82% 60%,rgba(255,255,255,.08),transparent 40%)}

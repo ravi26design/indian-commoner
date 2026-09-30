@@ -499,19 +499,16 @@
             '</span></div>';
         }).join('') + '</div>'
       : '';
-    var postCta = '<div class="post-forum-cta">' +
-      '<span><i data-lucide="megaphone"></i> Want other commoners to respond? Post this to the Public Forum under <b>' + escapeHtml(theme) + '</b>.</span>' +
-      '<button type="button" class="btn btn-primary" data-act="postforum"><i data-lucide="send"></i> Post to Public Forum</button>' +
-      '</div>';
     var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + postCta +
+      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
       '<a class="msg-act" href="forum.html"><i data-lucide="search"></i> See all results</a>' +
+      '<button type="button" class="msg-act" data-act="postforum" title="Post this to the Public Forum under ' + escapeHtml(theme) + '"><i data-lucide="megaphone"></i> Post to Public Forum</button>' +
       '</div></div>';
     thread.appendChild(row);
 
