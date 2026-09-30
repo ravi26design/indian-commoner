@@ -1623,8 +1623,8 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .mc-cover{height:108px;width:100%;flex:none;position:relative;background-color:#9aa4ad;background-size:cover;background-position:center}
 .mc-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.22))}
 .mc-avatar{width:4.4rem;height:4.4rem;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;
-  justify-content:center;border:4px solid #fff;box-shadow:var(--shadow-card);margin-top:-2.2rem;flex:none;
-  font:700 1.5rem/1 var(--sans)}
+  justify-content:center;border:4px solid #fff;box-shadow:var(--shadow-card);margin-top:-4.9rem;flex:none;
+  font:700 1.5rem/1 var(--sans);position:relative;z-index:1}
 .mc-name{font-size:.92rem;font-weight:700;color:var(--ink);line-height:1.3;margin-top:.65rem}
 .mc-handle{font-size:.76rem;color:var(--muted-2);margin-top:.1rem}
 .mc-actions{display:flex;gap:.5rem;padding:1rem 1rem 1.2rem;margin-top:.4rem}
