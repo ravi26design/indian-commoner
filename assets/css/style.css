@@ -1631,10 +1631,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .mc-actions .btn{flex:1;padding:.5rem .5rem;font-size:.76rem}
 .mc-actions .btn i{width:.85rem;height:.85rem}
 
-/* ---- members directory header + sort control ---- */
-.memberhead{background:var(--green);color:#fff}
-.memberhead h1{color:#fff;text-transform:uppercase;letter-spacing:.04em;text-align:center;margin:0}
-.memberhead p{color:rgba(255,255,255,.85);text-align:center;margin:.5rem auto 0;max-width:34rem}
+/* ---- members directory sort control ---- */
 .ordersort{display:flex;align-items:center;gap:.5rem;font-size:.8rem;font-weight:700;color:var(--muted-2)}
 .ordersort select{border:1px solid var(--line-2);border-radius:.5rem;padding:.4rem .7rem;font:inherit;
   font-weight:700;color:var(--ink);background:#fff}

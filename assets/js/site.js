@@ -24,6 +24,24 @@ document.addEventListener('DOMContentLoaded', function () {
     av.style.color = '#fff';
   }
 
+  // Deterministic per-member cover-banner colour for the Members Directory
+  // grid and public profile page — decorative placeholder art (no member has
+  // a real uploaded cover photo in this prototype), varied by name the same
+  // way avatar colours are so a member's grid card and profile page match.
+  var COVER_TINTS = ['#8791a0', '#5f7a72', '#8a7a63', '#6d7d92', '#7d6f82', '#5c7a8a'];
+  function coverTint(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) hash = (hash * 33 + name.charCodeAt(i)) >>> 0;
+    return COVER_TINTS[hash % COVER_TINTS.length];
+  }
+  document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
+    var card = cover.closest('.membercard, .mp-id');
+    var nameEl = card && (card.querySelector('.mc-name') || document.getElementById('mp-name'));
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    if (!name) return;
+    cover.style.backgroundColor = coverTint(name);
+  });
+
   // Signed-in state persists across pages/reloads until the user explicitly
   // signs out — a plain localStorage flag, since this prototype has no real backend.
   var LOGIN_KEY = 'ic-logged-in';
