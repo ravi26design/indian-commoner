@@ -221,31 +221,85 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  // Real threads already on the platform (titles/authors/hrefs match the
-  // real topicrow list on forum.html) — used to surface genuine matches
-  // instead of always claiming nothing exists yet.
+  // Real threads already on the platform (titles/authors/hrefs/states match
+  // the real topicrow list on forum.html, including the village-problem
+  // threads added separately) — used to surface genuine matches instead of
+  // always claiming nothing exists yet. Excludes the placeholder threads
+  // forum.html marks as fabricated (added only to match map-pin counts).
   var REAL_THREADS = [
-    { title: 'Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)', href: 'topic.html', author: 'Indu', theme: 'Commons as Culture' },
-    { title: 'Guardians of Forests in the Changing World – A Story of a Women NTFP Collector', href: 'topic-empty.html', author: 'Ramesh Babu', theme: 'Livelihoods, Subsistence & Valuation of Commons' },
-    { title: 'Tokenistic Representation of Women in Village Institutions', href: 'topic-empty.html', author: 'Malavika', theme: 'Governing the Commons' },
-    { title: 'Keeping Alive Ancient Tradition of Planting Trees and Worshiping Them', href: 'topic-empty.html', author: 'Ramesh Babu', theme: 'Commons as Culture' },
-    { title: 'Fire Ecology', href: 'topic-empty.html', author: 'Lakshmi', theme: 'Commons as Micro Habitats' },
-    { title: 'Legal Methods to Protect Common Land', href: 'topic-empty.html', author: 'Anonymous', theme: 'Governing the Commons' },
-    { title: 'Burning the Commons: Forest Fires and Their Effects', href: 'topic-empty.html', author: 'Aditya', theme: 'Livelihoods, Subsistence & Valuation of Commons' },
-    { title: 'The Symbiotic Relationship Between Commons And Cultre', href: 'topic-empty.html', author: 'Charan.A', theme: 'Commons as Culture' },
-    { title: 'Commons as Playground', href: 'topic-empty.html', author: 'Ayush', theme: 'Power and Commons' },
-    { title: 'Quarantining in the Commons: A Unique Practice in Enamaravaripalle', href: 'topic-empty.html', author: 'Vishno', theme: 'Commons as Culture' },
-    { title: 'An Account of the Impact of Restoration Projects in Common Lands', href: 'topic-empty.html', author: 'Yazhini', theme: 'Commons as Micro Habitats' },
-    { title: 'Andhra Pradesh-Culture and Commons: The Temple of Sri Siddeshwara Swami.', href: 'topic-empty.html', author: 'Indu', theme: 'Commons as Culture' },
-    { title: 'Jatres and the Culture of Commons', href: 'topic-empty.html', author: 'Vishno', theme: 'Commons as Culture' },
-    { title: 'Seed Preservation Methods Practiced by Women in Andhra Pradesh', href: 'topic-empty.html', author: 'Lakshmi', theme: 'Gender and Commons' },
-    { title: 'Eco-Feminist Movements', href: 'topic-empty.html', author: 'Malavika', theme: 'Power and Commons' },
-    { title: 'Cultural traditions linked with Sustainable harvesting principles among Santhals', href: 'topic-empty.html', author: 'anjali', theme: 'Others' },
-    { title: 'Customary Tenure and land management of the Khasi people in Meghalaya', href: 'topic-empty.html', author: 'anjali', theme: 'Others' },
-    { title: 'Low-cost Revegetation', href: 'topic-empty.html', author: 'Anil', theme: 'Commons as Micro Habitats' },
-    { title: 'Boost Your Immunity: Fruits for Breakfast to Eat and Avoid on an Empty Stomach', href: 'topic-empty.html', author: 'HiiMS Hospital', theme: 'Others' },
-    { title: 'The Golden Horizon of Bahardanri', href: 'topic-empty.html', author: 'Sujata', theme: 'Conversion of Commons' },
-    { title: 'खोये हुए देवता', href: 'topic-empty.html', author: 'Aman Singh', theme: 'Commons as Culture' }
+    { title: 'Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)', href: 'topic.html', author: 'Indu', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'Our village handpumps run dry every summer — where has the groundwater gone?', href: 'topic-empty.html', author: 'Sunita', theme: 'Governing the Commons', state: 'Rajasthan' },
+    { title: 'Gauchar grazing land being encroached for private construction', href: 'topic-empty.html', author: 'Prakash', theme: 'Conversion of Commons', state: 'Gujarat' },
+    { title: 'Wild boar and elephants destroying our standing crops near the forest', href: 'topic-empty.html', author: 'Gopal', theme: 'Commons as Micro Habitats', state: 'Karnataka' },
+    { title: 'Village tank silted and drying — who is responsible for desilting?', href: 'topic-empty.html', author: 'Meena', theme: 'Governing the Commons', state: 'Madhya Pradesh' },
+    { title: 'Illegal sand mining is eating into our riverbank commons', href: 'topic-empty.html', author: 'Arjun', theme: 'Conversion of Commons', state: 'Punjab' },
+    { title: 'Overgrazing has left the village pasture bare — can we set grazing rules?', href: 'topic-empty.html', author: 'Kamla', theme: 'Livelihoods, Subsistence & Valuation of Commons', state: 'Rajasthan' },
+    { title: 'Rapid deforestation of our community forest for timber', href: 'topic-empty.html', author: 'Ravi', theme: 'Conversion of Commons', state: 'Chhattisgarh' },
+    { title: 'Arsenic in our drinking water — the village well is unsafe', href: 'topic-empty.html', author: 'Fatima', theme: 'Governing the Commons', state: 'Assam' },
+    { title: 'Forest Rights Act titles pending for years — no response from officials', href: 'topic-empty.html', author: 'Bhima', theme: 'Power and Commons', state: 'Odisha' },
+    { title: 'MGNREGA wages for pond-deepening delayed by months', href: 'topic-empty.html', author: 'Devi', theme: 'Livelihoods, Subsistence & Valuation of Commons', state: 'Jharkhand' },
+    { title: 'Garbage and plastic dumped on our common land — no sanitation plan', href: 'topic-empty.html', author: 'Mohan', theme: 'Governing the Commons', state: 'Uttar Pradesh' },
+    { title: 'Women have no say in how the village commons are managed', href: 'topic-empty.html', author: 'Sarita', theme: 'Gender and Commons', state: 'Maharashtra' },
+    { title: 'Lantana and Prosopis are choking our grazing grounds', href: 'topic-empty.html', author: 'Anil', theme: 'Commons as Micro Habitats', state: 'Karnataka' },
+    { title: 'Our sacred grove is being cleared for a road — how do we protect it?', href: 'topic-empty.html', author: 'Indu', theme: 'Commons as Culture', state: 'Meghalaya' },
+    { title: 'Youth are migrating and no one is left to care for the common lands', href: 'topic-empty.html', author: 'Rani', theme: 'Livelihoods, Subsistence & Valuation of Commons', state: 'Uttarakhand' },
+    { title: 'Conflict over fishing rights in the village tank', href: 'topic-empty.html', author: 'Lakshmi', theme: 'Power and Commons', state: 'Andhra Pradesh' },
+    { title: 'Guardians of Forests in the Changing World – A Story of a Women NTFP Collector', href: 'topic-empty.html', author: 'Ramesh Babu', theme: 'Livelihoods, Subsistence & Valuation of Commons', state: 'Andhra Pradesh' },
+    { title: 'Tokenistic Representation of Women in Village Institutions', href: 'topic-empty.html', author: 'Malavika', theme: 'Governing the Commons', state: 'Andhra Pradesh' },
+    { title: 'Keeping Alive Ancient Tradition of Planting Trees and Worshiping Them', href: 'topic-empty.html', author: 'Ramesh Babu', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'Fire Ecology', href: 'topic-empty.html', author: 'Lakshmi', theme: 'Commons as Micro Habitats', state: 'Andhra Pradesh' },
+    { title: 'Legal Methods to Protect Common Land', href: 'topic-empty.html', author: 'Anonymous', theme: 'Governing the Commons', state: 'Andhra Pradesh' },
+    { title: 'Burning the Commons: Forest Fires and Their Effects', href: 'topic-empty.html', author: 'Aditya', theme: 'Livelihoods, Subsistence & Valuation of Commons', state: 'Andhra Pradesh' },
+    { title: 'The Symbiotic Relationship Between Commons And Cultre', href: 'topic-empty.html', author: 'Charan.A', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'Commons as Playground', href: 'topic-empty.html', author: 'Ayush', theme: 'Power and Commons', state: 'Andhra Pradesh' },
+    { title: 'Quarantining in the Commons: A Unique Practice in Enamaravaripalle', href: 'topic-empty.html', author: 'Vishno', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'An Account of the Impact of Restoration Projects in Common Lands', href: 'topic-empty.html', author: 'Yazhini', theme: 'Commons as Micro Habitats', state: 'Andhra Pradesh' },
+    { title: 'Andhra Pradesh-Culture and Commons: The Temple of Sri Siddeshwara Swami.', href: 'topic-empty.html', author: 'Indu', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'Jatres and the Culture of Commons', href: 'topic-empty.html', author: 'Vishno', theme: 'Commons as Culture', state: 'Andhra Pradesh' },
+    { title: 'Seed Preservation Methods Practiced by Women in Andhra Pradesh', href: 'topic-empty.html', author: 'Lakshmi', theme: 'Gender and Commons', state: 'Andhra Pradesh' },
+    { title: 'Eco-Feminist Movements', href: 'topic-empty.html', author: 'Malavika', theme: 'Power and Commons', state: 'Andhra Pradesh' },
+    { title: 'Cultural traditions linked with Sustainable harvesting principles among Santhals', href: 'topic-empty.html', author: 'anjali', theme: 'Others', state: 'Odisha' },
+    { title: 'Customary Tenure and land management of the Khasi people in Meghalaya', href: 'topic-empty.html', author: 'anjali', theme: 'Others', state: 'Meghalaya' },
+    { title: 'Low-cost Revegetation', href: 'topic-empty.html', author: 'Anil', theme: 'Commons as Micro Habitats', state: '' },
+    { title: 'Boost Your Immunity: Fruits for Breakfast to Eat and Avoid on an Empty Stomach', href: 'topic-empty.html', author: 'HiiMS Hospital', theme: 'Others', state: '' },
+    { title: 'The Golden Horizon of Bahardanri', href: 'topic-empty.html', author: 'Sujata', theme: 'Conversion of Commons', state: '' },
+    { title: 'खोये हुए देवता', href: 'topic-empty.html', author: 'Aman Singh', theme: 'Commons as Culture', state: 'Uttarakhand' }
+  ];
+  // Real resources already on the platform (Videos/Podcasts/Literature) —
+  // same idea as REAL_THREADS, so "search across discussions, resources...
+  // and other platform content" actually reaches beyond the forum.
+  var REAL_RESOURCES = [
+    { title: 'Safeguarding the Global Commons', href: 'https://www.youtube.com/watch?v=XDSs1PeAaRc', kind: 'Video' },
+    { title: 'Reclaiming the Credit Commons', href: 'https://www.youtube.com/watch?v=k8EyOxAw75I', kind: 'Video' },
+    { title: 'Knowledge Forum with Prof Elinor Ostrom', href: 'https://www.youtube.com/watch?v=KQxA16vwi48', kind: 'Video' },
+    { title: 'Community Management of Common Property Resources', href: 'https://www.youtube.com/watch?v=lh6LSiGK9Wc', kind: 'Video' },
+    { title: 'LSE Events | Plunder of the Commons: a manifesto for sharing public wealth', href: 'https://www.youtube.com/watch?v=JQztIHee_tQ', kind: 'Video' },
+    { title: 'Andreas Weber: "Life, Meaning and Spirituality in the Commons: Towards a Cultural Paradigm Shift"', href: 'https://www.youtube.com/watch?v=fqI0qKFWugo', kind: 'Video' },
+    { title: "Andrew Wardell – Who owns the rights to the World's Common Resources?", href: 'https://www.youtube.com/watch?v=A-Xh0Hy7dTY', kind: 'Video' },
+    { title: 'Module 28 – Governing Forests as Common Property – Part C', href: 'https://www.youtube.com/watch?v=X_VxX4Nsf8U', kind: 'Video' },
+    { title: 'Module 28 – Governing Forests as Common Property – Part B', href: 'https://www.youtube.com/watch?v=upBCmMyaq64', kind: 'Video' },
+    { title: 'Commoning #6: The Urban Commons', href: 'https://www.incommonpodcast.org/podcast/commoning-6-the-urban-commons/', kind: 'Podcast' },
+    { title: 'Commoning #8: Water Commons with Ruth Meinzen Dick, Tomás Olivier, and Edella Schlager', href: 'https://www.incommonpodcast.org/podcast/commoning-8-water-commons-with-ruth-meinzen-dick-tomas-olivier-and-edella-schlager/', kind: 'Podcast' },
+    { title: 'The Commons: Reclaiming Our Humanity – with David Bollier', href: 'https://archive.org/details/podcast_irresistible-fiction_the-commons-reclaiming-our-hu_1000416179195', kind: 'Podcast' },
+    { title: 'Common Tragedy', href: 'https://podcasts.apple.com/us/podcast/common-tragedy/id594459933?i=1000164049620', kind: 'Podcast' },
+    { title: 'Episode 113: Interview with Jagdeesh Rao, Curator – Promise of Commons initiative, and former CEO FES', href: 'http://www.thesustainabilityagenda.com/podcast/episode-113-interview-with-jagdeesh-rao/', kind: 'Podcast' },
+    { title: 'David Bollier: Week 6: Land as a Commons/Water as a Commons', href: 'http://www.bollier.org/week-6-land-commons-water-commons', kind: 'Podcast' },
+    { title: 'David Bollier: Week 5: The Dynamics of Modern Enclosure/Governing the Commons', href: 'http://www.bollier.org/week-5-dynamics-modern-enclosure-governing-commons', kind: 'Podcast' },
+    { title: 'David Bollier: Week 4: The History of Commons and Enclosure', href: 'http://www.bollier.org/week-4-history-commons-and-enclosure', kind: 'Podcast' },
+    { title: 'David Bollier: Week 3: Property & Commons, and The Gift Economy', href: 'http://www.bollier.org/week-3-property-commons-and-gift-economy', kind: 'Podcast' },
+    { title: 'The Commons and Development: Unanswered Sociological Questions', href: 'https://thecommonsjournal.org/articles/10.18352/ijc.248', kind: 'Article' },
+    { title: "States, Social Capital and Cooperation: Looking Back on 'Governing the Commons'", href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.250/', kind: 'Article' },
+    { title: 'Design Principles For Global Commons: Natural Resources and Emerging Technologies', href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.305/', kind: 'Article' },
+    { title: 'Information, Networks, and The Complexity of Trust in Commons Governance', href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.312/', kind: 'Article' },
+    { title: 'Diversity of Resource Use and Property Rights in Tam Giang Lagoon, Vietnam', href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.236/', kind: 'Article' },
+    { title: 'Land Use, Environmental Change, and Sustainable Development: The Role of Institutional Diagnostics', href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.244/', kind: 'Article' },
+    { title: "Curse or Blessing? Local Elites in Joint Forest Management in India's Shiwaliks", href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.217/', kind: 'Article' },
+    { title: 'Change in Forest Governance in Developing Countries – in Search of Sustainable Governance Arrangements', href: 'https://indiancommoner.org/literatures/', kind: 'Article' },
+    { title: '"Hybrid Institutions": Applications of Common Property Theory Beyond Discrete Tenure Regimes', href: 'https://www.thecommonsjournal.org/articles/10.18352/ijc.108/', kind: 'Article' },
+    { title: 'Livestock and Commons: Policy Perspectives for Rainfed Regions of India', href: 'https://indiancommoner.org/literatures/', kind: 'Article' },
+    { title: 'Freedom and Poverty in the Fishery Commons', href: 'https://indiancommoner.org/literatures/', kind: 'Article' },
+    { title: 'Diversity and Challenges of the Urban Commons: A Comprehensive Review', href: 'https://indiancommoner.org/literatures/', kind: 'Article' },
+    { title: 'Biodiversity Conservation and Livelihoods in Human-Dominated Landscapes: Forest Commons in South Asia', href: 'https://indiancommoner.org/literatures/', kind: 'Article' }
   ];
   // Words too generic in this platform's own context to signal real topical
   // overlap (almost every real thread touches "village"/"commons"/"land" in
@@ -288,6 +342,23 @@
     }).filter(function (r) { return r.score >= 4; });
     scored.sort(function (a, b) { return b.score - a.score; });
     return scored.slice(0, 3).map(function (r) { return r.t; });
+  }
+
+  // Same keyword-overlap approach against real Videos/Podcasts/Literature
+  // titles, so a query can surface a relevant resource alongside forum
+  // threads — no theme bonus here since each resource's real tags use
+  // inconsistent casing/wording across the three source pages.
+  function findResourceMatches(text) {
+    var qWords = tokenize(text);
+    if (!qWords.length) return [];
+    var scored = REAL_RESOURCES.map(function (r) {
+      var rWords = tokenize(r.title);
+      var shared = qWords.filter(function (w) { return rWords.indexOf(w) !== -1; });
+      var score = shared.reduce(function (sum, w) { return sum + w.length; }, 0);
+      return { r: r, score: score };
+    }).filter(function (m) { return m.score >= 4; });
+    scored.sort(function (a, b) { return b.score - a.score; });
+    return scored.slice(0, 2).map(function (m) { return m.r; });
   }
 
   var thread = document.getElementById('convo-thread');
@@ -477,32 +548,54 @@
     else location.href = 'forum.html';
   }
 
+  var RESOURCE_ICON = { Video: 'play', Podcast: 'mic', Article: 'book-open' };
+
   function addAssistantMessage(forText) {
     var matches = findMatches(forText || '');
+    var resourceMatches = findResourceMatches(forText || '');
     var theme = classifyTheme(forText || '');
     // Always lead with a short practical paragraph about what was actually
-    // asked, then — separately, below it — any real matching threads.
-    var reply = answerReply(forText, theme, matches.length > 0);
+    // asked, then — separately, below it — any real matching threads and
+    // resources (AI-assisted identification of related content, surfaced
+    // directly in response to the query rather than requiring a separate
+    // search step).
+    var reply = answerReply(forText, theme, matches.length > 0 || resourceMatches.length > 0);
     var row = document.createElement('div');
     row.className = 'msg-row ai';
     // Each match gets its own direct actions (view the thread, or jump
     // straight to replying on it) instead of one generic "see all results"
-    // link for the whole set.
+    // link for the whole set. The real state each thread is tagged to (when
+    // it has one) shows alongside the author, and — for the closest match —
+    // as a link into Map Exploration for that state, tying keyword search
+    // to the platform's geographic/map-based discovery.
     var resultsHtml = matches.length
       ? '<div class="msg-related-head">' + (matches.length === 1 ? 'Related thread already on the forum:' : matches.length + ' related threads already on the forum:') + '</div>' +
         '<div class="msg-results">' + matches.map(function (m) {
           return '<div class="msg-result"><i data-lucide="message-square"></i>' +
-            '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + '</small></span>' +
+            '<span><b>' + escapeHtml(m.title) + '</b><small>by ' + escapeHtml(m.author) + (m.state ? ' &middot; ' + escapeHtml(m.state) : '') + '</small></span>' +
             '<span class="msg-result-cta">' +
             '<a class="msg-result-btn" href="' + escapeHtml(m.href) + '">View</a>' +
             '<a class="msg-result-btn primary" href="' + escapeHtml(m.href) + '#reply">Reply</a>' +
+            '</span></div>';
+        }).join('') + '</div>' +
+        (matches[0].state
+          ? '<a class="msg-map-link" href="map.html?state=' + encodeURIComponent(matches[0].state) + '"><i data-lucide="map-pin"></i> Explore ' + escapeHtml(matches[0].state) + ' on the map</a>'
+          : '')
+      : '';
+    var resourceResultsHtml = resourceMatches.length
+      ? '<div class="msg-related-head">' + (resourceMatches.length === 1 ? 'Related resource:' : resourceMatches.length + ' related resources:') + '</div>' +
+        '<div class="msg-results">' + resourceMatches.map(function (r) {
+          return '<div class="msg-result"><i data-lucide="' + (RESOURCE_ICON[r.kind] || 'file') + '"></i>' +
+            '<span><b>' + escapeHtml(r.title) + '</b><small>' + escapeHtml(r.kind) + '</small></span>' +
+            '<span class="msg-result-cta">' +
+            '<a class="msg-result-btn primary" href="' + escapeHtml(r.href) + '" target="_blank" rel="noopener noreferrer">Open</a>' +
             '</span></div>';
         }).join('') + '</div>'
       : '';
     var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml +
+      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + resourceResultsHtml +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +

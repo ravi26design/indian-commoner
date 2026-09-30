@@ -1994,6 +1994,10 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .msg-related-head{font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
   color:var(--muted-2);margin-top:1.1rem}
 .msg-results{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.msg-map-link{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;font-size:.8rem;
+  font-weight:700;color:var(--green-d);text-decoration:none}
+.msg-map-link:hover{text-decoration:underline}
+.msg-map-link i{width:.85rem;height:.85rem}
 .msg-result{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;background:var(--bg-soft);border:1px solid var(--line-2);
   border-radius:0;padding:.6rem .75rem;transition:border-color .15s,background .15s}
 .msg-result:hover{border-color:var(--green)}
