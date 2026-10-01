@@ -2117,9 +2117,7 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-badge{background:var(--green-soft);color:var(--green-d);font-size:.7rem;font-weight:700;padding:.05rem .4rem;border-radius:999px}
 .mp-main{margin-top:1.5rem}
 .mp-pane{background:var(--white);border:1px solid var(--line-2);border-radius:var(--r);padding:1.25rem 1.4rem}
-.mp-sec-h{display:flex;align-items:center;gap:.55rem;font:700 1.05rem/1.2 var(--sans);color:var(--ink);margin-bottom:1rem}
-.mp-sec-ic{width:2rem;height:2rem;border-radius:.5rem;background:var(--green-soft);color:var(--green-d);display:flex;align-items:center;justify-content:center}
-.mp-sec-ic i{width:17px;height:17px}
+.mp-sec-h{font:700 1.05rem/1.2 var(--sans);color:var(--ink);margin-bottom:1rem}
 .mp-field{display:flex;flex-direction:column;gap:.25rem;padding:.85rem 0;border-top:1px solid var(--line)}
 .mp-field:first-child{border-top:0;padding-top:0}
 .mp-field-k{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--faint)}
