@@ -2157,19 +2157,15 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-mt i{width:15px;height:15px}
 .mp-mt.on{color:var(--green);border-bottom-color:var(--green)}
 .mp-media-pane{display:grid;grid-template-columns:repeat(6,1fr);gap:.9rem}
-.mp-media-pane[data-media-pane="audios"],.mp-media-pane[data-media-pane="files"]{display:flex;flex-direction:column;gap:.6rem}
 .mp-media-pane[hidden]{display:none}
 @media(max-width:900px){.mp-media-pane{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:600px){.mp-media-pane{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:420px){.mp-media-pane{grid-template-columns:repeat(2,1fr)}}
 .mp-media-tile{aspect-ratio:1;border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.35rem;color:#fff;overflow:hidden}
+  gap:.35rem;color:#fff;overflow:hidden;padding:.4rem;text-align:center}
 .mp-media-tile i{width:20px;height:20px}
 .mp-media-tile span{font-size:.68rem;font-weight:700;opacity:.9}
-.mp-media-row{display:flex;align-items:center;gap:.7rem;padding:.7rem .9rem;border:1px solid var(--line-2);border-radius:var(--r-sm)}
-.mp-media-row i{width:18px;height:18px;color:var(--green-d);flex:none}
-.mp-media-row b{font-size:.86rem;color:var(--ink);font-weight:700}
-.mp-media-row small{display:block;font-size:.74rem;color:var(--muted-2)}
+.mp-media-tile small{font-size:.62rem;opacity:.8}
 .mp-media-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0 .2rem}
 
 /* ---- Add Friend / Message flow ---- */

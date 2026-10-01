@@ -301,9 +301,9 @@
           } else if (kind === 'videos') {
             html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="play"></i><span>Clip ' + i + '</span></div>';
           } else if (kind === 'audios') {
-            html += '<div class="mp-media-row"><i data-lucide="volume-2"></i><span><b>Voice note ' + i + '.mp3</b><small>' + (1 + Math.floor(rng() * 4)) + ' min</small></span></div>';
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="volume-2"></i><span>Voice note ' + i + '</span><small>' + (1 + Math.floor(rng() * 4)) + ' min</small></div>';
           } else {
-            html += '<div class="mp-media-row"><i data-lucide="file"></i><span><b>Document ' + i + '.pdf</b><small>' + (120 + Math.floor(rng() * 800)) + ' KB</small></span></div>';
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="file"></i><span>Document ' + i + '</span><small>' + (120 + Math.floor(rng() * 800)) + ' KB</small></div>';
           }
         }
         pane.innerHTML = html;

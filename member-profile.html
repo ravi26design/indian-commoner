@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
+<body style="background:var(--bg-soft)">
 
 <nav class="top"><div class="bar">
   <a class="brand" href="index.html">
@@ -84,7 +84,7 @@
       <a class="signin-btn acctav" href="member-profile.html" title="My Profile" style="width:2.5rem;height:2.5rem;border-radius:50%;padding:0;display:grid;place-items:center;font-weight:800">PS</a>
       <div class="navdrop dd-right"><div class="navdrop-in">
         <a class="active" href="member-profile.html"><span class="nd-ic"><i data-lucide="user"></i></span><span class="nd-tx"><b>My Profile</b><small>Your account details and preferences</small></span></a>
-        <a href="change-password.html"><span class="nd-ic"><i data-lucide="key-round"></i></span><span class="nd-tx"><b>Change Password</b><small>Update your login credentials</small></span></a>
+        <a href="change-password.html" id="nav-change-password"><span class="nd-ic"><i data-lucide="key-round"></i></span><span class="nd-tx"><b>Change Password</b><small>Update your login credentials</small></span></a>
         <a id="signout-link-nav" href="index.html"><span class="nd-ic"><i data-lucide="log-out"></i></span><span class="nd-tx"><b>Sign out</b></span></a>
       </div></div>
     </div>
@@ -110,51 +110,80 @@
 </nav>
 
 <main>
+  <section class="mp-cover"><div class="mx mp-cover-in"></div></section>
+  <section class="section" style="padding-top:0">
+    <div class="mx">
 
-<div class="acctwrap">
-  <aside class="acct-side">
-    <nav class="acct-nav">
-      <a class="acct-item active" href="member-profile.html"><i data-lucide="user"></i> My Profile</a>
-      <a class="acct-item" href="change-password.html"><i data-lucide="key-round"></i> Change Password</a>
-      <a class="acct-item" id="signout-link" href="index.html"><i data-lucide="log-out"></i> Sign out</a>
-    </nav>
-  </aside>
+      <div class="mp-id">
+        <span class="mp-avatar" id="mp-initial"></span>
+        <div class="mp-idtx"><h1 id="mp-name">Priya Sharma</h1><span class="mp-status">Admin User</span></div>
+      </div>
 
-  <div class="acct-main">
-    <h1 class="acct-title">My Profile</h1>
-    <p class="acct-sub">Your account details and preferences.</p>
-
-    <div class="idcard">
-      <span class="id-av"><i data-lucide="user"></i></span>
-      <div class="id-main">
-        <h2>Priya Sharma</h2>
-        <span class="id-role"><i data-lucide="shield"></i> Admin User</span>
-        <div class="id-meta">
-          <span><i data-lucide="mail"></i> priya@fes.org</span>
-          <span><i data-lucide="phone"></i> +91 98765 43210</span>
-          <span><i data-lucide="map-pin"></i> Bengaluru, India</span>
+      <div class="mp-tabsrow">
+        <div class="mp-tabs" role="tablist">
+          <button class="mp-tab on" data-tab="info"><i data-lucide="info"></i> Info</button>
+          <button class="mp-tab" data-tab="friends"><i data-lucide="users"></i> Friends <span class="mp-badge">0</span></button>
+          <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
+          <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
+        </div>
+        <div class="mp-tabsrow-actions">
+          <a class="btn btn-outline sm" id="signout-link" href="index.html"><i data-lucide="log-out"></i> Sign out</a>
+          <button type="button" class="btn btn-primary sm" data-open-modal="editProfileModal"><i data-lucide="pencil"></i> Edit Profile</button>
         </div>
       </div>
-      <button class="id-edit" data-open-modal="editProfileModal" aria-label="Edit profile"><i data-lucide="pencil"></i></button>
-    </div>
 
-    <div class="prefcard">
-      <h3><i data-lucide="sliders-horizontal"></i> Preferences</h3>
-      <div class="prefrow">
-        <div><b>Email Notifications</b><p>Get notified when a resource you saved is updated or replaced.</p></div>
-        <button class="switch on" aria-label="Toggle email notifications"></button>
+      <div class="mp-main">
+        <div id="mp-info" class="mp-pane">
+          <div class="mp-sec-h">Base</div>
+          <div class="mp-field"><span class="mp-field-k">Full Name</span><span class="mp-field-v">Priya Sharma</span></div>
+          <div class="mp-field"><span class="mp-field-k">Email</span><span class="mp-field-v">priya@fes.org</span></div>
+          <div class="mp-field"><span class="mp-field-k">Phone</span><span class="mp-field-v">+91 98765 43210</span></div>
+          <div class="mp-field"><span class="mp-field-k">Location</span><span class="mp-field-v">Bengaluru, India</span></div>
+          <div class="mp-field"><span class="mp-field-k">Organization</span><span class="mp-field-v">Foundation for Ecological Security</span></div>
+          <div class="mp-field"><span class="mp-field-k">Designation</span><span class="mp-field-v">GIS Analyst</span></div>
+
+          <div class="mp-sec-h" style="margin-top:2rem">Preferences</div>
+          <div class="prefcard" style="border:0;padding:0;box-shadow:none">
+            <div class="prefrow">
+              <div><b>Email Notifications</b><p>Get notified when a resource you saved is updated or replaced.</p></div>
+              <button class="switch on" aria-label="Toggle email notifications"></button>
+            </div>
+            <div class="prefrow">
+              <div><b>Weekly Summary Report</b><p>Receive a weekly activity summary every Monday.</p></div>
+              <button class="switch on" aria-label="Toggle weekly summary report"></button>
+            </div>
+            <div class="prefrow">
+              <div><b>Platform Updates</b><p>Occasional emails about new features on the repository.</p></div>
+              <button class="switch" aria-label="Toggle platform updates"></button>
+            </div>
+          </div>
+        </div>
+        <div id="mp-friends" class="mp-pane" hidden>
+          <div class="mp-sec-h">Friends</div>
+          <div class="mp-friend-grid" id="mp-friend-grid"></div>
+        </div>
+        <div id="mp-posts" class="mp-pane" hidden>
+          <div class="mp-sec-h">Posts</div>
+          <div class="mp-post-list" id="mp-post-list"></div>
+        </div>
+        <div id="mp-media" class="mp-pane" hidden>
+          <div class="mp-sec-h">Media</div>
+          <div class="mp-media-tabs">
+            <button class="mp-mt on" data-media="photos"><i data-lucide="image"></i><span>Photos</span></button>
+            <button class="mp-mt" data-media="videos"><i data-lucide="film"></i><span>Videos</span></button>
+            <button class="mp-mt" data-media="audios"><i data-lucide="volume-2"></i><span>Audios</span></button>
+            <button class="mp-mt" data-media="files"><i data-lucide="download-cloud"></i><span>Files</span></button>
+          </div>
+          <div class="mp-media-pane" data-media-pane="photos"></div>
+          <div class="mp-media-pane" data-media-pane="videos" hidden></div>
+          <div class="mp-media-pane" data-media-pane="audios" hidden></div>
+          <div class="mp-media-pane" data-media-pane="files" hidden></div>
+        </div>
       </div>
-      <div class="prefrow">
-        <div><b>Weekly Summary Report</b><p>Receive a weekly activity summary every Monday.</p></div>
-        <button class="switch on" aria-label="Toggle weekly summary report"></button>
-      </div>
-      <div class="prefrow">
-        <div><b>Platform Updates</b><p>Occasional emails about new features on the repository.</p></div>
-        <button class="switch" aria-label="Toggle platform updates"></button>
-      </div>
+
     </div>
-  </div>
-</div>
+  </section>
+
 
 <div class="modal-back" id="editProfileModal">
   <div class="modal-card wide">
@@ -188,6 +217,215 @@
     </div>
   </div>
 </div>
+
+<div class="modal-back" id="changePasswordModal">
+  <div class="modal-card">
+    <div class="fm-head">
+      <div><span class="kicker">Security</span><b>Change password</b></div>
+      <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="fm-body">
+      <p class="acct-sub" style="margin-top:0">Passwords follow the platform's OWASP-aligned policy.</p>
+
+      <div class="field">
+        <label for="cp-current">Current password</label>
+        <div class="withic">
+          <i class="ico" data-lucide="lock"></i>
+          <input id="cp-current" type="password" value="••••••••" style="padding-left:2.4rem">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="cp-new">New password</label>
+        <div class="withic">
+          <i class="ico" data-lucide="key-round"></i>
+          <input id="cp-new" type="password" placeholder="At least 12 characters" style="padding-left:2.4rem" autocomplete="new-password">
+        </div>
+        <div class="pw-meter"><span id="pwMeterBar"></span></div>
+        <p class="hint" id="pwMeterHint">Use 12+ characters with a mix of letters, numbers and symbols.</p>
+      </div>
+
+      <div class="field">
+        <label for="cp-confirm">Confirm new password</label>
+        <div class="withic">
+          <i class="ico" data-lucide="key-round"></i>
+          <input id="cp-confirm" type="password" style="padding-left:2.4rem" autocomplete="new-password">
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:.5rem">
+        <button class="btn btn-primary" data-close-modal>Update password</button>
+        <button class="btn btn-outline" data-close-modal>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+  (function () {
+    var name = 'Priya Sharma';
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    // Same deterministic-per-name demo content as the public profile page
+    // (member.html) — Priya Sharma is this prototype's one fixed logged-in
+    // persona, so her Friends/Posts/Media are fabricated demo content too,
+    // not real data (there is no real backend behind this prototype).
+    function seedFromString(s) {
+      var h = 0;
+      for (var i = 0; i < s.length; i++) h = (h * 41 + s.charCodeAt(i)) >>> 0;
+      return h || 1;
+    }
+    function makeRng(seed) {
+      var state = seed % 2147483647;
+      if (state <= 0) state += 2147483646;
+      return function () { state = (state * 16807) % 2147483647; return (state - 1) / 2147483646; };
+    }
+    var rng = makeRng(seedFromString(name));
+    function pick(arr) { return arr[Math.floor(rng() * arr.length)]; }
+    function shuffled(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(rng() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    var ALL_MEMBERS = ['Admin','Ravi','Bowling','Hinson','Honeycutt','Woodward','Jigir','Krinal','Ankush','Coates',
+      'Stougaard','Neal','Lane','Noah','Ezra','Newman','Aagesen','Maxwell','Collier','Dunlap','Wollesen','Padilla',
+      'Boyd','MacGregor','Yates','Maldonado','Valenzuela','Daley','Wagner','Developer','Abel','Riyasat','Reeves',
+      'Vaughan','Vind','Hd','French','Sourya','Jagveer','Ycdkvdgh Jhfdfbj','Khanjan','Rita','Qvist','Thomassen',
+      'Wijay','Rahul Gandhi','Fjxjgdj','Raghunathan','Varadarajan','Mayl'];
+
+    function demoFriends() {
+      var count = 17 + Math.floor(rng() * 4); // 17-20
+      var friends = shuffled(ALL_MEMBERS).slice(0, count);
+      var grid = document.getElementById('mp-friend-grid');
+      var badge = document.querySelector('.mp-tab[data-tab="friends"] .mp-badge');
+      if (badge) badge.textContent = friends.length;
+      if (!grid) return;
+      grid.innerHTML = friends.map(function (fn) {
+        var initial = fn.trim().charAt(0).toUpperCase();
+        return '<a class="mp-friend-card" href="member.html?name=' + encodeURIComponent(fn) + '">' +
+          '<span class="mp-friend-av" data-avatar-name="' + escapeHtml(fn) + '">' + escapeHtml(initial) + '</span>' +
+          '<span class="mp-friend-name">' + escapeHtml(fn) + '</span></a>';
+      }).join('');
+    }
+
+    var POST_STUBS = [
+      'Shared a thought on the Discussion forum.',
+      'Replied to a thread in the Discussion forum.',
+      'Posted a question under Start a Conversation.',
+      'Commented on a resource in the Resources section.',
+      'Joined a new discussion thread.',
+      'Looked through the Map exploration page.'
+    ];
+    var POST_TIMES = ['2 days ago', '5 days ago', '1 week ago', '2 weeks ago', '3 weeks ago', '1 month ago', '2 months ago'];
+    function demoPosts() {
+      var count = 2 + Math.floor(rng() * 3); // 2-4
+      var stubs = shuffled(POST_STUBS).slice(0, count);
+      var list = document.getElementById('mp-post-list');
+      if (!list) return;
+      list.innerHTML = stubs.map(function (s) {
+        return '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="message-square"></i></span>' +
+          '<div class="mp-post-body"><p>' + escapeHtml(s) + '</p><span class="mp-post-time">' + pick(POST_TIMES) + '</span></div></div>';
+      }).join('');
+    }
+
+    var MEDIA_TINTS = ['#2563eb', '#0d9488', '#7c3aed', '#d97706', '#db2777', '#475569'];
+    function demoMedia() {
+      var badge = document.querySelector('.mp-tab[data-tab="media"] .mp-badge');
+      var total = 0;
+      ['photos', 'videos', 'audios', 'files'].forEach(function (kind, ki) {
+        var pane = document.querySelector('.mp-media-pane[data-media-pane="' + kind + '"]');
+        if (!pane) return;
+        var count = 3 + Math.floor(rng() * 4); // 3-6
+        total += count;
+        var html = '';
+        for (var i = 1; i <= count; i++) {
+          var tint = MEDIA_TINTS[(ki + i) % MEDIA_TINTS.length];
+          if (kind === 'photos') {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="image"></i><span>Photo ' + i + '</span></div>';
+          } else if (kind === 'videos') {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="play"></i><span>Clip ' + i + '</span></div>';
+          } else if (kind === 'audios') {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="volume-2"></i><span>Voice note ' + i + '</span><small>' + (1 + Math.floor(rng() * 4)) + ' min</small></div>';
+          } else {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="file"></i><span>Document ' + i + '</span><small>' + (120 + Math.floor(rng() * 800)) + ' KB</small></div>';
+          }
+        }
+        pane.innerHTML = html;
+      });
+      if (badge) badge.textContent = total;
+    }
+
+    demoFriends();
+    demoPosts();
+    demoMedia();
+
+    document.querySelectorAll('.mp-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        document.querySelectorAll('.mp-tab').forEach(function (x) { x.classList.remove('on'); });
+        t.classList.add('on');
+        var id = t.getAttribute('data-tab');
+        document.querySelectorAll('.mp-pane').forEach(function (pane) { pane.hidden = (pane.id !== 'mp-' + id); });
+      });
+    });
+    document.querySelectorAll('.mp-mt').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.mp-mt').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        var kind = b.getAttribute('data-media');
+        document.querySelectorAll('.mp-media-pane').forEach(function (pane) {
+          pane.hidden = (pane.getAttribute('data-media-pane') !== kind);
+        });
+      });
+    });
+
+    // "Change Password" (top-nav dropdown) opens the in-page modal instead
+    // of navigating to the standalone change-password.html page.
+    var navChangePw = document.getElementById('nav-change-password');
+    var cpModal = document.getElementById('changePasswordModal');
+    if (navChangePw && cpModal) {
+      navChangePw.addEventListener('click', function (e) {
+        e.preventDefault();
+        cpModal.classList.add('open');
+      });
+    }
+
+    var cpInput = document.getElementById('cp-new');
+    var cpBar = document.getElementById('pwMeterBar');
+    var cpHint = document.getElementById('pwMeterHint');
+    if (cpInput && cpBar) {
+      cpInput.addEventListener('input', function () {
+        var v = cpInput.value;
+        var score = 0;
+        if (v.length >= 12) score++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+        if (/[0-9]/.test(v)) score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        var levels = [
+          { w: '0%', cls: '', text: 'Use 12+ characters with a mix of letters, numbers and symbols.' },
+          { w: '25%', cls: 'weak', text: 'Weak — add numbers, symbols or length.' },
+          { w: '55%', cls: 'ok', text: 'Getting there — try a longer mix of characters.' },
+          { w: '80%', cls: 'good', text: 'Good password.' },
+          { w: '100%', cls: 'strong', text: 'Strong password.' }
+        ];
+        var lvl = v.length === 0 ? levels[0] : levels[Math.min(score + 1, 4)];
+        cpBar.style.width = lvl.w;
+        cpBar.className = lvl.cls;
+        if (cpHint) cpHint.textContent = lvl.text;
+      });
+    }
+
+    if (window.lucide) lucide.createIcons();
+  })();
+  </script>
 
 </main>
 
