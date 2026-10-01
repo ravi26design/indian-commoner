@@ -120,7 +120,12 @@
           <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
         </div>
         <div class="mp-tabsrow-actions" id="mp-actions">
-          <button type="button" class="btn btn-primary sm" id="mp-add-friend"><i data-lucide="user-plus"></i> Add Friend</button>
+          <div class="mp-friend-menu">
+            <button type="button" class="btn btn-primary sm" id="mp-add-friend"><i data-lucide="user-plus"></i> Add Friend</button>
+            <div class="mp-friend-dropdown" id="mp-friend-dropdown" hidden>
+              <button type="button" id="mp-unfriend-opt"><i data-lucide="user-minus"></i> Unfriend</button>
+            </div>
+          </div>
           <button type="button" class="btn btn-outline sm" id="mp-message"><i data-lucide="mail"></i> Message</button>
         </div>
       </div>
@@ -353,7 +358,11 @@
 
     var addBtn = document.getElementById('mp-add-friend');
     var msgBtn = document.getElementById('mp-message');
+    var friendDropdown = document.getElementById('mp-friend-dropdown');
+    var unfriendOpt = document.getElementById('mp-unfriend-opt');
     var composeSlot = document.getElementById('mp-compose-slot');
+
+    function closeFriendDropdown() { if (friendDropdown) friendDropdown.hidden = true; }
 
     function loginHref() {
       return 'login.html?return=' + encodeURIComponent(location.href);
@@ -382,6 +391,7 @@
 
     function renderActions() {
       closeCompose();
+      closeFriendDropdown();
 
       if (!isLoggedIn()) {
         addBtn.className = 'btn btn-primary sm';
@@ -394,12 +404,12 @@
         return;
       }
 
-      // Already friends: offer an explicit, clearly-labelled way to
-      // unfriend rather than a silent re-click on an ambiguous "Friends"
-      // badge — clicking Add Friend always toggles the relationship.
+      // Already friends: the CTA becomes a plain "Friends" state, not an
+      // "Add Friend" prompt — unfriending is tucked behind a click on that
+      // state (a small dropdown) rather than offered as the primary action.
       var friend = isFriend(name);
       addBtn.className = 'btn sm ' + (friend ? 'btn-outline' : 'btn-primary');
-      addBtn.innerHTML = friend ? '<i data-lucide="user-minus"></i> Unfriend' : '<i data-lucide="user-plus"></i> Add Friend';
+      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends' : '<i data-lucide="user-plus"></i> Add Friend';
       addBtn.disabled = false;
       msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
       msgBtn.disabled = !friend;
@@ -407,10 +417,25 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    addBtn.addEventListener('click', function () {
+    addBtn.addEventListener('click', function (e) {
       if (!isLoggedIn()) { location.href = loginHref(); return; }
+      if (isFriend(name)) {
+        e.stopPropagation();
+        friendDropdown.hidden = !friendDropdown.hidden;
+        return;
+      }
       toggleFriend(name);
       renderActions();
+    });
+    unfriendOpt.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleFriend(name);
+      renderActions();
+    });
+    document.addEventListener('click', function (e) {
+      if (friendDropdown && !friendDropdown.hidden && !friendDropdown.contains(e.target) && !addBtn.contains(e.target)) {
+        closeFriendDropdown();
+      }
     });
     msgBtn.addEventListener('click', function () {
       if (!isLoggedIn()) { location.href = loginHref(); return; }

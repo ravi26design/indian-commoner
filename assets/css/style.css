@@ -2109,6 +2109,14 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-status:before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:#9aa2ad}
 .mp-tabsrow{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.4rem;border-bottom:1px solid var(--line-2)}
 .mp-tabsrow-actions{display:flex;gap:.6rem;padding:.6rem 0;flex:none}
+.mp-friend-menu{position:relative}
+.mp-friend-dropdown{position:absolute;top:calc(100% + .4rem);left:0;background:#fff;border:1px solid var(--line-2);
+  border-radius:var(--r-sm);box-shadow:var(--shadow-float);padding:.35rem;min-width:9.5rem;z-index:20}
+.mp-friend-dropdown[hidden]{display:none}
+.mp-friend-dropdown button{display:flex;align-items:center;gap:.5rem;width:100%;background:none;border:0;
+  padding:.55rem .7rem;font:600 .82rem/1 var(--sans);color:var(--red);border-radius:.4rem;cursor:pointer;text-align:left}
+.mp-friend-dropdown button:hover{background:var(--red-soft)}
+.mp-friend-dropdown button i{width:15px;height:15px}
 .mp-tabs{display:flex;flex-wrap:wrap;gap:.2rem}
 .mp-tab{display:inline-flex;align-items:center;gap:.45rem;background:none;border:0;border-bottom:3px solid transparent;padding:.7rem .95rem;font:600 .82rem/1 var(--sans);letter-spacing:.03em;text-transform:uppercase;color:var(--muted);cursor:pointer}
 .mp-tab i{width:16px;height:16px}
