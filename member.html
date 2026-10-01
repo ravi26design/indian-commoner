@@ -353,9 +353,7 @@
 
     var addBtn = document.getElementById('mp-add-friend');
     var msgBtn = document.getElementById('mp-message');
-    var actionsRow = document.getElementById('mp-actions');
     var composeSlot = document.getElementById('mp-compose-slot');
-    var hintEl = null;
 
     function loginHref() {
       return 'login.html?return=' + encodeURIComponent(location.href);
@@ -384,30 +382,28 @@
 
     function renderActions() {
       closeCompose();
-      if (!hintEl) {
-        hintEl = document.createElement('span');
-        hintEl.className = 'mp-friend-hint';
-      }
-      hintEl.remove();
 
       if (!isLoggedIn()) {
+        addBtn.className = 'btn btn-primary sm';
         addBtn.innerHTML = '<i data-lucide="user-plus"></i> Add Friend';
         addBtn.disabled = false;
         msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
         msgBtn.disabled = false;
+        msgBtn.title = '';
         if (window.lucide) lucide.createIcons();
         return;
       }
 
+      // Already friends: offer an explicit, clearly-labelled way to
+      // unfriend rather than a silent re-click on an ambiguous "Friends"
+      // badge — clicking Add Friend always toggles the relationship.
       var friend = isFriend(name);
-      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends' : '<i data-lucide="user-plus"></i> Add Friend';
+      addBtn.className = 'btn sm ' + (friend ? 'btn-outline' : 'btn-primary');
+      addBtn.innerHTML = friend ? '<i data-lucide="user-minus"></i> Unfriend' : '<i data-lucide="user-plus"></i> Add Friend';
       addBtn.disabled = false;
       msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
       msgBtn.disabled = !friend;
-      if (!friend) {
-        hintEl.textContent = 'Add ' + name + ' as a friend to send a message.';
-        actionsRow.appendChild(hintEl);
-      }
+      msgBtn.title = friend ? '' : ('Add ' + name + ' as a friend to send a message.');
       if (window.lucide) lucide.createIcons();
     }
 

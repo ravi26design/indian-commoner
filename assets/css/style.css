@@ -2150,9 +2150,12 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-mt{display:inline-flex;align-items:center;gap:.35rem;background:none;border:0;border-bottom:2px solid transparent;padding:.5rem .5rem;font:600 .78rem/1 var(--sans);color:var(--muted);cursor:pointer}
 .mp-mt i{width:15px;height:15px}
 .mp-mt.on{color:var(--green);border-bottom-color:var(--green)}
-.mp-media-pane{display:grid;grid-template-columns:repeat(auto-fill,minmax(6.5rem,1fr));gap:.8rem}
+.mp-media-pane{display:grid;grid-template-columns:repeat(6,1fr);gap:.9rem}
 .mp-media-pane[data-media-pane="audios"],.mp-media-pane[data-media-pane="files"]{display:flex;flex-direction:column;gap:.6rem}
 .mp-media-pane[hidden]{display:none}
+@media(max-width:900px){.mp-media-pane{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:600px){.mp-media-pane{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:420px){.mp-media-pane{grid-template-columns:repeat(2,1fr)}}
 .mp-media-tile{aspect-ratio:1;border-radius:var(--r-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:.35rem;color:#fff;overflow:hidden}
 .mp-media-tile i{width:20px;height:20px}
@@ -2164,7 +2167,6 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-media-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0 .2rem}
 
 /* ---- Add Friend / Message flow ---- */
-.mp-friend-hint{flex-basis:100%;font-size:.78rem;color:var(--muted-2);margin:-.3rem 0 .6rem}
 .mp-compose{background:var(--white);border:1px solid var(--line-2);border-radius:var(--r);padding:1rem 1.1rem;margin-top:1rem}
 .mp-compose textarea{width:100%;border:1px solid var(--line-2);border-radius:var(--r-sm);padding:.7rem .8rem;
   font:inherit;font-size:.9rem;color:var(--ink);resize:vertical;min-height:4.5rem}
