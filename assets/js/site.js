@@ -55,10 +55,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // Members Directory grid and profile page fall back to a name-based
   // placeholder avatar — first initial on the same deterministic colour
   // used for every other avatar on the site — instead of a generic icon.
-  document.querySelectorAll('.mc-avatar, .mp-avatar').forEach(function (av) {
+  // A plain data-avatar-name attribute (used by the demo "Friends" list on
+  // the profile page) overrides the membercard/#mp-name lookup, since those
+  // avatars aren't tied to either.
+  document.querySelectorAll('.mc-avatar, .mp-avatar, [data-avatar-name]').forEach(function (av) {
     var card = av.closest('.membercard');
-    var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
-    var name = nameEl ? nameEl.textContent.trim() : '';
+    var name = av.hasAttribute('data-avatar-name')
+      ? av.getAttribute('data-avatar-name')
+      : (card ? (card.querySelector('.mc-name') || {}).textContent : (document.getElementById('mp-name') || {}).textContent);
+    name = (name || '').trim();
     if (!name) return;
     av.textContent = name.charAt(0).toUpperCase();
     tintAvatar(av, name);

@@ -119,41 +119,43 @@
           <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
           <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
         </div>
-        <div class="mp-tabsrow-actions">
-          <button type="button" class="btn btn-primary sm"><i data-lucide="user-plus"></i> Add Friend</button>
-          <button type="button" class="btn btn-outline sm"><i data-lucide="mail"></i> Message</button>
+        <div class="mp-tabsrow-actions" id="mp-actions">
+          <button type="button" class="btn btn-primary sm" id="mp-add-friend"><i data-lucide="user-plus"></i> Add Friend</button>
+          <button type="button" class="btn btn-outline sm" id="mp-message"><i data-lucide="mail"></i> Message</button>
         </div>
       </div>
+      <div id="mp-compose-slot"></div>
 
-      <div class="mp-grid">
-        <div class="mp-main">
-          <div id="mp-info" class="mp-pane">
-            <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="info"></i></span> Base</div>
-            <div class="mp-field"><span class="mp-field-k">First Name</span><span class="mp-field-v" id="mp-first">Ravi</span></div>
-          </div>
-          <div id="mp-friends" class="mp-pane" hidden>
-            <div class="mp-empty"><i data-lucide="users"></i> No connections yet.</div>
-          </div>
-          <div id="mp-posts" class="mp-pane" hidden>
-            <div class="mp-empty"><i data-lucide="message-square"></i> No posts to show yet.</div>
-          </div>
-          <div id="mp-media" class="mp-pane" hidden>
-            <div class="mp-empty"><i data-lucide="image"></i> Sorry, no items found.</div>
-          </div>
+      <div class="mp-main">
+        <div id="mp-info" class="mp-pane">
+          <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="info"></i></span> Base</div>
+          <div class="mp-field"><span class="mp-field-k">First Name</span><span class="mp-field-v" id="mp-first">Ravi</span></div>
+          <div class="mp-field"><span class="mp-field-k">Last Name</span><span class="mp-field-v" id="mp-last">&mdash;</span></div>
+          <div class="mp-field"><span class="mp-field-k">Location</span><span class="mp-field-v" id="mp-location">India</span></div>
+          <div class="mp-field"><span class="mp-field-k">Member Since</span><span class="mp-field-v" id="mp-since">&mdash;</span></div>
+          <div class="mp-field"><span class="mp-field-k">About</span><span class="mp-field-v" id="mp-about">&mdash;</span></div>
         </div>
-
-        <aside class="mp-side">
-          <div class="mp-media-box">
-            <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="image"></i></span> Media</div>
-            <div class="mp-media-tabs">
-              <button class="mp-mt on" data-media="photos"><i data-lucide="image"></i><span>Photos</span></button>
-              <button class="mp-mt" data-media="videos"><i data-lucide="film"></i><span>Videos</span></button>
-              <button class="mp-mt" data-media="audios"><i data-lucide="volume-2"></i><span>Audios</span></button>
-              <button class="mp-mt" data-media="files"><i data-lucide="download-cloud"></i><span>Files</span></button>
-            </div>
-            <div class="mp-media-empty">Sorry, no items found.</div>
+        <div id="mp-friends" class="mp-pane" hidden>
+          <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="users"></i></span> Friends</div>
+          <div class="mp-friend-grid" id="mp-friend-grid"></div>
+        </div>
+        <div id="mp-posts" class="mp-pane" hidden>
+          <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="message-square"></i></span> Posts</div>
+          <div class="mp-post-list" id="mp-post-list"></div>
+        </div>
+        <div id="mp-media" class="mp-pane" hidden>
+          <div class="mp-sec-h"><span class="mp-sec-ic"><i data-lucide="image"></i></span> Media</div>
+          <div class="mp-media-tabs">
+            <button class="mp-mt on" data-media="photos"><i data-lucide="image"></i><span>Photos</span></button>
+            <button class="mp-mt" data-media="videos"><i data-lucide="film"></i><span>Videos</span></button>
+            <button class="mp-mt" data-media="audios"><i data-lucide="volume-2"></i><span>Audios</span></button>
+            <button class="mp-mt" data-media="files"><i data-lucide="download-cloud"></i><span>Files</span></button>
           </div>
-        </aside>
+          <div class="mp-media-pane" data-media-pane="photos"></div>
+          <div class="mp-media-pane" data-media-pane="videos" hidden></div>
+          <div class="mp-media-pane" data-media-pane="audios" hidden></div>
+          <div class="mp-media-pane" data-media-pane="files" hidden></div>
+        </div>
       </div>
 
     </div>
@@ -168,6 +170,147 @@
     if (nameEl) nameEl.textContent = name;
     if (firstEl) firstEl.textContent = name.split(' ')[0];
     document.title = name + ' — Indian Commoner';
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    // ---- Tiny deterministic PRNG seeded from the member's name, so the
+    // same member always gets the same demo Info/Friends/Posts/Media
+    // content on every visit, but different members look different.
+    function seedFromString(s) {
+      var h = 0;
+      for (var i = 0; i < s.length; i++) h = (h * 41 + s.charCodeAt(i)) >>> 0;
+      return h || 1;
+    }
+    function makeRng(seed) {
+      var state = seed % 2147483647;
+      if (state <= 0) state += 2147483646;
+      return function () { state = (state * 16807) % 2147483647; return (state - 1) / 2147483646; };
+    }
+    var rng = makeRng(seedFromString(name));
+    function pick(arr) { return arr[Math.floor(rng() * arr.length)]; }
+    function shuffled(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(rng() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    /* ============================================================
+       Everything below in this block (Info fields beyond First Name,
+       Friends, Posts, Media) is FABRICATED DEMO CONTENT, not real data
+       scraped from indiancommoner.org. No member has a real bio, friends
+       list, posts, or uploaded media in this prototype. It exists only to
+       show what a populated profile page would look like, and is
+       deterministic per name so it stays stable across visits. The member
+       names used as "friends" are the real registered usernames from the
+       real site's member directory, but the friendships themselves are
+       invented — not a claim about who any real person is actually
+       connected to. */
+
+    // Reused from the Members Directory listing (members.html).
+    var ALL_MEMBERS = ['Admin','Ravi','Bowling','Hinson','Honeycutt','Woodward','Jigir','Krinal','Ankush','Coates',
+      'Stougaard','Neal','Lane','Noah','Ezra','Newman','Aagesen','Maxwell','Collier','Dunlap','Wollesen','Padilla',
+      'Boyd','MacGregor','Yates','Maldonado','Valenzuela','Daley','Wagner','Developer','Abel','Riyasat','Reeves',
+      'Vaughan','Vind','Hd','French','Sourya','Jagveer','Ycdkvdgh Jhfdfbj','Khanjan','Rita','Qvist','Thomassen',
+      'Wijay','Rahul Gandhi','Fjxjgdj','Raghunathan','Varadarajan','Mayl'];
+
+    var LOCATIONS = ['India', 'Rajasthan, India', 'Karnataka, India', 'Odisha, India', 'Maharashtra, India',
+      'Uttarakhand, India', 'Andhra Pradesh, India', 'Madhya Pradesh, India'];
+    var ABOUTS = [
+      'Interested in community-led management of shared natural resources.',
+      'Follows discussions on village commons and local governance.',
+      'Here to learn from others working on commons issues across India.',
+      'Occasional contributor to the forum and resource library.',
+      'Curious about how different states handle common land and water.'
+    ];
+    function demoInfo() {
+      var last = name.trim().indexOf(' ') > -1 ? name.trim().split(' ').slice(1).join(' ') : '—';
+      var year = 2019 + Math.floor(rng() * 7);
+      var month = pick(['January','February','March','April','May','June','July','August','September','October','November','December']);
+      var lastEl = document.getElementById('mp-last');
+      var locEl = document.getElementById('mp-location');
+      var sinceEl = document.getElementById('mp-since');
+      var aboutEl = document.getElementById('mp-about');
+      if (lastEl) lastEl.textContent = last;
+      if (locEl) locEl.textContent = pick(LOCATIONS);
+      if (sinceEl) sinceEl.textContent = month + ' ' + year;
+      if (aboutEl) aboutEl.textContent = pick(ABOUTS);
+    }
+
+    function demoFriends() {
+      var pool = ALL_MEMBERS.filter(function (n) { return n !== name; });
+      var count = 17 + Math.floor(rng() * 4); // 17-20
+      var friends = shuffled(pool).slice(0, Math.min(count, pool.length));
+      var grid = document.getElementById('mp-friend-grid');
+      var badge = document.querySelector('.mp-tab[data-tab="friends"] .mp-badge');
+      if (badge) badge.textContent = friends.length;
+      if (!grid) return;
+      grid.innerHTML = friends.map(function (fn) {
+        var initial = fn.trim().charAt(0).toUpperCase();
+        return '<a class="mp-friend-card" href="member.html?name=' + encodeURIComponent(fn) + '">' +
+          '<span class="mp-friend-av" data-avatar-name="' + escapeHtml(fn) + '">' + escapeHtml(initial) + '</span>' +
+          '<span class="mp-friend-name">' + escapeHtml(fn) + '</span></a>';
+      }).join('');
+    }
+
+    var POST_STUBS = [
+      'Shared a thought on the Discussion forum.',
+      'Replied to a thread in the Discussion forum.',
+      'Posted a question under Start a Conversation.',
+      'Commented on a resource in the Resources section.',
+      'Joined a new discussion thread.',
+      'Looked through the Map exploration page.'
+    ];
+    var POST_TIMES = ['2 days ago', '5 days ago', '1 week ago', '2 weeks ago', '3 weeks ago', '1 month ago', '2 months ago'];
+    function demoPosts() {
+      var count = 2 + Math.floor(rng() * 3); // 2-4
+      var stubs = shuffled(POST_STUBS).slice(0, count);
+      var list = document.getElementById('mp-post-list');
+      if (!list) return;
+      list.innerHTML = stubs.map(function (s) {
+        return '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="message-square"></i></span>' +
+          '<div class="mp-post-body"><p>' + escapeHtml(s) + '</p><span class="mp-post-time">' + pick(POST_TIMES) + '</span></div></div>';
+      }).join('');
+    }
+
+    var MEDIA_TINTS = ['#2563eb', '#0d9488', '#7c3aed', '#d97706', '#db2777', '#475569'];
+    function demoMedia() {
+      var badge = document.querySelector('.mp-tab[data-tab="media"] .mp-badge');
+      var total = 0;
+      ['photos', 'videos', 'audios', 'files'].forEach(function (kind, ki) {
+        var pane = document.querySelector('.mp-media-pane[data-media-pane="' + kind + '"]');
+        if (!pane) return;
+        var count = 3 + Math.floor(rng() * 4); // 3-6
+        total += count;
+        var html = '';
+        for (var i = 1; i <= count; i++) {
+          var tint = MEDIA_TINTS[(ki + i) % MEDIA_TINTS.length];
+          if (kind === 'photos') {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="image"></i><span>Photo ' + i + '</span></div>';
+          } else if (kind === 'videos') {
+            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="play"></i><span>Clip ' + i + '</span></div>';
+          } else if (kind === 'audios') {
+            html += '<div class="mp-media-row"><i data-lucide="volume-2"></i><span><b>Voice note ' + i + '.mp3</b><small>' + (1 + Math.floor(rng() * 4)) + ' min</small></span></div>';
+          } else {
+            html += '<div class="mp-media-row"><i data-lucide="file"></i><span><b>Document ' + i + '.pdf</b><small>' + (120 + Math.floor(rng() * 800)) + ' KB</small></span></div>';
+          }
+        }
+        pane.innerHTML = html;
+      });
+      if (badge) badge.textContent = total;
+    }
+
+    demoInfo();
+    demoFriends();
+    demoPosts();
+    demoMedia();
+
     document.querySelectorAll('.mp-tab').forEach(function (t) {
       t.addEventListener('click', function () {
         document.querySelectorAll('.mp-tab').forEach(function (x) { x.classList.remove('on'); });
@@ -180,18 +323,106 @@
       b.addEventListener('click', function () {
         document.querySelectorAll('.mp-mt').forEach(function (x) { x.classList.remove('on'); });
         b.classList.add('on');
+        var kind = b.getAttribute('data-media');
+        document.querySelectorAll('.mp-media-pane').forEach(function (pane) {
+          pane.hidden = (pane.getAttribute('data-media-pane') !== kind);
+        });
       });
     });
-    /* Add Friend / Message CTAs are prototype-only — acknowledge the click
-       rather than navigating away or doing nothing silently. */
-    document.querySelectorAll('.mp-tabsrow-actions .btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var isFriend = btn.classList.contains('btn-primary');
-        btn.innerHTML = isFriend ? '<i data-lucide="check"></i> Request Sent' : '<i data-lucide="check"></i> Sent';
-        btn.disabled = true;
+
+    // ---- Add Friend / Message flow ----------------------------------
+    // Prototype-only, backed by localStorage (no real backend). A visitor
+    // can only message a profile once they've added that profile as a
+    // friend — mirrors a common "friends-only messaging" pattern.
+    function isLoggedIn() {
+      try { return localStorage.getItem('ic-logged-in') === '1'; } catch (e) { return false; }
+    }
+    function getFriends() {
+      try { return JSON.parse(localStorage.getItem('ic_friends') || '[]'); } catch (e) { return []; }
+    }
+    function setFriends(list) {
+      try { localStorage.setItem('ic_friends', JSON.stringify(list)); } catch (e) {}
+    }
+    function isFriend(n) { return getFriends().indexOf(n) !== -1; }
+    function toggleFriend(n) {
+      var list = getFriends();
+      var i = list.indexOf(n);
+      if (i === -1) list.push(n); else list.splice(i, 1);
+      setFriends(list);
+    }
+
+    var addBtn = document.getElementById('mp-add-friend');
+    var msgBtn = document.getElementById('mp-message');
+    var actionsRow = document.getElementById('mp-actions');
+    var composeSlot = document.getElementById('mp-compose-slot');
+    var hintEl = null;
+
+    function loginHref() {
+      return 'login.html?return=' + encodeURIComponent(location.href);
+    }
+
+    function closeCompose() { if (composeSlot) composeSlot.innerHTML = ''; }
+
+    function openCompose() {
+      if (!composeSlot) return;
+      composeSlot.innerHTML =
+        '<div class="mp-compose"><textarea id="mp-compose-text" placeholder="Write a message to ' + escapeHtml(name) + '…"></textarea>' +
+        '<div class="mp-compose-actions">' +
+        '<button type="button" class="btn btn-ghost sm" id="mp-compose-cancel">Cancel</button>' +
+        '<button type="button" class="btn btn-primary sm" id="mp-compose-send"><i data-lucide="send"></i> Send</button>' +
+        '</div></div>';
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('mp-compose-cancel').addEventListener('click', closeCompose);
+      document.getElementById('mp-compose-send').addEventListener('click', function () {
+        var text = document.getElementById('mp-compose-text').value.trim();
+        if (!text) return;
+        composeSlot.innerHTML = '<div class="mp-compose"><div class="mp-compose-sent"><i data-lucide="check-circle"></i> Message sent to ' + escapeHtml(name) + '.</div></div>';
         if (window.lucide) lucide.createIcons();
+        setTimeout(closeCompose, 2600);
       });
+    }
+
+    function renderActions() {
+      closeCompose();
+      if (!hintEl) {
+        hintEl = document.createElement('span');
+        hintEl.className = 'mp-friend-hint';
+      }
+      hintEl.remove();
+
+      if (!isLoggedIn()) {
+        addBtn.innerHTML = '<i data-lucide="user-plus"></i> Add Friend';
+        addBtn.disabled = false;
+        msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
+        msgBtn.disabled = false;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      var friend = isFriend(name);
+      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends' : '<i data-lucide="user-plus"></i> Add Friend';
+      addBtn.disabled = false;
+      msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
+      msgBtn.disabled = !friend;
+      if (!friend) {
+        hintEl.textContent = 'Add ' + name + ' as a friend to send a message.';
+        actionsRow.appendChild(hintEl);
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    addBtn.addEventListener('click', function () {
+      if (!isLoggedIn()) { location.href = loginHref(); return; }
+      toggleFriend(name);
+      renderActions();
     });
+    msgBtn.addEventListener('click', function () {
+      if (!isLoggedIn()) { location.href = loginHref(); return; }
+      if (!isFriend(name)) return;
+      if (composeSlot && composeSlot.innerHTML) { closeCompose(); } else { openCompose(); }
+    });
+
+    renderActions();
     if (window.lucide) lucide.createIcons();
   })();
   </script>
