@@ -24,36 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
     av.style.color = '#fff';
   }
 
-  // Deterministic per-member cover-banner image for the Members Directory
-  // grid and public profile page — no member has a real uploaded cover photo
-  // in this prototype, so this reuses the site's own real commons artwork
-  // (already published elsewhere on the site) as decorative placeholder
-  // banners, varied by name the same way avatar colours are so a member's
-  // grid card and profile page match. Deliberately drawn only from images
-  // with no identifiable real person in them (illustration or landscape).
-  var COVER_IMAGES = [
-    'assets/img/hero-commoning.jpg',
-    'assets/img/hero-types.jpg',
-    'assets/img/ch-1.jpg',
-    'assets/img/ch-2.jpg',
-    'assets/img/ch-3.jpg',
-    'assets/img/governing-hero.jpg'
-  ];
-  function coverImage(name) {
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) hash = (hash * 33 + name.charCodeAt(i)) >>> 0;
-    return COVER_IMAGES[hash % COVER_IMAGES.length];
-  }
-  document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
-    var card = cover.closest('.membercard');
-    var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
-    var name = nameEl ? nameEl.textContent.trim() : '';
-    if (!name) return;
-    cover.style.backgroundImage = 'url(' + coverImage(name) + ')';
-    cover.style.backgroundSize = 'cover';
-    cover.style.backgroundPosition = 'center';
-  });
-
   // No member has a real uploaded profile photo in this prototype, so the
   // Members Directory grid and profile page fall back to a name-based
   // placeholder avatar — first initial on the same deterministic colour
