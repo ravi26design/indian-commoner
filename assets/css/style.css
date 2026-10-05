@@ -2372,6 +2372,8 @@ fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 .up-f .req{color:#b3261e}
 .up-f input[type=text],.up-f input[type=url],.up-f input[type=month],.up-f textarea,.up-f select{font:inherit;font-weight:400;font-size:.92rem;padding:.65rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
 .up-f input:focus,.up-f select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,125,65,.14)}
+.up-f select,.mod-filter select{appearance:none;-webkit-appearance:none;padding-right:2.6rem;cursor:pointer;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6e62' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center/1rem}
 .up-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem}
 .up-chips{display:flex;flex-wrap:wrap;gap:.45rem}
 .up-chip{cursor:pointer}
