@@ -657,7 +657,7 @@
   // Post the asked question into the Discussion forum: persist it so forum.html
   // renders it as a new thread, then show the confirmation modal (whose CTA
   // opens the forum).
-  function postToForum(text, th) {
+  function postToForum(text, th, assistantReply) {
     var t = (text || '').trim();
     if (!t) return;
     // Thread -> Theme -> Location -> Conversation: the thread's chosen theme
@@ -665,9 +665,14 @@
     // the post so the forum can later filter, search and map it.
     // ts doubles as the thread's id (forum.html links to thread.html?id=<ts>);
     // body keeps the full question, since the title is truncated for the list.
+    // The Platform Assistant's information text travels with the thread so the
+    // discussion page can show it under the question. Drop the final line
+    // (a prompt aimed at the chat UI: "see below" / "post it as a question")
+    // and the generic fallback's opening sentence, which only makes sense in chat.
+    var answer = (assistantReply || []).slice(0, -1).filter(function (p) { return p.indexOf("This hasn't come up") !== 0; });
     var postLang = th ? th.lang : (detectLanguage(t) || composerLang());
     var rec = { title: t.slice(0, 120), body: t, theme: th ? th.theme : classifyTheme(t), sub: th ? th.sub : '',
-      lang: postLang.label, langCode: postLang.code, state: '', district: '', author: 'You', ts: Date.now() };
+      lang: postLang.label, langCode: postLang.code, answer: answer, state: '', district: '', author: 'You', ts: Date.now() };
     if (th && th.location) {
       rec.state = th.location.state || '';
       rec.district = th.location.district || '';
@@ -1133,7 +1138,7 @@
         if (again) again.classList.add('open');
         return;
       }
-      postToForum(forText, th);
+      postToForum(forText, th, reply);
       postBtn.classList.add('posted');
       postBtn.innerHTML = '<i data-lucide="check"></i> Posted to forum';
       if (window.lucide) lucide.createIcons();

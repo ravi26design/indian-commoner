@@ -134,7 +134,13 @@
           </div>
         </div>
         <div class="post-body">
-          <p id="t-body"></p>
+          <div class="post-body-in">
+            <p class="post-q" id="t-body"></p>
+            <div class="post-ai" id="t-ai" hidden>
+              <div class="post-ai-h"><i data-lucide="sparkles"></i> Platform Assistant</div>
+              <div id="t-ai-text"></div>
+            </div>
+          </div>
         </div>
         <div class="post-foot">
           <div class="row">
@@ -213,13 +219,6 @@
         <h4>Voices in this thread</h4>
         <div class="avstack" id="t-avstack"></div>
         <a class="btn btn-outline block" style="margin-top:1rem" href="members.html">See all participants</a>
-      </div>
-
-      <div class="sidecard">
-        <h4>Related on the platform</h4>
-        <a class="raillink" id="t-rel-theme" href="forum.html"><i data-lucide="layers"></i><span><b>This theme</b><small>More threads in this theme</small></span></a>
-        <a class="raillink" href="resources-laws.html"><i data-lucide="scale"></i><span><b>Laws and Regulations</b><small>Relevant acts, policies and rules</small></span></a>
-        <a class="raillink" href="map.html"><i data-lucide="map"></i><span><b>Map exploration</b><small>Find discussions near this place</small></span></a>
       </div>
 
     </aside>
@@ -544,6 +543,12 @@
   document.getElementById('t-author2').textContent = authorName;
   document.getElementById('t-av').textContent = authorName.charAt(0).toUpperCase();
   document.getElementById('t-body').textContent = thr.body || thr.title;
+  // The Platform Assistant's information text, saved with the thread when it
+  // was posted from Start a Conversation.
+  if (thr.answer && thr.answer.length) {
+    document.getElementById('t-ai-text').innerHTML = thr.answer.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
+    document.getElementById('t-ai').hidden = false;
+  }
   document.getElementById('t-reply-op').setAttribute('data-reply-to', authorName);
 
   var place = thr.state
@@ -558,9 +563,6 @@
   var themeLink = document.getElementById('t-theme-link');
   themeLink.textContent = thr.theme || 'Others';
   themeLink.href = 'forum.html?theme=' + encodeURIComponent(thr.theme || 'Others');
-  var relTheme = document.getElementById('t-rel-theme');
-  relTheme.href = themeLink.href;
-  relTheme.querySelector('b').textContent = shortTheme;
   if (thr.sub) { document.getElementById('t-sub').textContent = thr.sub; document.getElementById('t-sub-row').hidden = false; }
   document.getElementById('t-lang').textContent = thr.lang || 'English';
   if (place) {
