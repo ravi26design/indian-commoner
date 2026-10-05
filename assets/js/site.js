@@ -25,34 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
     av.style.color = '#fff';
   }
 
-  // No member has a real uploaded cover photo in this prototype, so the
-  // Members Directory grid and profile page cover banner gets a randomised
-  // (but deterministic, per name) colour behind the shared wave pattern —
-  // same wave shapes every time, varied gradient so the directory doesn't
-  // look like one flat repeated colour. A member's grid card and their own
-  // profile page always pick the same colour.
-  var WAVE_GRADIENTS = [
-    'linear-gradient(135deg,#1e3a8a 0%,#2a56c6 55%,#4c7fe0 100%)',
-    'linear-gradient(135deg,#065f46 0%,#0d9488 55%,#2dd4bf 100%)',
-    'linear-gradient(135deg,#4c1d95 0%,#7c3aed 55%,#a78bfa 100%)',
-    'linear-gradient(135deg,#9a3412 0%,#d97706 55%,#fbbf24 100%)',
-    'linear-gradient(135deg,#9d174d 0%,#db2777 55%,#f472b6 100%)',
-    'linear-gradient(135deg,#1e293b 0%,#475569 55%,#94a3b8 100%)'
-  ];
-  function coverGradient(name) {
-    var hash = 0;
-    for (var i = 0; i < name.length; i++) hash = (hash * 37 + name.charCodeAt(i)) >>> 0;
-    return WAVE_GRADIENTS[hash % WAVE_GRADIENTS.length];
-  }
-  // (Directory cards use the shared banner illustration instead — see .mc-cover in style.css.)
-  document.querySelectorAll('.mp-cover').forEach(function (cover) {
-    var card = cover.closest('.membercard');
-    var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
-    var name = nameEl ? nameEl.textContent.trim() : '';
-    if (!name) return;
-    cover.style.backgroundImage = coverGradient(name) + ', var(--wave-overlay)';
-  });
-
   // No member has a real uploaded profile photo in this prototype, so the
   // Members Directory grid and profile page fall back to a name-based
   // placeholder avatar — first initial on the same deterministic colour

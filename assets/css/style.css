@@ -2195,7 +2195,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 img, svg, video, iframe, canvas, table{ max-width: 100%; }
 
 /* ============ Public member profile (member.html) ============ */
-.mp-cover{height:220px;position:relative;background:var(--wave-banner);background-size:cover;background-position:center}
+.mp-cover{height:220px;position:relative;background:#e8eef0 url(../img/members-banner.jpg) center/cover no-repeat}
 .mp-id{display:flex;align-items:center;gap:1.1rem;margin-top:1.4rem;position:relative;z-index:1}
 .mp-avatar{width:118px;height:118px;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;justify-content:center;border:5px solid #fff;box-shadow:var(--shadow-card);flex:none;font:700 2.8rem/1 var(--sans)}
 .mp-idtx{padding-bottom:.55rem}
