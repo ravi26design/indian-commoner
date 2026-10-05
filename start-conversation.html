@@ -1067,20 +1067,20 @@
 
     var postBtn = row.querySelector('[data-act="postforum"]');
     if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText, th); });
-    // The new-thread card is its own card below the reply bubble, not part of it.
+    // Order below the reply bubble: related threads/resources, then the
+    // new-thread card last — each its own card, not part of the reply.
+    if (resultsHtml || resourceResultsHtml) {
+      var relatedRow = document.createElement('div');
+      relatedRow.className = 'msg-row ai msg-related-row';
+      relatedRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-related-body">' + resultsHtml + resourceResultsHtml + '</div>';
+      thread.appendChild(relatedRow);
+    }
     if (th) {
       var threadRow = document.createElement('div');
       threadRow.className = 'msg-row ai msg-thread-row';
       threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
       thread.appendChild(threadRow);
       setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
-    }
-    // Related threads/resources are likewise their own card, not part of the reply.
-    if (resultsHtml || resourceResultsHtml) {
-      var relatedRow = document.createElement('div');
-      relatedRow.className = 'msg-row ai msg-related-row';
-      relatedRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-related-body">' + resultsHtml + resourceResultsHtml + '</div>';
-      thread.appendChild(relatedRow);
     }
 
     var replyBtn = row.querySelector('[data-act="reply"]');
