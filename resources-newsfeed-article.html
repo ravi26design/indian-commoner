@@ -206,6 +206,47 @@
 <script>
   (function () {
     var p = new URLSearchParams(location.search);
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+    // A community-written article (submitted on the Newsfeed page): shown once a
+    // Moderator has approved it — or to its author and to Moderators, who can
+    // read it while it is still waiting for review.
+    var subId = p.get('id');
+    if (subId) {
+      var rec = null, role = '', logged = false;
+      try {
+        rec = JSON.parse(localStorage.getItem('ic_resource_submissions') || '[]').filter(function (i) { return i.id === subId; })[0] || null;
+        role = localStorage.getItem('ic-role') || ''; logged = localStorage.getItem('ic-logged-in') === '1';
+      } catch (e) {}
+      var allowed = rec && (rec.status === 'approved' || (logged && (role === 'Moderator' || rec.by === 'Priya Sharma')));
+      var body = document.querySelector('#art-body').parentNode;
+      if (!allowed) {
+        document.getElementById('art-title').textContent = 'Article not available';
+        document.getElementById('art-date').textContent = '';
+        document.getElementById('art-crumb').textContent = 'Not available';
+        body.innerHTML = '<p style="text-align:center;color:var(--muted)">This article isn\u2019t published, or it was saved in a different browser.</p>';
+        return;
+      }
+      var month = rec.date ? new Date(rec.date + '-01T00:00:00').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) : '';
+      document.getElementById('art-title').textContent = rec.title;
+      document.getElementById('art-title-tag').textContent = rec.title + ' \u2014 Indian Commoner';
+      document.getElementById('art-crumb').textContent = rec.title;
+      document.getElementById('art-date').textContent = [month, rec.source].filter(Boolean).join(' \u00b7 ') || 'Newsfeed';
+      var html = '';
+      if (rec.status !== 'approved') html += '<p class="up-status st-pending" style="margin-bottom:1.5rem">Awaiting moderator review \u2014 only you and Moderators can see this.</p>';
+      (rec.sections || []).forEach(function (sec, n) {
+        if (sec.sub) html += '<h2 style="margin-top:' + (n ? '2.25rem' : '0') + '">' + esc(sec.sub) + '</h2>';
+        String(sec.text || '').split(/\n\s*\n/).forEach(function (para) {
+          if (para.trim()) html += '<p style="color:var(--ink-2);line-height:1.8;font-size:1.05rem;margin:0 0 1.1rem">' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>';
+        });
+      });
+      var link = /^https?:\/\/\S+$/i.test(rec.link || '') ? rec.link : '';
+      html += '<p style="color:var(--muted);margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1.25rem;font-size:.9rem">Submitted by ' + esc(rec.by) +
+        (link ? ' \u00b7 <a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">Original article</a>' : '') + '</p>';
+      body.innerHTML = html;
+      return;
+    }
+
     var title = p.get('title') || 'Newsfeed article';
     var date = p.get('date') || '';
     var source = p.get('source') || '';

@@ -20,7 +20,7 @@
     videos:     { kind: 'Video',      cta: 'Upload Video',                 icon: 'video',     accept: 'video/*,.mp4,.webm,.mov',      linkHint: 'YouTube or other video link', themes: true,  level: true,  file: true,  linkReq: false },
     podcasts:   { kind: 'Podcast',    cta: 'Upload Podcasts',              icon: 'mic',       accept: 'audio/*,.mp3,.m4a,.wav,.ogg',  linkHint: 'Podcast or audio link',       themes: true,  level: false, file: true,  linkReq: false },
     literature: { kind: 'Literature', cta: 'Upload Literature',            icon: 'book-open', accept: '.pdf,.doc,.docx,.epub,.txt',   linkHint: 'Link to the publication',     themes: true,  level: true,  file: true,  linkReq: false },
-    newsfeed:   { kind: 'Newsfeed',   cta: 'Upload Newsfeed',              icon: 'newspaper', accept: '',                             linkHint: 'Link to the article',         themes: false, level: false, file: false, linkReq: true, news: true },
+    newsfeed:   { kind: 'Newsfeed',   cta: 'Upload Newsfeed',              icon: 'newspaper', accept: '',                             linkHint: 'Link to the original article', themes: false, level: false, file: false, linkReq: false, news: true },
     laws:       { kind: 'Law',        cta: 'Upload Laws and Regulations',  icon: 'scale',     accept: '.pdf,.doc,.docx,.txt',         linkHint: 'Link to the official text',   themes: false, level: false, file: true,  linkReq: false, law: true }
   };
 
@@ -81,11 +81,15 @@
       ? '<a class="up-yt" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/' + yt + '/hqdefault.jpg" alt="" loading="lazy"><span class="v-play"><i data-lucide="play"></i></span></a>'
       : '';
     var line = i.news ? '<div class="up-extra">' + esc([fmtMonth(i.date), i.source].filter(Boolean).join(' · ')) + '</div>' : '';
+    var secs = i.sections || [], firstP = '';
+    for (var k = 0; k < secs.length && !firstP; k++) firstP = (secs[k].text || '').trim();
+    var excerpt = firstP ? '<p class="up-excerpt">' + esc(firstP.length > 170 ? firstP.slice(0, 170).replace(/\s+\S*$/, '') + '…' : firstP) + '</p>' : '';
     var meta = [];
     if (i.fileName) meta.push(esc(i.fileName) + ' · ' + fmtSize(i.fileSize));
     meta.push('Submitted by ' + esc(i.by) + ' · ' + fmtDate(i.ts));
     var acts = '';
-    if (link) acts += '<a class="btn btn-outline sm" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i> Open link</a>';
+    if (secs.length) acts += '<a class="btn btn-outline sm" href="resources-newsfeed-article.html?id=' + encodeURIComponent(i.id) + '"><i data-lucide="book-open"></i> Read article</a>';
+    if (link) acts += '<a class="btn btn-outline sm" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i> ' + (secs.length ? 'Original link' : 'Open link') + '</a>';
     if (i.hasFile) acts += '<button type="button" class="btn btn-outline sm" data-act="open"><i data-lucide="eye"></i> Open file</button>' +
                            '<button type="button" class="btn btn-outline sm" data-act="download"><i data-lucide="download"></i> Download</button>';
     var reason = (i.status === 'rejected' && i.reason) ? '<p class="up-reason"><b>Moderator note:</b> ' + esc(i.reason) + '</p>' : '';
@@ -100,7 +104,7 @@
     }
     return '<article class="card up-card" data-id="' + i.id + '"><div class="up-media">' + media + '</div><div class="up-body">' +
       '<div class="up-tags"><span class="tag solid up-kind"><i data-lucide="' + cfg.icon + '"></i> ' + esc(cfg.kind) + '</span>' + status + '</div>' +
-      '<h3>' + esc(i.title) + '</h3>' + line +
+      '<h3>' + esc(i.title) + '</h3>' + line + excerpt +
       (tags ? '<div class="up-tags">' + tags + '</div>' : '') + reason +
       '<div class="up-meta">' + meta.join('<br>') + '</div>' +
       '<div class="up-acts">' + acts + '</div></div></article>';
@@ -197,7 +201,11 @@
   if (cfg.level) fields += '<label class="up-f"><span>Level <span class="req">*</span></span><select name="level">' + opts(['Beginner', 'Intermediate', 'Advanced']) + '</select></label>';
   if (cfg.news) {
     fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
-      '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>';
+      '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>' +
+      '<div class="up-f up-article"><span>Article <span class="req">*</span></span>' +
+        '<p class="up-hint">Write the article as sub-titles and paragraphs. Add as many sections as you need.</p>' +
+        '<div class="up-secs"></div>' +
+        '<button type="button" class="btn btn-outline sm up-add"><i data-lucide="plus"></i> Add sub-title &amp; paragraph</button></div>';
   }
   if (cfg.law) {
     fields += '<div class="up-row"><label class="up-f"><span>Region <span class="req">*</span></span><select name="region">' + opts(['Central (India)'].concat(pageValues('region'), ['Other'])) + '</select></label>' +
@@ -208,7 +216,7 @@
     fields += '<div class="up-f"><span>File</span><label class="up-drop"><i data-lucide="upload-cloud"></i><span class="up-drop-t">Choose a file</span><small>Up to ' + MAX_MB + ' MB</small>' +
       '<input type="file" name="file" accept="' + esc(cfg.accept) + '" hidden></label></div><div class="up-or"><span>or</span></div>';
   }
-  fields += '<label class="up-f"><span>' + (cfg.linkReq ? 'Link <span class="req">*</span>' : 'Link') + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
+  fields += '<label class="up-f"><span>' + (cfg.news ? 'Original link <small class="up-opt">(optional)</small>' : 'Link') + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
   modal.innerHTML =
     '<div class="modal-card wide pw-modal up-modal" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
       '<div class="fm-head"><div><span class="kicker">Goes to a Moderator for review</span><b id="up-title">' + esc(cfg.cta) + '</b></div>' +
@@ -223,9 +231,39 @@
   var fileIn = form.elements.file, dropT = modal.querySelector('.up-drop-t');
   function showErr(t) { err.textContent = t; err.hidden = !t; }
   function close() { modal.classList.remove('open'); }
+
+  // Newsfeed: the article is built from any number of sub-title + paragraph sections.
+  var secsEl = modal.querySelector('.up-secs');
+  function addSection() {
+    var d = document.createElement('div');
+    d.className = 'up-sect';
+    d.innerHTML = '<div class="up-sect-h"><b class="up-sect-n"></b><button type="button" class="up-sect-x" aria-label="Remove this section"><i data-lucide="trash-2"></i></button></div>' +
+      '<label class="up-f"><span>Sub-title</span><input type="text" class="up-sub" maxlength="160" placeholder="Sub-title (optional)"></label>' +
+      '<label class="up-f"><span>Paragraph</span><textarea class="up-par" rows="4" maxlength="4000" placeholder="Write the paragraph. Leave a blank line to start another paragraph under the same sub-title."></textarea></label>';
+    secsEl.appendChild(d);
+    renumber();
+    if (window.lucide) lucide.createIcons();
+    return d;
+  }
+  function renumber() {
+    var all = secsEl.querySelectorAll('.up-sect');
+    all.forEach(function (d, n) {
+      d.querySelector('.up-sect-n').textContent = 'Section ' + (n + 1);
+      d.querySelector('.up-sect-x').hidden = all.length < 2;
+    });
+  }
+  if (secsEl) {
+    modal.querySelector('.up-add').addEventListener('click', function () { addSection().querySelector('input').focus(); });
+    secsEl.addEventListener('click', function (e) {
+      var x = e.target.closest('.up-sect-x'); if (!x) return;
+      x.closest('.up-sect').remove(); renumber();
+    });
+  }
   btn.addEventListener('click', function () {
     if (!loggedIn()) { location.href = 'login.html?return=' + encodeURIComponent(location.href); return; }
-    form.reset(); if (dropT) dropT.textContent = 'Choose a file'; showErr(''); modal.classList.add('open'); form.elements.title.focus();
+    form.reset(); if (dropT) dropT.textContent = 'Choose a file'; showErr('');
+    if (secsEl) { secsEl.innerHTML = ''; addSection(); }
+    modal.classList.add('open'); form.elements.title.focus();
   });
   modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-up-close]')) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
@@ -239,15 +277,23 @@
     if (cfg.themes && !themes.length) return showErr('Pick at least one theme.');
     if (cfg.news && !f.date.value) return showErr('Add the month it was published.');
     if (cfg.news && !f.source.value.trim()) return showErr('Add the source / publication.');
-    if (cfg.linkReq && !link) return showErr('Add the link to the article.');
-    if (!cfg.linkReq && !file && !link) return showErr('Choose a file or paste a link.');
+    var sections = [];
+    if (cfg.news) {
+      [].forEach.call(secsEl.querySelectorAll('.up-sect'), function (d) {
+        var sub = d.querySelector('.up-sub').value.trim(), text = d.querySelector('.up-par').value.trim();
+        if (sub || text) sections.push({ sub: sub, text: text });
+      });
+      if (!sections.some(function (x) { return x.text; })) return showErr('Write at least one paragraph for the article.');
+      if (sections.some(function (x) { return x.sub && !x.text; })) return showErr('Each sub-title needs a paragraph under it.');
+    }
+    if (!cfg.news && !file && !link) return showErr('Choose a file or paste a link.');
     if (link && !safeUrl(link)) return showErr('The link should start with http:// or https://');
     if (file && file.size > MAX_MB * 1048576) return showErr('That file is larger than ' + MAX_MB + ' MB.');
     var isMod = role() === 'Moderator';           // a Moderator's own upload needs no second review
     var id = 'r' + Date.now() + Math.floor(Math.random() * 1000);
     var item = {
       id: id, page: page, title: title, themes: themes, level: cfg.level ? f.level.value : '', link: link,
-      news: !!cfg.news, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
+      news: !!cfg.news, sections: sections, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
       region: cfg.law ? f.region.value : '', subject: cfg.law ? f.subject.value : '', type: cfg.law ? f.type.value : '',
       hasFile: !!file, fileName: file ? file.name : '', fileSize: file ? file.size : 0, fileType: file ? file.type : '',
       status: isMod ? 'approved' : 'pending', by: ME, ts: Date.now()
