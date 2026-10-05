@@ -409,7 +409,7 @@
       // state (a small dropdown) rather than offered as the primary action.
       var friend = isFriend(name);
       addBtn.className = 'btn sm ' + (friend ? 'btn-outline' : 'btn-primary');
-      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends' : '<i data-lucide="user-plus"></i> Add Friend';
+      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends <i data-lucide="chevron-down"></i>' : '<i data-lucide="user-plus"></i> Add Friend';
       addBtn.disabled = false;
       msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
       msgBtn.disabled = !friend;

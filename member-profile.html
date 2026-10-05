@@ -302,20 +302,43 @@
       'Vaughan','Vind','Hd','French','Sourya','Jagveer','Ycdkvdgh Jhfdfbj','Khanjan','Rita','Qvist','Thomassen',
       'Wijay','Rahul Gandhi','Fjxjgdj','Raghunathan','Varadarajan','Mayl'];
 
-    function demoFriends() {
+    // The Friends tab reads the same list (localStorage "ic_friends") that
+    // Add Friend / Unfriend on member.html writes, so a friend opened from
+    // here is shown as a friend there — with the option to unfriend — instead
+    // of an "Add Friend" prompt. The first visit seeds that list with this
+    // persona's demo friends; after that, the list is only what the user
+    // changes.
+    function getFriends() {
+      try { return JSON.parse(localStorage.getItem('ic_friends') || '[]'); } catch (e) { return []; }
+    }
+    var demoSeed = (function () {
       var count = 17 + Math.floor(rng() * 4); // 17-20
-      var friends = shuffled(ALL_MEMBERS).slice(0, count);
+      return shuffled(ALL_MEMBERS).slice(0, count);
+    })();
+    try {
+      if (localStorage.getItem('ic_friends_seeded') !== '1') {
+        var merged = getFriends();
+        demoSeed.forEach(function (n) { if (merged.indexOf(n) === -1) merged.push(n); });
+        localStorage.setItem('ic_friends', JSON.stringify(merged));
+        localStorage.setItem('ic_friends_seeded', '1');
+      }
+    } catch (e) {}
+
+    function demoFriends() {
+      var friends = getFriends();
       var grid = document.getElementById('mp-friend-grid');
       var badge = document.querySelector('.mp-tab[data-tab="friends"] .mp-badge');
       if (badge) badge.textContent = friends.length;
       if (!grid) return;
-      grid.innerHTML = friends.map(function (fn) {
+      grid.innerHTML = friends.length ? friends.map(function (fn) {
         var initial = fn.trim().charAt(0).toUpperCase();
         return '<a class="mp-friend-card" href="member.html?name=' + encodeURIComponent(fn) + '">' +
           '<span class="mp-friend-av" data-avatar-name="' + escapeHtml(fn) + '">' + escapeHtml(initial) + '</span>' +
           '<span class="mp-friend-name">' + escapeHtml(fn) + '</span></a>';
-      }).join('');
+      }).join('') : '<p class="muted" style="grid-column:1/-1">No friends yet — add people from their profile pages.</p>';
     }
+    // Coming back from a profile after an unfriend (back button / bfcache).
+    window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 
     var POST_STUBS = [
       'Shared a thought on the Discussion forum.',
