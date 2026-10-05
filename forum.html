@@ -1258,6 +1258,7 @@
     a.innerHTML =
       '<span class="pw-av">' + esc((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
       '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
+      (t.sub ? '<span class="tag tint-slate">' + esc(t.sub) + '</span>' : '') +
       '<span class="tag tint-slate">New · via Start a Conversation</span></div>' +
       '<h3>' + esc(t.title) + '</h3>' +
       '<div class="tr-meta"><span>by <b>' + esc(t.author || 'You') + '</b></span>' + loc + '<span>·</span><span>just now</span></div></div>' +

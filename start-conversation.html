@@ -184,9 +184,10 @@
     });
   });
 
-  // Real theme taxonomy used across the site (forum.html filters, forum-theme-*.html);
-  // sub-themes below are original UI copy for this prototype's demo classifier,
-  // not a scraped or verified taxonomy.
+  // Real theme taxonomy used across the site (forum.html filters, forum-theme-*.html).
+  // THEME_SUBS are the real "Sub-thematic areas" listed on each forum-theme-*.html
+  // page (from indiancommoner.org). Conversion of Commons and Others have no
+  // sub-thematic areas on the site, so they have none here either.
   var THEME_SHORT = {
     'Governing the Commons': 'Governing',
     'Commons as Culture': 'Culture',
@@ -199,14 +200,14 @@
   };
   var THEMES = Object.keys(THEME_SHORT);
   var THEME_SUBS = {
-    'Governing the Commons': ['Grazing rights & calendars', 'Gram sabha process', 'Conflict & dispute resolution', 'Institutional design', 'Monitoring & sanctions'],
-    'Commons as Culture': ['Sacred sites & rituals', 'Craft & material traditions', 'Oral history & memory', 'Festivals & commoning practice'],
-    'Commons as Micro Habitats': ['Sacred groves', 'Urban commons & wetlands', 'Pollinator & bird habitat', 'Restoration ecology'],
-    'Livelihoods, Subsistence & Valuation of Commons': ['NTFP & forest produce', 'Grazing & fodder economy', 'Valuation of commons', 'Market access & pricing'],
-    'Gender and Commons': ["Women's access & control", 'Gendered knowledge systems', 'Representation in institutions'],
-    'Power and Commons': ['Elite capture', 'Social movements', 'Caste & exclusion'],
-    'Conversion of Commons': ['Land-use change', 'Encroachment', 'Infrastructure & acquisition'],
-    'Others': ['Uncategorised']
+    'Governing the Commons': ['Laws and Enactments', 'Policies', 'Tenure Arrangements', 'Institutional Arrangements'],
+    'Commons as Culture': ['Traditional Constructions', 'Sacred Sites and Cultural Landscapes', 'Traditional Knowledge, Customs and Practices'],
+    'Commons as Micro Habitats': ['Biodiversity', 'Invasive Species', 'Fire Ecology', 'Regulatory Functions', 'Restoration Ecology'],
+    'Livelihoods, Subsistence & Valuation of Commons': ['Cash Income', 'Valuation of Commons', 'Reciprocity and Embodied Exchange', 'Security and Subsistence'],
+    'Gender and Commons': ['Differential Access, Dependence and Impacts', 'Gender-Specific Knowledge Systems'],
+    'Power and Commons': ['Differences Within Communities', 'Social Movements'],
+    'Conversion of Commons': [],
+    'Others': []
   };
   var STATES = ['Andhra Pradesh', 'Gujarat', 'Karnataka', 'Madhya Pradesh', 'Maharashtra', 'Meghalaya',
     'Odisha', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'];
@@ -231,6 +232,57 @@
     THEME_KEYWORDS.forEach(function (entry) {
       var score = entry[1].reduce(function (n, re) { return n + (re.test(t) ? 1 : 0); }, 0);
       if (score > bestScore) { best = entry[0]; bestScore = score; }
+    });
+    return best;
+  }
+
+  // Second level of the same mapping: within the chosen theme, score the
+  // message against each real sub-thematic area (count of keyword hits). No
+  // hit at all returns '' so the card says "not sure" and lets the user pick,
+  // rather than guessing.
+  var SUB_KEYWORDS = {
+    'Governing the Commons': {
+      'Laws and Enactments': /\blaws?\b|\bacts?\b|legal|court|legislat|statut|forest rights|\bfra\b|enact/g,
+      'Policies': /polic(y|ies)|scheme|programme|mgnrega|\bnrega\b|jal jeevan|watershed|subsid|government/g,
+      'Tenure Arrangements': /tenure|\btitles?\b|owner|patta|\brecords?\b|land rights|boundar|revenue|encroach/g,
+      'Institutional Arrangements': /gram sabha|panchayat|committee|institution|\brules?\b|bylaw|governance|manag|dispute|council|\bcommunity|\bvillage|protect/g
+    },
+    'Commons as Culture': {
+      'Traditional Constructions': /construct|\bbuild|architect|stepwell|baoli|\bhouses?\b|\bwall|\bbund\b|check.?dam|structure/g,
+      'Sacred Sites and Cultural Landscapes': /sacred|\bgrove|temple|deity|shrine|devrai|pilgrim|landscape|worship/g,
+      'Traditional Knowledge, Customs and Practices': /knowledge|custom|practice|tradition|ritual|festival|\bfolk|\boral\b|\bcraft|elders?|jatra/g
+    },
+    'Commons as Micro Habitats': {
+      'Biodiversity': /biodivers|species|wildlife|\bbirds?\b|animal|\bplants?\b|\bforests?\b|fauna|flora|pollinator|habitat|elephant|\btrees?\b/g,
+      'Invasive Species': /invasive|lantana|prosopis|\bweeds?\b|alien/g,
+      'Fire Ecology': /\bfires?\b|\bburn|wildfire/g,
+      'Regulatory Functions': /regulat|climate|groundwater|recharge|\bsoil|erosion|water table|carbon|flood|microclimate/g,
+      'Restoration Ecology': /restor|regenerat|reveget|reforest|replant|rejuvenat|\brevive|recover/g
+    },
+    'Livelihoods, Subsistence & Valuation of Commons': {
+      'Cash Income': /income|\bcash|\bwages?\b|\bearn|\bsell|\bmarket|\bprice|mgnrega|\bsale\b/g,
+      'Valuation of Commons': /valu(e|ation)|\bworth|contribution|economic|\bcost|benefit/g,
+      'Reciprocity and Embodied Exchange': /reciproc|barter|exchange|\bgift|\blabou?r|help each other|\bshare/g,
+      'Security and Subsistence': /subsist|\bfood|fodder|\bwater|\bfuel|firewood|grazing|livestock|survival|drought|\bdry\b|drying|security|drinking|\bfish|\bpond|\btank\b|\bwells?\b|handpump/g
+    },
+    'Gender and Commons': {
+      'Differential Access, Dependence and Impacts': /access|depend|impact|burden|firewood|collect|exclu|no say|decision/g,
+      'Gender-Specific Knowledge Systems': /knowledge|\bseeds?\b|\bskill|practice|healer|herbal|know-how/g
+    },
+    'Power and Commons': {
+      'Differences Within Communities': /\belite|\bcaste|\bclass\b|inequal|dominan|exclu|marginal|\bdalit|\brich\b|powerful|divide|within/g,
+      'Social Movements': /movement|protest|campaign|struggle|agitation|\brally|chipko|mobili[sz]/g
+    }
+  };
+  function classifySub(theme, text) {
+    var subs = SUB_KEYWORDS[theme];
+    if (!subs) return '';
+    var t = (text || '').toLowerCase();
+    var best = '', bestScore = 0;
+    Object.keys(subs).forEach(function (name) {
+      var hits = t.match(subs[name]);
+      var score = hits ? hits.length : 0;
+      if (score > bestScore) { best = name; bestScore = score; }
     });
     return best;
   }
@@ -568,7 +620,7 @@
     // Thread -> Theme -> Location -> Conversation: the thread's chosen theme
     // and (when given) its latitude, longitude and full address travel with
     // the post so the forum can later filter, search and map it.
-    var rec = { title: t.slice(0, 120), theme: th ? th.theme : classifyTheme(t), state: '', district: '', author: 'You', ts: Date.now() };
+    var rec = { title: t.slice(0, 120), theme: th ? th.theme : classifyTheme(t), sub: th ? th.sub : '', state: '', district: '', author: 'You', ts: Date.now() };
     if (th && th.location) {
       rec.state = th.location.state || '';
       rec.district = th.location.district || '';
@@ -692,6 +744,8 @@
       '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created</div>' +
       '<div class="tc-theme"><span class="tc-k">Theme</span><span class="tc-theme-name"></span>' +
         '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div>' +
+      '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><span class="tc-theme-name tc-sub-name"></span>' +
+        '<label class="tc-change">Change <select class="tc-sub-sel" aria-label="Change sub-theme"></select></label></div>' +
       '<p class="tc-note"></p>' +
       '<div class="tc-loc">' +
         '<button type="button" class="tc-link tc-optional"><i data-lucide="map-pin"></i> Add a location (optional)</button>' +
@@ -707,8 +761,7 @@
         '<div class="tc-status" hidden></div>' +
       '</div>' +
       '<div class="tc-saved" hidden></div>' +
-      '<div class="tc-chain"><span>Thread</span><i data-lucide="chevron-right"></i><span class="tc-chain-theme"></span>' +
-        '<i data-lucide="chevron-right"></i><span class="tc-chain-loc">Location</span><i data-lucide="chevron-right"></i><span>Conversation</span></div>' +
+      '<div class="tc-chain"></div>' +
     '</div>';
   }
 
@@ -717,16 +770,40 @@
     var themeName = $('.tc-theme-name'), themeSel = $('.tc-theme-sel'), note = $('.tc-note');
     var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
     var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved');
-    var chainTheme = $('.tc-chain-theme'), chainLoc = $('.tc-chain-loc');
+    var subRow = $('.tc-sub-row'), subName = $('.tc-sub-name'), subSel = $('.tc-sub-sel'), chain = $('.tc-chain');
     var destroyMap = null, pinToken = null;
+
+    // Thread > Theme > (Sub-theme) > Location > Conversation
+    function renderChain() {
+      var loc = th.location;
+      var locLabel = loc ? (loc.state || (loc.address ? loc.address.split(',')[0] : formatCoords(loc.lat, loc.lng))) : 'Location';
+      var items = [['Thread', false], [THEME_SHORT[th.theme] || th.theme, true]];
+      if (th.sub) items.push([th.sub, true]);
+      items.push([locLabel, !!loc], ['Conversation', false]);
+      chain.innerHTML = items.map(function (it) {
+        return '<span' + (it[1] ? ' class="set"' : '') + '>' + escapeHtml(it[0]) + '</span>';
+      }).join('<i data-lucide="chevron-right"></i>');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function refreshSub() {
+      var subs = THEME_SUBS[th.theme] || [];
+      subRow.hidden = !subs.length;
+      if (!subs.length) return;
+      subName.textContent = th.sub || 'Not sure — choose one';
+      subName.classList.toggle('tc-unset', !th.sub);
+      subSel.innerHTML = '<option value="">Not sure</option>' + subs.map(function (s) {
+        return '<option value="' + escapeHtml(s) + '"' + (s === th.sub ? ' selected' : '') + '>' + escapeHtml(s) + '</option>';
+      }).join('');
+    }
 
     function refreshTheme() {
       themeName.textContent = th.theme;
-      note.textContent = 'This conversation seems to be related to ' + th.theme + '.';
-      chainTheme.textContent = THEME_SHORT[th.theme] || th.theme;
-      chainTheme.classList.add('set');
+      note.textContent = 'This conversation seems to be related to ' + th.theme + (th.sub ? ' › ' + th.sub : '') + '.';
+      refreshSub();
+      renderChain();
       var post = msgRow.querySelector('[data-act="postforum"]');
-      if (post) post.title = 'Post this to the Public Forum under ' + th.theme;
+      if (post) post.title = 'Post this to the Public Forum under ' + th.theme + (th.sub ? ' › ' + th.sub : '');
     }
     function setStatus(msg, isErr) {
       status.textContent = msg || '';
@@ -759,17 +836,14 @@
       locBlock.hidden = true;
       closePanel();
       setStatus('');
-      var short = loc.state || (loc.address ? loc.address.split(',')[0] : coords);
-      chainLoc.textContent = short;
-      chainLoc.classList.add('set');
+      renderChain();
       if (window.lucide) lucide.createIcons();
       saved.querySelector('[data-act="change-loc"]').addEventListener('click', function () {
         th.location = null;
         saved.hidden = true;
         locBlock.hidden = false;
         showAsk();
-        chainLoc.textContent = 'Location';
-        chainLoc.classList.remove('set');
+        renderChain();
       });
     }
 
@@ -917,7 +991,14 @@
       });
     });
     optional.addEventListener('click', showAsk);
-    themeSel.addEventListener('change', function () { th.theme = themeSel.value; refreshTheme(); });
+    // Changing the theme re-maps the sub-theme within it; the sub-theme can
+    // then be overridden on its own.
+    themeSel.addEventListener('change', function () {
+      th.theme = themeSel.value;
+      th.sub = classifySub(th.theme, th.text);
+      refreshTheme();
+    });
+    subSel.addEventListener('change', function () { th.sub = subSel.value; refreshTheme(); });
 
     askWrap.hidden = !th.placeRelated;
     optional.hidden = th.placeRelated;
@@ -930,9 +1011,11 @@
     var matches = findMatches(forText || '');
     var resourceMatches = findResourceMatches(forText || '');
     // A fresh question (not a reply to an earlier message) starts a new thread.
-    var th = (forText && forText.trim() && !(opts && opts.followUp))
-      ? { id: nextThreadId++, text: forText, theme: classifyTheme(forText), placeRelated: isPlaceRelated(forText), location: null }
-      : null;
+    var th = null;
+    if (forText && forText.trim() && !(opts && opts.followUp)) {
+      var thTheme = classifyTheme(forText);
+      th = { id: nextThreadId++, text: forText, theme: thTheme, sub: classifySub(thTheme, forText), placeRelated: isPlaceRelated(forText), location: null };
+    }
     var theme = th ? th.theme : classifyTheme(forText || '');
     // Always lead with a short practical paragraph about what was actually
     // asked, then — separately, below it — any real matching threads and

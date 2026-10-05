@@ -2070,7 +2070,9 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .tc-chain{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;margin-top:.85rem;font-size:.72rem;font-weight:700;color:var(--muted-2)}
 .tc-chain span{background:#fff;border:1px solid var(--line-2);padding:.12rem .5rem;border-radius:999px}
 .tc-chain span.set{color:var(--green-d);border-color:var(--green-line);background:var(--green-soft)}
-.tc-chain i{width:.8rem;height:.8rem}
+.tc-chain i,.tc-chain svg{width:.8rem;height:.8rem;flex:none}
+.tc-sub-row{margin-top:.45rem}
+.tc-theme-name.tc-unset{color:var(--muted-2);background:#fff;border:1px dashed var(--line-2);font-weight:700}
 .msg-map-link{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;font-size:.8rem;
   font-weight:700;color:var(--green-d);text-decoration:none}
 .msg-map-link:hover{text-decoration:underline}
