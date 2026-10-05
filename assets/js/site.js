@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for (var i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
     return AVATAR_TINTS[hash % AVATAR_TINTS.length];
   }
+  window.icAvatarTint = avatarTint;
   function tintAvatar(av, name) {
     if (!av || !name) return;
     av.style.background = avatarTint(name);

@@ -129,7 +129,6 @@
           <button type="button" class="btn btn-outline sm" id="mp-message"><i data-lucide="mail"></i> Message</button>
         </div>
       </div>
-      <div id="mp-compose-slot"></div>
 
       <div class="mp-main">
         <div id="mp-info" class="mp-pane">
@@ -165,6 +164,36 @@
 
     </div>
   </section>
+
+<div class="modal-back" id="chatModal">
+  <div class="modal-card chat-card" role="dialog" aria-modal="true" aria-labelledby="chat-title">
+    <div class="chat-head">
+      <span class="chat-av" id="chat-av"></span>
+      <div class="chat-who"><b id="chat-title"></b><small>Friend</small></div>
+      <div class="chat-opts">
+        <button type="button" class="chat-ib" id="chat-menu-btn" aria-label="Chat options" aria-haspopup="true"><i data-lucide="more-vertical"></i></button>
+        <div class="chat-menu" id="chat-menu" hidden>
+          <button type="button" id="chat-clear"><i data-lucide="trash-2"></i> Clear chat history</button>
+          <button type="button" id="chat-unfriend"><i data-lucide="user-minus"></i> Unfriend</button>
+        </div>
+      </div>
+      <button type="button" class="chat-ib" id="chat-close" aria-label="Close chat"><i data-lucide="x"></i></button>
+    </div>
+    <div class="chat-log" id="chat-log" aria-live="polite"></div>
+    <div class="chat-compose">
+      <div class="chat-emojis" id="chat-emojis" hidden></div>
+      <div class="chat-att" id="chat-att" hidden></div>
+      <div class="chat-row">
+        <button type="button" class="chat-ib" id="chat-attach-btn" aria-label="Attach a file"><i data-lucide="paperclip"></i></button>
+        <input type="file" id="chat-file" hidden>
+        <button type="button" class="chat-ib" id="chat-emoji-btn" aria-label="Add an emoji"><i data-lucide="smile"></i></button>
+        <textarea id="chat-input" rows="1" placeholder="Write a message…" aria-label="Message"></textarea>
+        <button type="button" class="chat-send" id="chat-send" aria-label="Send"><i data-lucide="send"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <script>
   (function () {
@@ -360,7 +389,6 @@
     var msgBtn = document.getElementById('mp-message');
     var friendDropdown = document.getElementById('mp-friend-dropdown');
     var unfriendOpt = document.getElementById('mp-unfriend-opt');
-    var composeSlot = document.getElementById('mp-compose-slot');
 
     function closeFriendDropdown() { if (friendDropdown) friendDropdown.hidden = true; }
 
@@ -368,26 +396,148 @@
       return 'login.html?return=' + encodeURIComponent(location.href);
     }
 
-    function closeCompose() { if (composeSlot) composeSlot.innerHTML = ''; }
+    // ---- Chat window ----------------------------------------------------
+    // Opens from "Message" (friends only). The history is this browser's own
+    // record of what you've sent to this person, kept in localStorage
+    // ("ic_chats"). There is no backend, so nothing is delivered and no
+    // replies are invented — replies would appear here once messaging is live.
+    var chatModal = document.getElementById('chatModal');
+    var chatLog = document.getElementById('chat-log');
+    var chatInput = document.getElementById('chat-input');
+    var chatAtt = document.getElementById('chat-att');
+    var chatFile = document.getElementById('chat-file');
+    var chatMenu = document.getElementById('chat-menu');
+    var chatEmojis = document.getElementById('chat-emojis');
+    var pendingFile = null;
+    var EMOJIS = ['🙂','😊','👍','🙏','🌱','🌾','💧','🌳','❤️','👏','🤝','🎉'];
 
-    function openCompose() {
-      if (!composeSlot) return;
-      composeSlot.innerHTML =
-        '<div class="mp-compose"><textarea id="mp-compose-text" placeholder="Write a message to ' + escapeHtml(name) + '…"></textarea>' +
-        '<div class="mp-compose-actions">' +
-        '<button type="button" class="btn btn-ghost sm" id="mp-compose-cancel">Cancel</button>' +
-        '<button type="button" class="btn btn-primary sm" id="mp-compose-send"><i data-lucide="send"></i> Send</button>' +
-        '</div></div>';
-      if (window.lucide) lucide.createIcons();
-      document.getElementById('mp-compose-cancel').addEventListener('click', closeCompose);
-      document.getElementById('mp-compose-send').addEventListener('click', function () {
-        var text = document.getElementById('mp-compose-text').value.trim();
-        if (!text) return;
-        composeSlot.innerHTML = '<div class="mp-compose"><div class="mp-compose-sent"><i data-lucide="check-circle"></i> Message sent to ' + escapeHtml(name) + '.</div></div>';
-        if (window.lucide) lucide.createIcons();
-        setTimeout(closeCompose, 2600);
-      });
+    function getChat() {
+      try { return (JSON.parse(localStorage.getItem('ic_chats') || '{}')[name]) || []; } catch (e) { return []; }
     }
+    function setChat(list) {
+      try {
+        var all = JSON.parse(localStorage.getItem('ic_chats') || '{}');
+        if (list.length) all[name] = list; else delete all[name];
+        localStorage.setItem('ic_chats', JSON.stringify(all));
+      } catch (e) {}
+    }
+    function dayLabel(ts) {
+      var d = new Date(ts), t = new Date();
+      if (d.toDateString() === t.toDateString()) return 'Today';
+      var y = new Date(t); y.setDate(t.getDate() - 1);
+      if (d.toDateString() === y.toDateString()) return 'Yesterday';
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    function timeLabel(ts) { return new Date(ts).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }); }
+
+    function renderChat() {
+      var list = getChat();
+      if (!list.length) {
+        chatLog.innerHTML = '<div class="chat-empty"><i data-lucide="message-circle"></i><b>No messages yet</b>' +
+          '<span>Say hello to ' + escapeHtml(name) + '. Your messages are saved here in this browser.</span></div>';
+      } else {
+        var html = '', lastDay = '';
+        list.forEach(function (m) {
+          var day = dayLabel(m.ts);
+          if (day !== lastDay) { html += '<div class="chat-day"><span>' + escapeHtml(day) + '</span></div>'; lastDay = day; }
+          html += '<div class="chat-msg" data-id="' + m.id + '"><div class="chat-bub">' +
+            (m.file ? '<span class="chat-file"><i data-lucide="paperclip"></i>' + escapeHtml(m.file) + '</span>' : '') +
+            (m.text ? '<span class="chat-tx">' + escapeHtml(m.text) + '</span>' : '') +
+            '<span class="chat-meta">' + escapeHtml(timeLabel(m.ts)) +
+            '<button type="button" class="chat-del" data-del="' + m.id + '" aria-label="Delete this message" title="Delete message"><i data-lucide="trash-2"></i></button></span>' +
+            '</div></div>';
+        });
+        chatLog.innerHTML = html;
+      }
+      if (window.lucide) lucide.createIcons();
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function setPending(f) {
+      pendingFile = f;
+      chatAtt.hidden = !f;
+      chatAtt.innerHTML = f ? '<i data-lucide="paperclip"></i><span>' + escapeHtml(f) + '</span><button type="button" aria-label="Remove attachment"><i data-lucide="x"></i></button>' : '';
+      if (f) {
+        chatAtt.querySelector('button').addEventListener('click', function () { chatFile.value = ''; setPending(null); });
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+    function sendChat() {
+      var text = chatInput.value.trim();
+      if (!text && !pendingFile) return;
+      var list = getChat();
+      list.push({ id: Date.now() + '' + list.length, text: text, file: pendingFile || '', ts: Date.now() });
+      setChat(list);
+      chatInput.value = '';
+      chatInput.style.height = '';
+      chatFile.value = '';
+      setPending(null);
+      chatEmojis.hidden = true;
+      renderChat();
+      chatInput.focus();
+    }
+    function closeChat() {
+      chatModal.classList.remove('open');
+      chatMenu.hidden = true; chatEmojis.hidden = true;
+      document.body.style.overflow = '';
+    }
+    function openChat() {
+      document.getElementById('chat-title').textContent = name;
+      var av = document.getElementById('chat-av');
+      av.textContent = name.trim().charAt(0).toUpperCase();
+      av.setAttribute('data-avatar-name', name);
+      av.style.background = (window.icAvatarTint ? window.icAvatarTint(name) : '');
+      setPending(null);
+      renderChat();
+      chatModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      chatInput.focus();
+    }
+    function closeCompose() { closeChat(); }
+
+    document.getElementById('chat-close').addEventListener('click', closeChat);
+    chatModal.addEventListener('click', function (e) {
+      if (e.target === chatModal) closeChat();
+      if (!e.target.closest('.chat-opts')) chatMenu.hidden = true;
+      if (!e.target.closest('.chat-compose')) chatEmojis.hidden = true;
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && chatModal.classList.contains('open')) closeChat();
+    });
+    document.getElementById('chat-send').addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
+    chatInput.addEventListener('input', function () {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+    document.getElementById('chat-attach-btn').addEventListener('click', function () { chatFile.click(); });
+    chatFile.addEventListener('change', function () { setPending(chatFile.files[0] ? chatFile.files[0].name : null); });
+    chatEmojis.innerHTML = EMOJIS.map(function (em) { return '<button type="button">' + em + '</button>'; }).join('');
+    document.getElementById('chat-emoji-btn').addEventListener('click', function () { chatEmojis.hidden = !chatEmojis.hidden; });
+    chatEmojis.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      chatInput.value += b.textContent; chatInput.focus();
+    });
+    document.getElementById('chat-menu-btn').addEventListener('click', function () { chatMenu.hidden = !chatMenu.hidden; });
+    document.getElementById('chat-clear').addEventListener('click', function () {
+      chatMenu.hidden = true;
+      if (!getChat().length) return;
+      if (window.confirm('Clear your whole chat history with ' + name + '? This can’t be undone.')) { setChat([]); renderChat(); }
+    });
+    document.getElementById('chat-unfriend').addEventListener('click', function () {
+      chatMenu.hidden = true;
+      toggleFriend(name);
+      closeChat();
+      renderActions();
+    });
+    chatLog.addEventListener('click', function (e) {
+      var d = e.target.closest('[data-del]'); if (!d) return;
+      var id = d.getAttribute('data-del');
+      setChat(getChat().filter(function (m) { return m.id !== id; }));
+      renderChat();
+    });
 
     function renderActions() {
       closeCompose();
@@ -440,13 +590,14 @@
     msgBtn.addEventListener('click', function () {
       if (!isLoggedIn()) { location.href = loginHref(); return; }
       if (!isFriend(name)) return;
-      if (composeSlot && composeSlot.innerHTML) { closeCompose(); } else { openCompose(); }
+      openChat();
     });
 
     renderActions();
     if (window.lucide) lucide.createIcons();
   })();
   </script>
+
 </main>
 
 <footer class="site">
