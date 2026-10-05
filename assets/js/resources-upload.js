@@ -58,6 +58,18 @@
   function getFile(id) { return idb('readonly', function (s) { return s.get(id); }); }
   function delFile(id) { return idb('readwrite', function (s) { return s.delete(id); }); }
 
+  // An article is a list of blocks: title | subtitle | paragraph | image | link.
+  // (Older records stored {sub, text} sections; read those as subtitle + paragraph blocks.)
+  function blocksOf(i) {
+    if (i.blocks) return i.blocks;
+    var out = [];
+    (i.sections || []).forEach(function (x) {
+      if (x.sub) out.push({ type: 'subtitle', text: x.sub });
+      if (x.text) out.push({ type: 'paragraph', text: x.text });
+    });
+    return out;
+  }
+
   function ytId(u) {
     var m = /(?:youtube\.com\/watch\?(?:[^#]*&)?v=|youtu\.be\/)([\w-]{11})/.exec(u || '');
     return m ? m[1] : '';
@@ -81,8 +93,8 @@
       ? '<a class="up-yt" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/' + yt + '/hqdefault.jpg" alt="" loading="lazy"><span class="v-play"><i data-lucide="play"></i></span></a>'
       : '';
     var line = i.news ? '<div class="up-extra">' + esc([fmtMonth(i.date), i.source].filter(Boolean).join(' · ')) + '</div>' : '';
-    var secs = i.sections || [], firstP = '';
-    for (var k = 0; k < secs.length && !firstP; k++) firstP = (secs[k].text || '').trim();
+    var secs = blocksOf(i), firstP = '';
+    for (var k = 0; k < secs.length && !firstP; k++) if (secs[k].type === 'paragraph') firstP = (secs[k].text || '').trim();
     var excerpt = firstP ? '<p class="up-excerpt">' + esc(firstP.length > 170 ? firstP.slice(0, 170).replace(/\s+\S*$/, '') + '…' : firstP) + '</p>' : '';
     var meta = [];
     if (i.fileName) meta.push(esc(i.fileName) + ' · ' + fmtSize(i.fileSize));
@@ -114,6 +126,13 @@
   var urls = [];
   function hydrate(root, items) {
     items.forEach(function (i) {
+      var img = blocksOf(i).filter(function (b) { return b.type === 'image' && b.imgId; })[0];
+      if (img) getFile(img.imgId).then(function (blob) {
+        var slot = root.querySelector('[data-id="' + i.id + '"] .up-media');
+        if (!blob || !slot || slot.innerHTML) return;
+        var u = URL.createObjectURL(blob); urls.push(u);
+        slot.innerHTML = '<img class="up-thumb" src="' + u + '" alt="">';
+      }).catch(function () {});
       if (!i.hasFile || !/^(video|audio)\//.test(i.fileType || '')) return;
       getFile(i.id).then(function (blob) {
         var slot = root.querySelector('[data-id="' + i.id + '"] .up-media');
@@ -181,7 +200,8 @@
       var act = b.getAttribute('data-act');
       if (act === 'delete') {
         if (!window.confirm('Delete “' + item.title + '”?')) return;
-        setItems(getItems().filter(function (i) { return i.id !== id; })); delFile(id).catch(function () {}); render();
+        setItems(getItems().filter(function (i) { return i.id !== id; })); delFile(id).catch(function () {});
+        blocksOf(item).forEach(function (b) { if (b.imgId) delFile(b.imgId).catch(function () {}); }); render();
       } else fileAction(item, act);
     });
   });
@@ -203,9 +223,16 @@
     fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
       '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>' +
       '<div class="up-f up-article"><span>Article <span class="req">*</span></span>' +
-        '<p class="up-hint">Use Add for each sub-title and paragraph — as many as you need.</p>' +
+        '<p class="up-hint">Build the article block by block — add a title, subtitle, paragraph, image or link, in any order.</p>' +
         '<div class="up-secs"></div>' +
-        '<button type="button" class="btn btn-outline sm up-add" title="Add a sub-title and paragraph"><i data-lucide="plus"></i> Add</button></div>';
+        '<div class="up-addwrap"><button type="button" class="btn btn-outline sm up-add" aria-haspopup="true" aria-expanded="false"><i data-lucide="plus"></i> Add</button>' +
+          '<div class="up-menu" role="menu" hidden>' +
+            '<button type="button" role="menuitem" data-type="title"><i data-lucide="heading-1"></i> Title</button>' +
+            '<button type="button" role="menuitem" data-type="subtitle"><i data-lucide="heading-2"></i> Subtitle</button>' +
+            '<button type="button" role="menuitem" data-type="paragraph"><i data-lucide="align-left"></i> Paragraph</button>' +
+            '<button type="button" role="menuitem" data-type="image"><i data-lucide="image"></i> Image</button>' +
+            '<button type="button" role="menuitem" data-type="link"><i data-lucide="link"></i> Link</button>' +
+          '</div></div></div>';
   }
   if (cfg.law) {
     fields += '<div class="up-row"><label class="up-f"><span>Region <span class="req">*</span></span><select name="region">' + opts(['Central (India)'].concat(pageValues('region'), ['Other'])) + '</select></label>' +
@@ -232,36 +259,70 @@
   function showErr(t) { err.textContent = t; err.hidden = !t; if (t) form.scrollTo({ top: 0, behavior: 'smooth' }); }
   function close() { modal.classList.remove('open'); }
 
-  // Newsfeed: the article is built from any number of sub-title + paragraph sections.
+  // Newsfeed: the article is a list of blocks the author adds with the Add menu.
   var secsEl = modal.querySelector('.up-secs');
-  function addSection() {
+  var addBtn = modal.querySelector('.up-add'), menu = modal.querySelector('.up-menu');
+  var BLK = { title: 'Title', subtitle: 'Subtitle', paragraph: 'Paragraph', image: 'Image', link: 'Link' };
+  var MAX_IMG_MB = 10;
+  function blockBody(type) {
+    if (type === 'title') return '<input type="text" class="up-in" maxlength="160" placeholder="Title">';
+    if (type === 'subtitle') return '<input type="text" class="up-in" maxlength="160" placeholder="Subtitle">';
+    if (type === 'paragraph') return '<textarea class="up-in" rows="5" maxlength="5000" placeholder="Write the paragraph. Leave a blank line to start another paragraph."></textarea>';
+    if (type === 'image') return '<label class="up-drop"><i data-lucide="image"></i><span class="up-drop-t">Choose an image</span><small>JPG, PNG or WebP · up to ' + MAX_IMG_MB + ' MB</small><input type="file" class="up-imgfile" accept="image/*" hidden></label>' +
+      '<img class="up-prev" alt="" hidden><input type="text" class="up-cap" maxlength="200" placeholder="Caption (optional)">';
+    return '<div class="up-row"><label class="up-f"><span>Link text</span><input type="text" class="up-ltext" maxlength="160" placeholder="e.g. Read the full report"></label>' +
+      '<label class="up-f"><span>URL</span><input type="url" class="up-lurl" placeholder="https://…"></label></div>';
+  }
+  function addBlock(type) {
     var d = document.createElement('div');
-    d.className = 'up-sect';
-    d.innerHTML = '<div class="up-sect-h"><b class="up-sect-n"></b><button type="button" class="up-sect-x" aria-label="Remove this section"><i data-lucide="trash-2"></i></button></div>' +
-      '<label class="up-f"><span>Sub-title</span><input type="text" class="up-sub" maxlength="160" placeholder="Sub-title (optional)"></label>' +
-      '<label class="up-f"><span>Paragraph</span><textarea class="up-par" rows="4" maxlength="4000" placeholder="Write the paragraph. Leave a blank line to start another paragraph under the same sub-title."></textarea></label>';
+    d.className = 'up-sect'; d.setAttribute('data-type', type);
+    d.innerHTML = '<div class="up-sect-h"><b class="up-sect-n">' + BLK[type] + '</b><span class="up-sect-ctl">' +
+      '<button type="button" class="up-sect-b" data-mv="-1" aria-label="Move up"><i data-lucide="chevron-up"></i></button>' +
+      '<button type="button" class="up-sect-b" data-mv="1" aria-label="Move down"><i data-lucide="chevron-down"></i></button>' +
+      '<button type="button" class="up-sect-b up-sect-x" aria-label="Remove this block"><i data-lucide="trash-2"></i></button></span></div>' + blockBody(type);
     secsEl.appendChild(d);
-    renumber();
     if (window.lucide) lucide.createIcons();
+    var first = d.querySelector('.up-in, .up-ltext'); if (first) first.focus(); else d.querySelector('.up-drop').scrollIntoView({ block: 'nearest' });
     return d;
   }
-  function renumber() {
-    var all = secsEl.querySelectorAll('.up-sect');
-    all.forEach(function (d, n) {
-      d.querySelector('.up-sect-n').textContent = 'Section ' + (n + 1);
-    });
-  }
+  function closeMenu() { menu.hidden = true; addBtn.setAttribute('aria-expanded', 'false'); }
   if (secsEl) {
-    modal.querySelector('.up-add').addEventListener('click', function () { addSection().querySelector('input').focus(); });
+    addBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = menu.hidden; menu.hidden = !open; addBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-type]'); if (!b) return;
+      closeMenu(); addBlock(b.getAttribute('data-type'));
+    });
+    modal.addEventListener('click', function (e) { if (!e.target.closest('.up-addwrap')) closeMenu(); });
     secsEl.addEventListener('click', function (e) {
-      var x = e.target.closest('.up-sect-x'); if (!x) return;
-      x.closest('.up-sect').remove(); renumber();
+      var blk = e.target.closest('.up-sect'); if (!blk) return;
+      if (e.target.closest('.up-sect-x')) {
+        var pv = blk.querySelector('.up-prev'); if (pv && pv.src) URL.revokeObjectURL(pv.src);
+        blk.remove(); return;
+      }
+      var mv = e.target.closest('[data-mv]');
+      if (mv) {
+        var dir = +mv.getAttribute('data-mv');
+        if (dir < 0 && blk.previousElementSibling) secsEl.insertBefore(blk, blk.previousElementSibling);
+        if (dir > 0 && blk.nextElementSibling) secsEl.insertBefore(blk.nextElementSibling, blk);
+      }
+    });
+    secsEl.addEventListener('change', function (e) {
+      if (!e.target.classList.contains('up-imgfile')) return;
+      var blk = e.target.closest('.up-sect'), f = e.target.files[0], pv = blk.querySelector('.up-prev'), t = blk.querySelector('.up-drop-t');
+      if (pv.src) URL.revokeObjectURL(pv.src);
+      if (!f) { pv.hidden = true; t.textContent = 'Choose an image'; return; }
+      if (!/^image\//.test(f.type)) { e.target.value = ''; return showErr('That file isn’t an image.'); }
+      if (f.size > MAX_IMG_MB * 1048576) { e.target.value = ''; return showErr('Images can be up to ' + MAX_IMG_MB + ' MB.'); }
+      showErr(''); pv.src = URL.createObjectURL(f); pv.hidden = false; t.textContent = f.name;
     });
   }
   btn.addEventListener('click', function () {
     if (!loggedIn()) { location.href = 'login.html?return=' + encodeURIComponent(location.href); return; }
     form.reset(); if (dropT) dropT.textContent = 'Choose a file'; showErr('');
-    if (secsEl) secsEl.innerHTML = '';
+    if (secsEl) { secsEl.innerHTML = ''; closeMenu(); }
     modal.classList.add('open'); form.elements.title.focus();
   });
   modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-up-close]')) close(); });
@@ -276,23 +337,39 @@
     if (cfg.themes && !themes.length) return showErr('Pick at least one theme.');
     if (cfg.news && !f.date.value) return showErr('Add the month it was published.');
     if (cfg.news && !f.source.value.trim()) return showErr('Add the source / publication.');
-    var sections = [];
+    var blocks = [], imgFiles = [];
+    var id = 'r' + Date.now() + Math.floor(Math.random() * 1000);
     if (cfg.news) {
+      var bad = '';
       [].forEach.call(secsEl.querySelectorAll('.up-sect'), function (d) {
-        var sub = d.querySelector('.up-sub').value.trim(), text = d.querySelector('.up-par').value.trim();
-        if (sub || text) sections.push({ sub: sub, text: text });
+        if (bad) return;
+        var type = d.getAttribute('data-type');
+        if (type === 'image') {
+          var fl = d.querySelector('.up-imgfile').files[0];
+          if (!fl) { bad = 'Choose an image for each Image block, or remove it.'; return; }
+          var imgId = id + '-i' + imgFiles.length;
+          imgFiles.push({ id: imgId, file: fl });
+          blocks.push({ type: 'image', imgId: imgId, caption: d.querySelector('.up-cap').value.trim(), fileName: fl.name });
+        } else if (type === 'link') {
+          var lt = d.querySelector('.up-ltext').value.trim(), lu = d.querySelector('.up-lurl').value.trim();
+          if (!lt && !lu) return;
+          if (!safeUrl(lu)) { bad = 'Each Link block needs a URL starting with http:// or https://'; return; }
+          blocks.push({ type: 'link', text: lt || lu, url: lu });
+        } else {
+          var tx = d.querySelector('.up-in').value.trim();
+          if (tx) blocks.push({ type: type, text: tx });
+        }
       });
-      if (!sections.some(function (x) { return x.text; })) return showErr('Add at least one sub-title and paragraph for the article.');
-      if (sections.some(function (x) { return x.sub && !x.text; })) return showErr('Each sub-title needs a paragraph under it.');
+      if (bad) return showErr(bad);
+      if (!blocks.some(function (b) { return b.type === 'paragraph'; })) return showErr('Use Add to write at least one paragraph for the article.');
     }
     if (!cfg.news && !file && !link) return showErr('Choose a file or paste a link.');
     if (link && !safeUrl(link)) return showErr('The link should start with http:// or https://');
     if (file && file.size > MAX_MB * 1048576) return showErr('That file is larger than ' + MAX_MB + ' MB.');
     var isMod = role() === 'Moderator';           // a Moderator's own upload needs no second review
-    var id = 'r' + Date.now() + Math.floor(Math.random() * 1000);
     var item = {
       id: id, page: page, title: title, themes: themes, level: cfg.level ? f.level.value : '', link: link,
-      news: !!cfg.news, sections: sections, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
+      news: !!cfg.news, blocks: blocks, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
       region: cfg.law ? f.region.value : '', subject: cfg.law ? f.subject.value : '', type: cfg.law ? f.type.value : '',
       hasFile: !!file, fileName: file ? file.name : '', fileSize: file ? file.size : 0, fileType: file ? file.type : '',
       status: isMod ? 'approved' : 'pending', by: ME, ts: Date.now()
@@ -302,8 +379,9 @@
       showToast(isMod ? 'Published — it’s now on this page.' : 'Submitted. A Moderator will review it before it appears here.');
       (isMod ? secPub : secMine).scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
-    if (file) putFile(id, file).then(done).catch(function () { showErr('Couldn’t save the file in this browser (storage may be full or blocked).'); });
-    else done();
+    var saves = imgFiles.map(function (x) { return putFile(x.id, x.file); });
+    if (file) saves.push(putFile(id, file));
+    Promise.all(saves).then(done).catch(function () { showErr('Couldn’t save the files in this browser (storage may be full or blocked).'); });
   });
 
   function showToast(t) {

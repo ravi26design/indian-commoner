@@ -233,17 +233,38 @@
       document.getElementById('art-crumb').textContent = rec.title;
       document.getElementById('art-date').textContent = [month, rec.source].filter(Boolean).join(' \u00b7 ') || 'Newsfeed';
       var html = '';
-      if (rec.status !== 'approved') html += '<p class="up-status st-pending" style="margin-bottom:1.5rem">Awaiting moderator review \u2014 only you and Moderators can see this.</p>';
-      (rec.sections || []).forEach(function (sec, n) {
-        if (sec.sub) html += '<h2 style="margin-top:' + (n ? '2.25rem' : '0') + '">' + esc(sec.sub) + '</h2>';
-        String(sec.text || '').split(/\n\s*\n/).forEach(function (para) {
-          if (para.trim()) html += '<p style="color:var(--ink-2);line-height:1.8;font-size:1.05rem;margin:0 0 1.1rem">' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>';
+      if (rec.status !== 'approved') html += '<p class="up-status st-pending" style="margin-bottom:1.5rem">Awaiting moderator review — only you and Moderators can see this.</p>';
+      var blocks = rec.blocks;
+      if (!blocks) {            // older records: {sub, text} sections
+        blocks = [];
+        (rec.sections || []).forEach(function (x) { if (x.sub) blocks.push({ type: 'subtitle', text: x.sub }); if (x.text) blocks.push({ type: 'paragraph', text: x.text }); });
+      }
+      var ptxt = 'color:var(--ink-2);line-height:1.8;font-size:1.05rem;margin:0 0 1.1rem';
+      blocks.forEach(function (b, n) {
+        var top = n ? '2.25rem' : '0';
+        if (b.type === 'title') html += '<h2 style="margin:' + top + ' 0 .9rem;font-size:1.75rem">' + esc(b.text) + '</h2>';
+        else if (b.type === 'subtitle') html += '<h3 style="margin:' + top + ' 0 .8rem;font-size:1.3rem">' + esc(b.text) + '</h3>';
+        else if (b.type === 'image') html += '<figure style="margin:1.5rem 0"><img data-img="' + esc(b.imgId) + '" alt="' + esc(b.caption || '') + '" style="display:block;max-width:100%;height:auto;margin:0 auto">' +
+          (b.caption ? '<figcaption style="text-align:center;color:var(--muted);font-size:.85rem;margin-top:.6rem">' + esc(b.caption) + '</figcaption>' : '') + '</figure>';
+        else if (b.type === 'link') {
+          if (/^https?:\/\/\S+$/i.test(b.url || '')) html += '<p style="' + ptxt + '"><a href="' + esc(b.url) + '" target="_blank" rel="noopener noreferrer">' + esc(b.text || b.url) + ' ↗</a></p>';
+        } else String(b.text || '').split(/\n\s*\n/).forEach(function (para) {
+          if (para.trim()) html += '<p style="' + ptxt + '">' + esc(para.trim()).replace(/\n/g, '<br>') + '</p>';
         });
       });
-      var link = /^https?:\/\/\S+$/i.test(rec.link || '') ? rec.link : '';
-      html += '<p style="color:var(--muted);margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1.25rem;font-size:.9rem">Submitted by ' + esc(rec.by) +
-        (link ? ' \u00b7 <a href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">Original article</a>' : '') + '</p>';
+      html += '<p style="color:var(--muted);margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1.25rem;font-size:.9rem">Submitted by ' + esc(rec.by) + '</p>';
       body.innerHTML = html;
+      var imgs = body.querySelectorAll('img[data-img]');
+      if (imgs.length && window.indexedDB) {
+        var q = indexedDB.open('ic-uploads', 1);
+        q.onupgradeneeded = function () { q.result.createObjectStore('files'); };
+        q.onsuccess = function () {
+          imgs.forEach(function (im) {
+            var g = q.result.transaction('files').objectStore('files').get(im.getAttribute('data-img'));
+            g.onsuccess = function () { if (g.result) im.src = URL.createObjectURL(g.result); else im.closest('figure').remove(); };
+          });
+        };
+      }
       return;
     }
 

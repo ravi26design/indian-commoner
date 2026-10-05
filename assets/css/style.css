@@ -2394,7 +2394,25 @@ fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 .up-sect-x{background:none;border:0;color:#b3261e;cursor:pointer;display:inline-flex;padding:.2rem}
 .up-sect-x[hidden]{display:none}
 .up-sect-x i,.up-sect-x svg{width:1rem;height:1rem}
-.up-add{align-self:flex-start}
+.up-addwrap{position:relative;align-self:flex-start}
+.up-menu{position:absolute;top:calc(100% + .35rem);left:0;z-index:6;min-width:11.5rem;background:#fff;border:1px solid var(--line-2);box-shadow:0 14px 34px -12px rgba(20,26,18,.35);padding:.3rem}
+.up-menu[hidden]{display:none}
+.up-menu button{display:flex;align-items:center;gap:.6rem;width:100%;background:none;border:0;padding:.6rem .75rem;font:600 .88rem var(--sans);color:var(--ink);text-align:left;cursor:pointer}
+.up-menu button:hover,.up-menu button:focus-visible{background:var(--green-soft);outline:none}
+.up-menu i,.up-menu svg{width:1rem;height:1rem;color:var(--green-d)}
+.up-sect-ctl{display:inline-flex;align-items:center;gap:.15rem}
+.up-sect-b{background:none;border:0;color:var(--muted);cursor:pointer;display:inline-flex;padding:.25rem;border-radius:.3rem}
+.up-sect-b:hover{background:#fff;color:var(--ink)}
+.up-sect-b.up-sect-x{color:#b3261e}
+.up-sect-b i,.up-sect-b svg{width:1rem;height:1rem}
+.up-in{font:inherit;font-size:.95rem;padding:.65rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
+.up-in:focus,.up-cap:focus,.up-ltext:focus,.up-lurl:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,125,65,.14)}
+textarea.up-in{resize:vertical;line-height:1.55}
+.up-sect[data-type=title] .up-in{font-size:1.15rem;font-weight:800}
+.up-sect[data-type=subtitle] .up-in{font-weight:700}
+.up-prev{display:block;max-width:100%;max-height:18rem;object-fit:contain;background:#fff;border:1px solid var(--line-2)}
+.up-cap,.up-ltext,.up-lurl{font:inherit;font-size:.9rem;padding:.6rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
+.up-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
 .up-add i,.up-add svg{width:.9rem;height:.9rem}
 .up-f textarea{resize:vertical;line-height:1.55}
 .up-excerpt{margin:0;font-size:.86rem;line-height:1.55;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
