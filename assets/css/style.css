@@ -2374,7 +2374,12 @@ fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 .up-f input:focus,.up-f select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,125,65,.14)}
 .up-f select,.mod-filter select{appearance:none;-webkit-appearance:none;padding-right:2.6rem;cursor:pointer;
   background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6e62' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center/1rem}
-.modal-card.wide.pw-modal.up-modal.up-news{width:min(56rem,100%)}
+.modal-back.up-full{padding:0;align-items:stretch;background:#fff}
+.modal-card.wide.pw-modal.up-modal.up-news{width:100%;max-width:none;height:100vh;height:100dvh;max-height:none;box-shadow:none}
+/* full-page editor: header, form and action bar all share one centred reading column */
+.up-news .fm-head{padding:1rem max(1.5rem,calc((100% - 56rem)/2))}
+.up-news .fm-body{padding:1.75rem max(1.5rem,calc((100% - 56rem)/2)) 0}
+.up-news .up-foot{position:sticky;bottom:0;background:#fff;margin:.5rem 0 0;padding:1rem 0;border-top:1px solid var(--line)}
 .up-hint{margin:-.2rem 0 0;font-size:.8rem;font-weight:400;color:var(--muted)}
 .up-opt{font-weight:400;color:var(--muted-2)}
 .up-secs{display:flex;flex-direction:column;gap:1rem}

@@ -192,7 +192,7 @@
     return [].map.call(document.querySelectorAll('.fp-cat[data-cat="' + cat + '"] input[type=checkbox]'), function (c) { return c.value; });
   }
   var modal = document.createElement('div');
-  modal.className = 'modal-back';
+  modal.className = 'modal-back' + (cfg.news ? ' up-full' : '');
   var fields = '<label class="up-f"><span>Title <span class="req">*</span></span><input type="text" name="title" maxlength="200" placeholder="Title as it should appear"></label>';
   if (cfg.themes) {
     fields += '<fieldset class="up-f up-themes"><legend>Themes <span class="req">*</span></legend><div class="up-chips">' +
