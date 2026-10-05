@@ -2381,6 +2381,9 @@ fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 .up-news .fm-body{padding:1.75rem max(1.5rem,calc((100% - 56rem)/2)) 0}
 .up-news .up-foot{position:sticky;bottom:0;background:#fff;margin:.5rem 0 0;padding:1rem 0;border-top:1px solid var(--line)}
 .up-modal .fm-head{align-items:center}
+.up-head-acts{display:flex;align-items:center;gap:.75rem}
+.up-post{min-width:5.5rem}
+.up-modal .up-err{padding:.6rem .8rem;background:#fdf1ef}
 .up-modal .fm-head b{margin-top:0}
 .up-hint{margin:-.2rem 0 0;font-size:.8rem;font-weight:400;color:var(--muted)}
 .up-opt{font-weight:400;color:var(--muted-2)}

@@ -221,16 +221,15 @@
   modal.innerHTML =
     '<div class="modal-card wide pw-modal up-modal' + (cfg.news ? ' up-news' : '') + '" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
       '<div class="fm-head"><div><b id="up-title">' + esc(cfg.cta) + '</b></div>' +
-        '<button type="button" class="modal-x" data-up-close aria-label="Close"><i data-lucide="x"></i></button></div>' +
-      '<form class="fm-body up-form" novalidate>' + fields +
-        '<p class="up-err" role="alert" hidden></p>' +
-        '<div class="up-foot"><button type="button" class="btn btn-outline" data-up-close>Cancel</button>' +
-        '<button type="submit" class="btn btn-primary"><i data-lucide="send"></i> Submit for review</button></div></form></div>';
+        '<div class="up-head-acts"><button type="submit" form="up-form" class="btn btn-primary sm up-post">Post</button>' +
+        '<button type="button" class="modal-x" data-up-close aria-label="Close"><i data-lucide="x"></i></button></div></div>' +
+      '<form class="fm-body up-form" id="up-form" novalidate>' +
+        '<p class="up-err" role="alert" hidden></p>' + fields + '</form></div>';
   document.body.appendChild(modal);
 
   var form = modal.querySelector('form'), err = modal.querySelector('.up-err');
   var fileIn = form.elements.file, dropT = modal.querySelector('.up-drop-t');
-  function showErr(t) { err.textContent = t; err.hidden = !t; }
+  function showErr(t) { err.textContent = t; err.hidden = !t; if (t) form.scrollTo({ top: 0, behavior: 'smooth' }); }
   function close() { modal.classList.remove('open'); }
 
   // Newsfeed: the article is built from any number of sub-title + paragraph sections.
