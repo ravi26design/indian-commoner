@@ -25,6 +25,26 @@ document.addEventListener('DOMContentLoaded', function () {
     av.style.color = '#fff';
   }
 
+  // No member has a real uploaded cover photo in this prototype, so each
+  // Members Directory card and profile cover gets one of 15 banner
+  // illustrations. The pick is derived from the member's name — it looks
+  // random across the list, but a member's card and their own profile page
+  // always show the same banner (and it doesn't change on every reload).
+  var BANNER_COUNT = 15;
+  function bannerFor(name) {
+    var hash = 0;
+    for (var i = 0; i < name.length; i++) hash = (hash * 37 + name.charCodeAt(i)) >>> 0;
+    var n = (hash % BANNER_COUNT) + 1;
+    return 'assets/img/banners/banner-' + (n < 10 ? '0' : '') + n + '.jpg';
+  }
+  document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
+    var card = cover.closest('.membercard');
+    var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
+    var name = nameEl ? nameEl.textContent.trim() : '';
+    if (!name) return;
+    cover.style.backgroundImage = 'url(' + bannerFor(name) + ')';
+  });
+
   // No member has a real uploaded profile photo in this prototype, so the
   // Members Directory grid and profile page fall back to a name-based
   // placeholder avatar — first initial on the same deterministic colour

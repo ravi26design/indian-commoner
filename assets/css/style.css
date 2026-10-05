@@ -1656,7 +1656,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
   box-shadow:var(--shadow-card);overflow:hidden;transition:transform .15s,box-shadow .2s,border-color .15s}
 .membercard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--green)}
 .mc-link{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;color:inherit}
-.mc-cover{height:108px;width:100%;flex:none;position:relative;background:#e8eef0 url(../img/members-banner.jpg) center/cover no-repeat}
+.mc-cover{height:108px;width:100%;flex:none;position:relative;background:#f8f6ee center/cover no-repeat}
 .mc-avatar{width:4.4rem;height:4.4rem;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;
   justify-content:center;border:4px solid #fff;box-shadow:var(--shadow-card);margin-top:-4.9rem;flex:none;
   font:700 1.5rem/1 var(--sans);position:relative;z-index:1}
@@ -2195,8 +2195,8 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 img, svg, video, iframe, canvas, table{ max-width: 100%; }
 
 /* ============ Public member profile (member.html) ============ */
-/* Same proportions as the directory card banner (297x108); on very wide screens it is capped at 420px tall and trims the empty sky first. */
-.mp-cover{width:100%;aspect-ratio:297/108;max-height:420px;position:relative;background:#f8f9f4 url(../img/members-banner.jpg) center 70%/cover no-repeat}
+/* The banner illustrations are about 5:1 and low-resolution, so the profile cover keeps that proportion (capped at 300px tall) instead of being stretched taller. */
+.mp-cover{width:100%;aspect-ratio:5/1;min-height:110px;max-height:300px;position:relative;background:#f8f6ee center/cover no-repeat}
 .mp-id{display:flex;align-items:center;gap:1.1rem;margin-top:1.4rem;position:relative;z-index:1}
 .mp-avatar{width:118px;height:118px;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;justify-content:center;border:5px solid #fff;box-shadow:var(--shadow-card);flex:none;font:700 2.8rem/1 var(--sans)}
 .mp-idtx{padding-bottom:.55rem}
