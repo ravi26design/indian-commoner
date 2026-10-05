@@ -2045,6 +2045,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .tc-head{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;
   text-transform:uppercase;color:var(--green-d)}
 .tc-head i,.tc-head svg{width:.9rem;height:.9rem;flex:none}
+.tc-view{margin-left:auto;font-size:.72rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--green-d);text-decoration:underline}
 .tc-theme{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:.5rem;align-items:start;margin-top:.6rem}
 .tc-row-main{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .6rem;min-width:0}
 .tc-k{font-size:.82rem;font-weight:700;color:var(--muted-2);line-height:1.9rem}

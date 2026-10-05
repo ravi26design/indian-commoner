@@ -657,7 +657,7 @@
   // Post the asked question into the Discussion forum: persist it so forum.html
   // renders it as a new thread, then show the confirmation modal (whose CTA
   // opens the forum).
-  function postToForum(text, th, assistantReply) {
+  function postToForum(text, th, assistantReply, quiet) {
     var t = (text || '').trim();
     if (!t) return;
     // Thread -> Theme -> Location -> Conversation: the thread's chosen theme
@@ -685,9 +685,33 @@
       arr.unshift(rec);
       localStorage.setItem('ic_pending_threads', JSON.stringify(arr));
     } catch (e) {}
+    if (th) th.recTs = rec.ts;
+    if (quiet) return;
     var modal = document.getElementById('publishConfirmModal');
     if (modal) modal.classList.add('open');
     else location.href = 'forum.html';
+  }
+
+  // The new-thread card appears after the thread is created, so theme,
+  // sub-theme, language and location are edited afterwards: write each change
+  // back to the saved record.
+  function persistThread(th) {
+    if (!th || !th.recTs) return;
+    try {
+      var arr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]');
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].ts !== th.recTs) continue;
+        var r = arr[i], loc = th.location;
+        r.theme = th.theme; r.sub = th.sub || '';
+        r.lang = th.lang.label; r.langCode = th.lang.code;
+        r.state = loc ? (loc.state || '') : '';
+        r.district = loc ? (loc.district || '') : '';
+        if (loc) { r.lat = loc.lat; r.lng = loc.lng; r.address = loc.address || ''; }
+        else { delete r.lat; delete r.lng; delete r.address; }
+        break;
+      }
+      localStorage.setItem('ic_pending_threads', JSON.stringify(arr));
+    } catch (e) {}
   }
 
   // ---- New-thread card: theme mapping + location capture ----------------
@@ -793,7 +817,7 @@
       return '<option value="' + escapeHtml(t) + '"' + (t === th.theme ? ' selected' : '') + '>' + escapeHtml(t) + '</option>';
     }).join('');
     return '<div class="thread-card">' +
-      '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created</div>' +
+      '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created<a class="tc-view" href="forum.html">View in forum →</a></div>' +
       '<div class="tc-theme"><span class="tc-k">Theme</span><div class="tc-row-main"><span class="tc-theme-name"></span>' +
         '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div></div>' +
       '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><div class="tc-row-main"><span class="tc-theme-name tc-sub-name"></span>' +
@@ -865,8 +889,7 @@
       note.textContent = 'This conversation seems to be related to ' + th.theme + (th.sub ? ' › ' + th.sub : '') + '.';
       refreshSub();
       renderChain();
-      var post = msgRow.querySelector('[data-act="postforum"]');
-      if (post) post.title = 'Create a new thread in the Discussion forum under ' + th.theme + (th.sub ? ' › ' + th.sub : '');
+      persistThread(th);
     }
     function setStatus(msg, isErr) {
       status.textContent = msg || '';
@@ -900,6 +923,7 @@
       closePanel();
       setStatus('');
       renderChain();
+      persistThread(th);
       if (window.lucide) lucide.createIcons();
       saved.querySelector('[data-act="change-loc"]').addEventListener('click', function () {
         th.location = null;
@@ -907,6 +931,7 @@
         locBlock.hidden = false;
         showAsk();
         renderChain();
+        persistThread(th);
       });
     }
 
@@ -1062,7 +1087,7 @@
       refreshTheme();
     });
     subSel.addEventListener('change', function () { th.sub = subSel.value; refreshTheme(); });
-    langSel.addEventListener('change', function () { th.lang = langByCode(langSel.value); th.langAuto = false; refreshLang(); });
+    langSel.addEventListener('change', function () { th.lang = langByCode(langSel.value); th.langAuto = false; refreshLang(); persistThread(th); });
     refreshLang();
 
     askWrap.hidden = !th.placeRelated;
@@ -1132,31 +1157,33 @@
 
     var postBtn = row.querySelector('[data-act="postforum"]');
     if (postBtn) postBtn.addEventListener('click', function () {
-      // Post once: a second click would otherwise create a duplicate thread.
-      if (postBtn.classList.contains('posted')) {
-        var again = document.getElementById('publishConfirmModal');
-        if (again) again.classList.add('open');
-        return;
-      }
-      postToForum(forText, th, reply);
+      // Create once: a second click would otherwise make a duplicate thread.
+      if (postBtn.classList.contains('posted')) return;
       postBtn.classList.add('posted');
+      postBtn.disabled = true;
       postBtn.innerHTML = '<i data-lucide="check"></i> Thread created';
+      // Show the click in the chat like any user message, then the new-thread
+      // card (theme / sub-theme / language / location) below it.
+      addUserMessage('Create a New Thread', composerLang().label);
+      if (th) {
+        postToForum(forText, th, reply, true);
+        var threadRow = document.createElement('div');
+        threadRow.className = 'msg-row ai msg-thread-row';
+        threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
+        thread.appendChild(threadRow);
+        setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
+        threadRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        postToForum(forText, null, reply);
+      }
       if (window.lucide) lucide.createIcons();
     });
-    // Order below the reply bubble: related threads/resources, then the
-    // new-thread card last — each its own card, not part of the reply.
+    // Below the reply bubble: related threads/resources as their own card.
     if (resultsHtml || resourceResultsHtml) {
       var relatedRow = document.createElement('div');
       relatedRow.className = 'msg-row ai msg-related-row';
       relatedRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-related-body">' + resultsHtml + resourceResultsHtml + '</div>';
       thread.appendChild(relatedRow);
-    }
-    if (th) {
-      var threadRow = document.createElement('div');
-      threadRow.className = 'msg-row ai msg-thread-row';
-      threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
-      thread.appendChild(threadRow);
-      setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
     }
 
     var replyBtn = row.querySelector('[data-act="reply"]');
