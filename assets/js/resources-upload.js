@@ -126,13 +126,6 @@
   var urls = [];
   function hydrate(root, items) {
     items.forEach(function (i) {
-      var img = blocksOf(i).filter(function (b) { return b.type === 'image' && b.imgId; })[0];
-      if (img) getFile(img.imgId).then(function (blob) {
-        var slot = root.querySelector('[data-id="' + i.id + '"] .up-media');
-        if (!blob || !slot || slot.innerHTML) return;
-        var u = URL.createObjectURL(blob); urls.push(u);
-        slot.innerHTML = '<img class="up-thumb" src="' + u + '" alt="">';
-      }).catch(function () {});
       if (!i.hasFile || !/^(video|audio)\//.test(i.fileType || '')) return;
       getFile(i.id).then(function (blob) {
         var slot = root.querySelector('[data-id="' + i.id + '"] .up-media');
