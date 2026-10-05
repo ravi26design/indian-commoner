@@ -287,6 +287,49 @@
     return best;
   }
 
+  // Language auto-detection. The forum's language filter knows these seven
+  // (codes en/hi/mr/te/kn/ta/or); all but English have their own Unicode
+  // script, so counting letters per script is reliable. Devanagari is shared
+  // by Hindi and Marathi, so a few common function words tell them apart.
+  // Romanised text (e.g. Hindi typed in Latin letters) reads as English —
+  // the user can correct it on the thread card.
+  var LANGS = [
+    { code: 'en', label: 'English' }, { code: 'hi', label: 'हिन्दी' },
+    { code: 'mr', label: 'मराठी' }, { code: 'te', label: 'తెలుగు' },
+    { code: 'kn', label: 'ಕನ್ನಡ' }, { code: 'ta', label: 'தமிழ்' },
+    { code: 'or', label: 'ଓଡ଼ିଆ' }
+  ];
+  function langByCode(code) { return LANGS.filter(function (l) { return l.code === code; })[0] || LANGS[0]; }
+  function langByLabel(label) { return LANGS.filter(function (l) { return l.label === label; })[0] || null; }
+  var SCRIPTS = [
+    ['hi', /[ऀ-ॿ]/g], ['te', /[ఀ-౿]/g], ['kn', /[ಀ-೿]/g],
+    ['ta', /[஀-௿]/g], ['or', /[଀-୿]/g], ['en', /[A-Za-z]/g]
+  ];
+  var MARATHI_WORDS = ['आहे', 'आहेत', 'आम्ही', 'आमच्या', 'माझ्या', 'नाही', 'आपण', 'पाहिजे', 'कसे', 'काय',
+    'होते', 'गावात', 'आमचे', 'आमची', 'तुम्ही'];
+  var HINDI_WORDS = ['है', 'हैं', 'हम', 'हमारे', 'हमारी', 'नहीं', 'क्या', 'कैसे', 'में', 'इस', 'यह', 'रहे', 'रहा', 'रही', 'हो'];
+  function detectLanguage(text) {
+    var counts = {}, total = 0;
+    SCRIPTS.forEach(function (s) {
+      var n = ((text || '').match(s[1]) || []).length;
+      counts[s[0]] = n; total += n;
+    });
+    if (total < 2) return null;
+    var top = 'en';
+    Object.keys(counts).forEach(function (k) { if (counts[k] > counts[top]) top = k; });
+    if (top === 'hi') {
+      var words = (text || '').split(/[\s,.;:!?()\[\]"'।-]+/);
+      var mr = words.filter(function (w) { return MARATHI_WORDS.indexOf(w) !== -1; }).length;
+      var hi = words.filter(function (w) { return HINDI_WORDS.indexOf(w) !== -1; }).length;
+      if (mr > hi) top = 'mr';
+    }
+    return langByCode(top);
+  }
+  // The composer's language dropdown only lists four of these.
+  function composerLang() {
+    return (langSelect && langByLabel(langSelect.value)) || LANGS[0];
+  }
+
   // Does the message point at a specific place, resource or community? If so
   // the assistant asks where it is; otherwise a location stays optional.
   var PLACE_RE = /\b(village|hamlet|forest|pond|tank|river|stream|lake|wetland|grove|pasture|grazing|gauchar|oran|panchayat|gram sabha|community|land|well|handpump|talab|johad|mine|mining|quarry|temple|district|block|taluka|ward|our |my )/i;
@@ -622,8 +665,9 @@
     // the post so the forum can later filter, search and map it.
     // ts doubles as the thread's id (forum.html links to thread.html?id=<ts>);
     // body keeps the full question, since the title is truncated for the list.
+    var postLang = th ? th.lang : (detectLanguage(t) || composerLang());
     var rec = { title: t.slice(0, 120), body: t, theme: th ? th.theme : classifyTheme(t), sub: th ? th.sub : '',
-      lang: langSelect ? langSelect.value : 'English', state: '', district: '', author: 'You', ts: Date.now() };
+      lang: postLang.label, langCode: postLang.code, state: '', district: '', author: 'You', ts: Date.now() };
     if (th && th.location) {
       rec.state = th.location.state || '';
       rec.district = th.location.district || '';
@@ -749,6 +793,11 @@
         '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div></div>' +
       '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><div class="tc-row-main"><span class="tc-theme-name tc-sub-name"></span>' +
         '<label class="tc-change">Change <select class="tc-sub-sel" aria-label="Change sub-theme"></select></label></div></div>' +
+      '<div class="tc-theme tc-lang-row"><span class="tc-k">Language</span><div class="tc-row-main"><span class="tc-theme-name tc-lang-name"></span>' +
+        '<span class="tc-auto">Detected automatically</span>' +
+        '<label class="tc-change">Change <select class="tc-lang-sel" aria-label="Change language">' +
+        LANGS.map(function (l) { return '<option value="' + l.code + '"' + (l.code === th.lang.code ? ' selected' : '') + '>' + escapeHtml(l.label) + '</option>'; }).join('') +
+        '</select></label></div></div>' +
       '<p class="tc-note"></p>' +
       '<div class="tc-loc">' +
         '<button type="button" class="tc-link tc-optional"><i data-lucide="map-pin"></i> Add a location (optional)</button>' +
@@ -774,6 +823,12 @@
     var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
     var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved');
     var subRow = $('.tc-sub-row'), subName = $('.tc-sub-name'), subSel = $('.tc-sub-sel'), chain = $('.tc-chain');
+    var langName = $('.tc-lang-name'), langSel = $('.tc-lang-sel'), langAuto = $('.tc-auto');
+
+    function refreshLang() {
+      langName.textContent = th.lang.label;
+      langAuto.hidden = !th.langAuto;
+    }
     var destroyMap = null, pinToken = null;
 
     // Thread > Theme > (Sub-theme) > Location > Conversation
@@ -1002,6 +1057,8 @@
       refreshTheme();
     });
     subSel.addEventListener('change', function () { th.sub = subSel.value; refreshTheme(); });
+    langSel.addEventListener('change', function () { th.lang = langByCode(langSel.value); th.langAuto = false; refreshLang(); });
+    refreshLang();
 
     askWrap.hidden = !th.placeRelated;
     optional.hidden = th.placeRelated;
@@ -1017,7 +1074,8 @@
     var th = null;
     if (forText && forText.trim() && !(opts && opts.followUp)) {
       var thTheme = classifyTheme(forText);
-      th = { id: nextThreadId++, text: forText, theme: thTheme, sub: classifySub(thTheme, forText), placeRelated: isPlaceRelated(forText), location: null };
+      th = { id: nextThreadId++, text: forText, theme: thTheme, sub: classifySub(thTheme, forText), placeRelated: isPlaceRelated(forText), location: null,
+        lang: detectLanguage(forText) || composerLang(), langAuto: true };
     }
     var theme = th ? th.theme : classifyTheme(forText || '');
     // Always lead with a short practical paragraph about what was actually
@@ -1421,7 +1479,15 @@
     sendBtn.addEventListener('click', function () {
       var text = textarea.value.trim();
       if (!text && !attachments.length) { textarea.focus(); return; }
-      var lang = langSelect ? langSelect.value : 'English';
+      // The assistant works out which language the message is in; the
+      // composer's dropdown follows it when it lists that language.
+      var detected = text ? detectLanguage(text) : null;
+      if (detected && langSelect) {
+        Array.prototype.some.call(langSelect.options, function (o) {
+          if (o.text === detected.label) { langSelect.value = o.value || o.text; return true; }
+        });
+      }
+      var lang = detected ? detected.label : (langSelect ? langSelect.value : 'English');
       var replyingTo = activeReply;
       addUserMessage(text, lang, attachments, replyingTo);
       attachments = [];

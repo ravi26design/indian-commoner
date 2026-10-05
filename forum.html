@@ -1269,7 +1269,7 @@
     a.setAttribute('data-state', st);
     if (hasCoords) { a.setAttribute('data-lat', t.lat); a.setAttribute('data-lng', t.lng); }
     a.setAttribute('data-replies', String(rs.length));
-    a.setAttribute('data-lang', 'en');
+    a.setAttribute('data-lang', t.langCode || 'en');
     a.innerHTML =
       '<span class="pw-av">' + esc((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
       '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
