@@ -203,7 +203,7 @@
     fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
       '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>' +
       '<div class="up-f up-article"><span>Article <span class="req">*</span></span>' +
-        '<p class="up-hint">Write the article as sub-titles and paragraphs. Add as many sections as you need.</p>' +
+        '<p class="up-hint">Use the button to add sub-titles and paragraphs — as many as you need.</p>' +
         '<div class="up-secs"></div>' +
         '<button type="button" class="btn btn-outline sm up-add"><i data-lucide="plus"></i> Add sub-title &amp; paragraph</button></div>';
   }
@@ -249,7 +249,6 @@
     var all = secsEl.querySelectorAll('.up-sect');
     all.forEach(function (d, n) {
       d.querySelector('.up-sect-n').textContent = 'Section ' + (n + 1);
-      d.querySelector('.up-sect-x').hidden = all.length < 2;
     });
   }
   if (secsEl) {
@@ -262,7 +261,7 @@
   btn.addEventListener('click', function () {
     if (!loggedIn()) { location.href = 'login.html?return=' + encodeURIComponent(location.href); return; }
     form.reset(); if (dropT) dropT.textContent = 'Choose a file'; showErr('');
-    if (secsEl) { secsEl.innerHTML = ''; addSection(); }
+    if (secsEl) secsEl.innerHTML = '';
     modal.classList.add('open'); form.elements.title.focus();
   });
   modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-up-close]')) close(); });
@@ -283,7 +282,7 @@
         var sub = d.querySelector('.up-sub').value.trim(), text = d.querySelector('.up-par').value.trim();
         if (sub || text) sections.push({ sub: sub, text: text });
       });
-      if (!sections.some(function (x) { return x.text; })) return showErr('Write at least one paragraph for the article.');
+      if (!sections.some(function (x) { return x.text; })) return showErr('Add at least one sub-title and paragraph for the article.');
       if (sections.some(function (x) { return x.sub && !x.text; })) return showErr('Each sub-title needs a paragraph under it.');
     }
     if (!cfg.news && !file && !link) return showErr('Choose a file or paste a link.');
