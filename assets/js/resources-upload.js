@@ -216,7 +216,8 @@
     fields += '<div class="up-f"><span>File</span><label class="up-drop"><i data-lucide="upload-cloud"></i><span class="up-drop-t">Choose a file</span><small>Up to ' + MAX_MB + ' MB</small>' +
       '<input type="file" name="file" accept="' + esc(cfg.accept) + '" hidden></label></div><div class="up-or"><span>or</span></div>';
   }
-  fields += '<label class="up-f"><span>' + (cfg.news ? 'Original link <small class="up-opt">(optional)</small>' : 'Link') + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
+  // Newsfeed articles are written in the form itself, so they have no link field.
+  if (!cfg.news)   fields += '<label class="up-f"><span>' + 'Link' + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
   modal.innerHTML =
     '<div class="modal-card wide pw-modal up-modal' + (cfg.news ? ' up-news' : '') + '" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
       '<div class="fm-head"><div><span class="kicker">Goes to a Moderator for review</span><b id="up-title">' + esc(cfg.cta) + '</b></div>' +
@@ -271,7 +272,7 @@
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var f = form.elements, title = f.title.value.trim(), link = f.link.value.trim(), file = fileIn ? (fileIn.files[0] || null) : null;
+    var f = form.elements, title = f.title.value.trim(), link = f.link ? f.link.value.trim() : '', file = fileIn ? (fileIn.files[0] || null) : null;
     var themes = cfg.themes ? [].filter.call(form.querySelectorAll('input[name=themes]'), function (c) { return c.checked; }).map(function (c) { return c.value; }) : [];
     if (!title) return showErr('Please add a title.');
     if (cfg.themes && !themes.length) return showErr('Pick at least one theme.');
