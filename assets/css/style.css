@@ -1579,7 +1579,8 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 
 /* ---- forum: thread / single topic ---- */
 .postcard{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-card);padding:1.75rem;
-  min-height:23rem;display:flex;flex-direction:column}
+  display:flex;flex-direction:column}
+.postcard:has(.post-body){min-height:23rem}
 .post-head{display:flex;align-items:center;gap:.85rem;padding-bottom:1.1rem;margin-bottom:1.1rem;border-bottom:1px solid var(--line)}
 .post-head .pw-av{width:2.9rem;height:2.9rem;font-size:.95rem;display:grid;place-items:center}
 .post-head b{display:block;font-size:.95rem;color:var(--ink)}
