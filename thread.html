@@ -110,13 +110,6 @@
   <span class="here" id="t-crumb">Discussion</span>
 </div></div></div>
 
-<div class="pagehead noline" style="background:#eef0f4;padding-bottom:0"><div class="in" style="padding:1.5rem 2rem 1.25rem">
-  <div>
-    <h1 style="font-size:1.9rem" id="t-title">Discussion</h1>
-    <p style="margin-top:.4rem">Started by <b style="color:var(--ink)" id="t-author">You</b> &middot; <span id="t-when"></span></p>
-  </div>
-</div></div>
-
 <section class="section tight" style="padding-top:1.25rem"><div class="mx">
   <div class="panel" id="t-missing" hidden style="text-align:center;padding:2.5rem">
     <p style="color:var(--muted)">This discussion isn&rsquo;t available in this browser. Threads started with Start a Conversation are saved on the device they were posted from.</p>
@@ -130,7 +123,7 @@
           <span class="pw-av" id="t-av">Y</span>
           <div>
             <b id="t-author2">You</b>
-            <span>Topic author</span>
+            <span id="t-role">Topic author</span>
           </div>
         </div>
         <div class="post-body">
@@ -528,7 +521,6 @@
     if (layout) layout.hidden = true;
     if (missing) missing.hidden = false;
     var crumbOnly = document.getElementById('t-crumb'); if (crumbOnly) crumbOnly.textContent = 'Not found';
-    var titleOnly = document.getElementById('t-title'); if (titleOnly) titleOnly.textContent = 'Discussion not found';
     if (window.lucide) lucide.createIcons();
     return;
   }
@@ -537,9 +529,7 @@
   var shortTheme = THEME_SHORT[thr.theme] || thr.theme || 'Others';
   document.title = thr.title + ' — Indian Commoner';
   document.getElementById('t-crumb').textContent = thr.title.length > 48 ? thr.title.slice(0, 48).trim() + '…' : thr.title;
-  document.getElementById('t-title').textContent = thr.title;
-  document.getElementById('t-author').textContent = authorName;
-  document.getElementById('t-when').textContent = 'posted ' + ago(thr.ts);
+  document.getElementById('t-role').textContent = 'Topic author \u00b7 posted ' + ago(thr.ts);
   document.getElementById('t-author2').textContent = authorName;
   document.getElementById('t-av').textContent = authorName.charAt(0).toUpperCase();
   document.getElementById('t-body').textContent = thr.body || thr.title;
