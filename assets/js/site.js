@@ -330,14 +330,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Discussion forum: Theme/Language pill groups + State/Activity dropdowns +
-  // free-text search narrow the thread list; the Recent/Most replies/
-  // Unanswered segment re-sorts it. Rows carry their real reply count in
-  // data-replies (unset -> 0, i.e. no replies yet) rather than a count
-  // invented for rows with no source data. The "Content in thread" checkboxes
-  // and Activity dropdown mirror the reference design but aren't backed by
-  // any real per-thread data on this prototype, so they don't narrow results
-  // — only Theme, Language, State and the search box do.
+  // Discussion forum: Theme/Language/State pill groups + the Activity radio
+  // group + free-text search narrow the thread list; the Recent/Most
+  // replies/Unanswered segment re-sorts it. Rows carry their real reply
+  // count in data-replies (unset -> 0, i.e. no replies yet) rather than a
+  // count invented for rows with no source data. Activity filters on the
+  // "x ago" time each row already displays (see rowAgeDays), so it narrows by
+  // what the list shows rather than by any invented timestamp.
   var forumList = document.getElementById('forum-list');
   if (forumList) {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
@@ -354,8 +353,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
     var langGroup = document.querySelector('.seg-tabs[data-pillgroup="lang"]');
     var stateGroup = document.querySelector('.seg-tabs[data-pillgroup="state"]');
-    var activitySel = document.getElementById('fx-activity');
-    var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel #fx-activity');
+    var activityRadios = document.querySelectorAll('.filterpanel input[name="fx-activity"]');
+    var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel input[name="fx-activity"]');
     var forumReset = document.getElementById('forum-reset');
     var forumEmpty = document.getElementById('forum-empty');
     var forumSort = 'recent';
@@ -371,11 +370,34 @@ document.addEventListener('DOMContentLoaded', function () {
       group.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === value); });
     }
 
+    function activityValue() {
+      var on = document.querySelector('.filterpanel input[name="fx-activity"]:checked');
+      return on ? on.value : 'any';
+    }
+
+    // Age in days of a row, read from its displayed time label ("just now",
+    // "5 min ago", "3 h ago", "4 days ago", "2 weeks ago", "1 month ago",
+    // or a dated "5 Oct 2026"). null when the label can't be read.
+    function rowAgeDays(row) {
+      var spans = row.querySelectorAll('.tr-meta > span');
+      var label = spans.length ? spans[spans.length - 1].textContent.trim().toLowerCase() : '';
+      if (label === 'just now') return 0;
+      var m = label.match(/^(\d+)\s*(min|minute|h|hour|day|week|month|year)s?\b/);
+      if (m) {
+        var n = +m[1];
+        var perUnit = { min: 1 / 1440, minute: 1 / 1440, h: 1 / 24, hour: 1 / 24, day: 1, week: 7, month: 30, year: 365 }[m[2]];
+        return n * perUnit;
+      }
+      var t = Date.parse(label);
+      return isNaN(t) ? null : Math.max(0, (Date.now() - t) / 86400000);
+    }
+    var ACTIVITY_LIMIT_DAYS = { '1d': 1, '7d': 7, '30d': 30, '365d': 365 };
+
     function hasActiveFilters() {
       if (pillValue(themeGroup) !== 'all') return true;
       if (pillValue(langGroup) !== 'all') return true;
       if (pillValue(stateGroup) !== 'all') return true;
-      if (activitySel && activitySel.value !== 'any') return true;
+      if (activityValue() !== 'any') return true;
       if (forumSearch && forumSearch.value.trim()) return true;
       var translated = document.getElementById('fx-translated');
       if (translated && !translated.checked) return true;
@@ -391,6 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var lang = pillValue(langGroup);
       var state = pillValue(stateGroup);
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
+      var activityLimit = ACTIVITY_LIMIT_DAYS[activityValue()];
       var includeTranslated = document.getElementById('fx-translated');
       // Every real thread here only has an English original. With "include
       // translated threads" on (the default), a language pill still matches
@@ -404,6 +427,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!langMatchesAll && row.getAttribute('data-lang') !== lang) return false;
         if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
+        if (activityLimit) {
+          var age = rowAgeDays(row);
+          if (age === null || age > activityLimit || (activityLimit === 1 && age >= 1)) return false;
+        }
         return true;
       });
 
@@ -453,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setPill(themeGroup, 'all');
         setPill(langGroup, 'all');
         setPill(stateGroup, 'all');
-        if (activitySel) activitySel.value = 'any';
+        activityRadios.forEach(function (r) { r.checked = r.value === 'any'; });
         document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
           c.checked = c.id === 'fx-translated';
         });

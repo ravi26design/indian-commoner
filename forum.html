@@ -175,29 +175,14 @@
         </div>
       </div>
 
-      <div class="fp-cat">
-        <div class="fp-cat-head"><b>Content in thread</b></div>
-        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
-          <input type="checkbox" style="accent-color:var(--green-d)"> Has images or video</label>
-        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
-          <input type="checkbox" style="accent-color:var(--green-d)"> Has audio with transcript</label>
-        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
-          <input type="checkbox" style="accent-color:var(--green-d)"> Has attached documents</label>
-        <label style="display:flex;gap:.55rem;align-items:center;font-size:.85rem;color:var(--ink-2);padding:.35rem 0">
-          <input type="checkbox" style="accent-color:var(--green-d)"> Geotagged</label>
-      </div>
-
       <div class="fp-cat" style="border-bottom:0">
         <div class="fp-cat-head"><b>Activity</b></div>
-        <div class="selw">
-          <select id="fx-activity">
-            <option value="any">Any time</option>
-            <option value="1d">Last 24 hours</option>
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="365d">This year</option>
-          </select>
-          <i data-lucide="chevron-down" class="cv"></i>
+        <div role="radiogroup" aria-label="Activity">
+          <label class="fp-radio"><input type="radio" name="fx-activity" value="any" checked> Any time</label>
+          <label class="fp-radio"><input type="radio" name="fx-activity" value="1d"> Last 24 hours</label>
+          <label class="fp-radio"><input type="radio" name="fx-activity" value="7d"> Last 7 days</label>
+          <label class="fp-radio"><input type="radio" name="fx-activity" value="30d"> Last 30 days</label>
+          <label class="fp-radio"><input type="radio" name="fx-activity" value="365d"> This year</label>
         </div>
       </div>
 
