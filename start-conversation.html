@@ -742,10 +742,10 @@
     }).join('');
     return '<div class="thread-card">' +
       '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created</div>' +
-      '<div class="tc-theme"><span class="tc-k">Theme</span><span class="tc-theme-name"></span>' +
-        '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div>' +
-      '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><span class="tc-theme-name tc-sub-name"></span>' +
-        '<label class="tc-change">Change <select class="tc-sub-sel" aria-label="Change sub-theme"></select></label></div>' +
+      '<div class="tc-theme"><span class="tc-k">Theme</span><div class="tc-row-main"><span class="tc-theme-name"></span>' +
+        '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div></div>' +
+      '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><div class="tc-row-main"><span class="tc-theme-name tc-sub-name"></span>' +
+        '<label class="tc-change">Change <select class="tc-sub-sel" aria-label="Change sub-theme"></select></label></div></div>' +
       '<p class="tc-note"></p>' +
       '<div class="tc-loc">' +
         '<button type="button" class="tc-link tc-optional"><i data-lucide="map-pin"></i> Add a location (optional)</button>' +

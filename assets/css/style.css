@@ -2028,13 +2028,17 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .tc-head{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;
   text-transform:uppercase;color:var(--green-d)}
 .tc-head i{width:.95rem;height:.95rem}
-.tc-theme{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.6rem}
-.tc-k{font-size:.82rem;font-weight:700;color:var(--muted-2)}
+.tc-theme{display:grid;grid-template-columns:5.2rem minmax(0,1fr);gap:.5rem;align-items:start;margin-top:.6rem}
+.tc-row-main{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .6rem;min-width:0}
+.tc-k{font-size:.82rem;font-weight:700;color:var(--muted-2);line-height:1.9rem}
 .tc-theme-name{font-size:.84rem;font-weight:800;color:var(--green-d);background:var(--green-soft);
   border:1px solid var(--green-line);padding:.15rem .65rem;border-radius:999px}
-.tc-change{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:700;color:var(--muted-2)}
-.tc-change select{font:inherit;font-size:.74rem;color:var(--ink);background:#fff;border:1px solid var(--line-2);
-  border-radius:.4rem;padding:.2rem .35rem;max-width:11rem}
+.tc-change{display:inline-flex;align-items:center;gap:.5rem;font-size:.74rem;font-weight:700;color:var(--muted-2);min-width:0;max-width:100%}
+.tc-change select{font:inherit;font-size:.78rem;font-weight:600;color:var(--ink);border:1px solid var(--line-2);
+  border-radius:.45rem;padding:.38rem 1.9rem .38rem .7rem;min-width:0;max-width:100%;text-overflow:ellipsis;
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right .65rem center}
+.tc-change select:focus{outline:none;border-color:var(--green)}
 .tc-note{margin:.45rem 0 0;font-size:.86rem;color:var(--muted);line-height:1.5}
 .tc-ask{margin:.85rem 0 .55rem;font-size:.92rem;font-weight:700;color:var(--ink)}
 .tc-loc-btns{display:flex;flex-wrap:wrap;gap:.5rem}
