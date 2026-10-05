@@ -548,6 +548,7 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
   padding:.4rem .2rem;min-height:36px;display:inline-flex;align-items:center}
 .clearbtn:hover{text-decoration:underline}
 .clearbtn[hidden]{display:none}
+.clearbtn.danger{color:#b3261e}
 .layout-wide{display:grid;grid-template-columns:21rem 1fr;gap:2rem;align-items:start}
 @media(max-width:1080px){.layout-wide{grid-template-columns:1fr}}
 
