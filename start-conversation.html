@@ -163,7 +163,7 @@
   <div class="modal-card">
     <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
     <span class="modal-ic"><i data-lucide="check"></i></span>
-    <h3>Published as a discussion</h3>
+    <h3>New thread created</h3>
     <p style="color:var(--muted);font-size:.92rem;margin-top:.5rem;line-height:1.6">Your conversation is now a discussion thread on the forum. Other commoners working on the same question will be able to find it.</p>
     <a class="btn btn-primary block" style="margin-top:1.5rem" href="forum.html">View in the Discussion forum →</a>
     <button style="display:block;width:100%;text-align:center;margin-top:.7rem;background:none;border:0;color:var(--green-d);font-weight:700;font-size:.85rem;cursor:pointer;padding:.4rem" data-close-modal>Stay here</button>
@@ -866,7 +866,7 @@
       refreshSub();
       renderChain();
       var post = msgRow.querySelector('[data-act="postforum"]');
-      if (post) post.title = 'Post this to the Public Forum under ' + th.theme + (th.sub ? ' › ' + th.sub : '');
+      if (post) post.title = 'Create a new thread in the Discussion forum under ' + th.theme + (th.sub ? ' › ' + th.sub : '');
     }
     function setStatus(msg, isErr) {
       status.textContent = msg || '';
@@ -1126,7 +1126,7 @@
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
-      '<button type="button" class="msg-act" data-act="postforum" title="Post this to the Public Forum under ' + escapeHtml(theme) + '"><i data-lucide="megaphone"></i> Post to Public Forum</button>' +
+      '<button type="button" class="msg-act" data-act="postforum" title="Create a new thread in the Discussion forum under ' + escapeHtml(theme) + '"><i data-lucide="message-square-plus"></i> Create a New Thread</button>' +
       '</div></div>';
     thread.appendChild(row);
 
@@ -1140,7 +1140,7 @@
       }
       postToForum(forText, th, reply);
       postBtn.classList.add('posted');
-      postBtn.innerHTML = '<i data-lucide="check"></i> Posted to forum';
+      postBtn.innerHTML = '<i data-lucide="check"></i> Thread created';
       if (window.lucide) lucide.createIcons();
     });
     // Order below the reply bubble: related threads/resources, then the
