@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discussion — Indian Commoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+</head>
+<body style="background:#eef0f4">
+
+<nav class="top"><div class="bar">
+  <a class="brand" href="index.html">
+    <span class="bt">Indian Commoner</span>
+  </a>
+  <div class="links">
+    <div class="navgroup">
+      <a class="navlink active" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Start a Conversation</b><small>Ask, share or record in your own language</small></span></a>
+        <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
+        <a href="map.html"><span class="nd-ic"><i data-lucide="map"></i></span><span class="nd-tx"><b>Map exploration</b><small>Find discussions by place</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <a class="navlink" href="resources-videos.html"><i data-lucide="package"></i> Resources <i data-lucide="chevron-down"></i></a>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="resources-videos.html"><span class="nd-ic"><i data-lucide="video"></i></span><span class="nd-tx"><b>Videos</b><small>Watch talks and explainers</small></span></a>
+        <a href="resources-podcasts.html"><span class="nd-ic"><i data-lucide="mic"></i></span><span class="nd-tx"><b>Podcasts</b><small>Listen to conversations on commons</small></span></a>
+        <a href="resources-literature.html"><span class="nd-ic"><i data-lucide="book-open"></i></span><span class="nd-tx"><b>Literature</b><small>Read papers and case studies</small></span></a>
+        <a href="resources-newsfeed.html"><span class="nd-ic"><i data-lucide="newspaper"></i></span><span class="nd-tx"><b>Newsfeed</b><small>Latest news on commons in India</small></span></a>
+        <a href="resources-laws.html"><span class="nd-ic"><i data-lucide="scale"></i></span><span class="nd-tx"><b>Laws and Regulations</b><small>Browse laws, acts and policies</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <span class="navlink navlink-static"><i data-lucide="clapperboard"></i> Activities <i data-lucide="chevron-down"></i></span>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="activities-videos-podcasts.html"><span class="nd-ic"><i data-lucide="clapperboard"></i></span><span class="nd-tx"><b>Videos and Podcasts</b><small>Submit videos and podcasts on commons</small></span></a>
+        <a href="activities-workshops.html"><span class="nd-ic"><i data-lucide="users"></i></span><span class="nd-tx"><b>Workshops</b><small>Community workshops and events</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <span class="navlink navlink-static"><i data-lucide="user"></i> People <i data-lucide="chevron-down"></i></span>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="team.html"><span class="nd-ic"><i data-lucide="badge-check"></i></span><span class="nd-tx"><b>IC Team</b><small>Meet the team behind Indian Commoner</small></span></a>
+        <a href="members.html"><span class="nd-ic"><i data-lucide="users-round"></i></span><span class="nd-tx"><b>Forum Members</b><small>Browse registered forum members</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <span class="navlink navlink-static"><i data-lucide="info"></i> About <i data-lucide="chevron-down"></i></span>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="what-are-commons.html"><span class="nd-ic"><i data-lucide="sprout"></i></span><span class="nd-tx"><b>What Are Commons</b><small>Understand what commons means</small></span></a>
+        <a href="who-is-a-commoner.html"><span class="nd-ic"><i data-lucide="users"></i></span><span class="nd-tx"><b>Who Is a Commoner</b><small>Learn who counts as a commoner</small></span></a>
+        <a href="purpose-of-the-indian-commoner.html"><span class="nd-ic"><i data-lucide="feather"></i></span><span class="nd-tx"><b>Purpose of the Indian Commoner</b><small>Why this forum exists</small></span></a>
+      </div></div>
+    </div>
+  </div>
+  <div class="navright">
+    <span class="navdiv"></span>
+    <div class="navsearch" id="navsearch">
+      <button class="nav-ic" data-search aria-label="Search" title="Search"><i data-lucide="search"></i></button>
+      <div class="ns-field">
+        <input id="ns-input" placeholder="Search here..." autocomplete="off">
+        <button class="ns-go" title="Search"><i data-lucide="search"></i></button>
+      </div>
+      <button class="ns-x" title="Close"><i data-lucide="x"></i></button>
+    </div>
+    <span class="navdiv"></span>
+    <div class="langw" id="langw">
+      <button class="langbtn">EN <i data-lucide="chevron-down"></i></button>
+      <div class="lang-menu">
+        <button class="lang-opt on">English</button>
+        <button class="lang-opt">हिन्दी</button>
+        <button class="lang-opt">ಕನ್ನಡ</button>
+        <button class="lang-opt">తెలుగు</button>
+      </div>
+    </div>
+    <a class="signin-btn" href="login.html"><i data-lucide="log-in"></i> Login</a>
+    <button class="navtoggle" aria-label="Menu"><i data-lucide="menu"></i></button>
+  </div>
+</div>
+<div class="mobnav" id="mobnav">
+  <a href="forum.html"><i data-lucide="message-square"></i> Forum</a>
+  <a href="resources-videos.html"><i data-lucide="video"></i> Videos</a>
+  <a href="resources-podcasts.html"><i data-lucide="mic"></i> Podcasts</a>
+  <a href="resources-literature.html"><i data-lucide="book-open"></i> Literature</a>
+  <a href="resources-newsfeed.html"><i data-lucide="newspaper"></i> Newsfeed</a>
+  <a href="resources-laws.html"><i data-lucide="scale"></i> Laws and Regulations</a>
+  <a href="activities-videos-podcasts.html"><i data-lucide="clapperboard"></i> Videos and Podcasts</a>
+  <a href="activities-workshops.html"><i data-lucide="users"></i> Workshops</a>
+  <a href="team.html"><i data-lucide="badge-check"></i> IC Team</a>
+  <a href="members.html"><i data-lucide="users-round"></i> Forum Members</a>
+  <a href="what-are-commons.html"><i data-lucide="sprout"></i> What Are Commons</a>
+  <a href="who-is-a-commoner.html"><i data-lucide="users"></i> Who Is a Commoner</a>
+  <a href="purpose-of-the-indian-commoner.html"><i data-lucide="feather"></i> Purpose of the Indian Commoner</a>
+  <a href="login.html"><i data-lucide="log-in"></i> Login</a>
+</div>
+</nav>
+
+<main>
+
+<div class="crumbbar" style="background:#eef0f4"><div class="mx"><div class="crumb">
+  <a href="index.html"><i data-lucide="house"></i>Home</a><span class="sep">/</span>
+  <a href="forum.html">Forum Themes</a><span class="sep">/</span>
+  <span class="here" id="t-crumb">Discussion</span>
+</div></div></div>
+
+<div class="pagehead noline" style="background:#eef0f4;padding-bottom:0"><div class="in" style="padding:1.5rem 2rem 1.25rem">
+  <div>
+    <h1 style="font-size:1.9rem" id="t-title">Discussion</h1>
+    <p style="margin-top:.4rem">Started by <b style="color:var(--ink)" id="t-author">You</b> &middot; <span id="t-when"></span></p>
+  </div>
+</div></div>
+
+<section class="section tight" style="padding-top:1.25rem"><div class="mx">
+  <div class="panel" id="t-missing" hidden style="text-align:center;padding:2.5rem">
+    <p style="color:var(--muted)">This discussion isn&rsquo;t available in this browser. Threads started with Start a Conversation are saved on the device they were posted from.</p>
+    <a class="btn btn-primary" style="margin-top:1rem" href="forum.html">Back to the Discussion forum</a>
+  </div>
+  <div class="rail-layout" id="t-layout">
+    <div>
+
+      <div class="postcard">
+        <div class="post-head">
+          <span class="pw-av" id="t-av">Y</span>
+          <div>
+            <b id="t-author2">You</b>
+            <span>Topic author</span>
+          </div>
+        </div>
+        <div class="post-body">
+          <p id="t-body"></p>
+        </div>
+        <div class="post-foot">
+          <div class="row">
+            <span class="tag" id="t-voices"><i data-lucide="users"></i> 1 Voice</span>
+            <span class="tag" id="t-replies"><i data-lucide="message-square"></i> 0 Replies</span>
+          </div>
+          <div class="row" style="gap:.6rem">
+            <div class="tags" id="t-tags"></div>
+            <button type="button" class="clearbtn reply-to-btn" id="t-reply-op" data-reply-to="You"><i data-lucide="corner-up-left" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Reply</button>
+            <button type="button" class="clearbtn" data-open-modal="reportModal"><i data-lucide="flag" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Report</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="reply-count"><i data-lucide="message-square"></i> Replies</div>
+
+      <div class="panel" style="padding:0">
+        <div class="cm-list" style="margin-top:0">
+          <div class="cm-empty" id="cm-empty" style="padding:1.75rem 1.5rem;text-align:center;color:var(--muted);font-size:.9rem">No replies yet — be the first to add what you know about this.</div>
+        </div>
+      </div>
+
+      <div class="panel" id="reply-gate" style="margin-top:1.5rem;text-align:center;padding:2rem">
+        <p style="font-size:.92rem;color:var(--muted)">You must be logged in to reply to this topic.</p>
+        <a class="btn btn-primary" style="margin-top:.9rem" href="login.html"><i data-lucide="log-in"></i> Sign in to reply</a>
+      </div>
+
+      <div class="cm-box reply-composer" id="reply-box" style="margin-top:1.5rem" hidden>
+        <span class="pw-av" style="background:var(--blue)">PS</span>
+        <div class="cm-grow">
+          <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.6rem">
+            <div class="selw" style="max-width:11rem">
+              <select id="reply-lang" aria-label="Reply language">
+                <option>Reply in English</option>
+                <option>हिन्दी में जवाब दें</option>
+                <option>ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ</option>
+                <option>తెలుగులో సమాధానం</option>
+              </select>
+              <i data-lucide="chevron-down" class="cv"></i>
+            </div>
+          </div>
+          <textarea id="reply-text" placeholder="Add to this discussion — or record your answer instead…"></textarea>
+          <div class="composer-attachments" id="reply-attachments"></div>
+          <div class="composer-status" id="reply-status" hidden></div>
+          <div class="row" style="justify-content:space-between;align-items:center;margin-top:.75rem;flex-wrap:wrap;gap:.6rem">
+            <div class="row" style="gap:.4rem">
+              <input type="file" id="reply-file-input" hidden>
+              <input type="file" id="reply-photo-input" accept="image/*" hidden>
+              <button type="button" class="ctool" id="reply-file-btn" title="Attach a file"><i data-lucide="paperclip"></i></button>
+              <button type="button" class="ctool" id="reply-photo-btn" title="Add a photo"><i data-lucide="camera"></i></button>
+              <button type="button" class="ctool" id="reply-mic-btn" title="Record voice"><i data-lucide="mic"></i></button>
+            </div>
+            <div class="row" style="gap:.9rem;align-items:center">
+              <label style="display:flex;align-items:center;gap:.45rem;font-size:.82rem;color:var(--muted-2)">
+                <input type="checkbox" id="reply-anon" style="accent-color:var(--green-d)"> Post anonymously
+              </label>
+              <button type="button" class="btn btn-primary" id="reply-send">Post reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <aside>
+      <div class="sidecard">
+        <h4>Where this sits</h4>
+        <div class="railrow between"><span class="muted">Theme</span><a id="t-theme-link" href="forum.html">Others</a></div>
+        <div class="railrow between" id="t-sub-row" hidden><span class="muted">Sub-theme</span><span id="t-sub"></span></div>
+        <div class="railrow between"><span class="muted">Language</span><span id="t-lang">English</span></div>
+        <div class="railrow between" id="t-place-row" hidden><span class="muted">Place</span><span id="t-place" style="text-align:right;max-width:12rem"></span></div>
+        <div class="railrow between"><span class="muted">Status</span><span class="tag solid">Open</span></div>
+      </div>
+
+      <div class="sidecard">
+        <h4>Voices in this thread</h4>
+        <div class="avstack" id="t-avstack"></div>
+        <a class="btn btn-outline block" style="margin-top:1rem" href="members.html">See all participants</a>
+      </div>
+
+      <div class="sidecard">
+        <h4>Related on the platform</h4>
+        <a class="raillink" id="t-rel-theme" href="forum.html"><i data-lucide="layers"></i><span><b>This theme</b><small>More threads in this theme</small></span></a>
+        <a class="raillink" href="resources-laws.html"><i data-lucide="scale"></i><span><b>Laws and Regulations</b><small>Relevant acts, policies and rules</small></span></a>
+        <a class="raillink" href="map.html"><i data-lucide="map"></i><span><b>Map exploration</b><small>Find discussions near this place</small></span></a>
+      </div>
+
+    </aside>
+  </div>
+</section>
+
+<div class="modal-back" id="reportModal">
+  <div class="modal-card wide pw-modal">
+    <div class="fm-head">
+      <div><span class="kicker">Moderation</span><b>Report this content</b></div>
+      <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="fm-body">
+      <p class="muted" style="font-size:.85rem;margin:-.4rem 0 1.1rem">Reports go to the moderation queue. You will be told what was decided.</p>
+      <div class="field selw"><label for="rp-reason">Why are you reporting it?</label>
+        <select id="rp-reason">
+          <option>Abusive or harassing language</option>
+          <option>Spam or promotional content</option>
+          <option>Off-topic for this theme</option>
+          <option>Duplicate of an existing discussion</option>
+          <option>Misinformation about law or policy</option>
+          <option>Shares someone's private information</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label for="rp-notes">Anything the moderator should know? <span class="muted">(optional)</span></label>
+        <textarea id="rp-notes" style="min-height:90px" placeholder="Add context…"></textarea>
+      </div>
+      <label style="display:flex;align-items:center;gap:.55rem;font-size:.85rem;color:var(--muted-2);margin:.9rem 0 0">
+        <input type="checkbox" style="accent-color:var(--green-d)"> Also hide this author's posts from my view
+      </label>
+      <div class="row" style="margin-top:1.35rem">
+        <button class="btn btn-primary" data-close-modal>Submit report</button>
+        <button class="btn btn-outline" data-close-modal>Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site">
+  <div class="cols">
+    <div>
+      <p>A forum to which individuals and organisations interested in the current state of common pool resources, from India and other parts of the world, may contribute.</p>
+    </div>
+    <div>
+      <h5>Discuss</h5>
+      <ul>
+        <li><a href="forum.html">Discussion forum</a></li>
+        <li><a href="login.html" id="start-convo-link">Start a Conversation</a></li>
+        <li><a href="map.html">Map exploration</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="resources-videos.html">Videos</a></li>
+        <li><a href="resources-podcasts.html">Podcasts</a></li>
+        <li><a href="resources-literature.html">Literature</a></li>
+        <li><a href="resources-newsfeed.html">Newsfeed</a></li>
+        <li><a href="resources-laws.html">Laws and Regulations</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Activities &amp; People</h5>
+      <ul>
+        <li><a href="activities-videos-podcasts.html">Videos and Podcasts</a></li>
+        <li><a href="activities-workshops.html">Workshops</a></li>
+        <li><a href="team.html">IC Team</a></li>
+        <li><a href="members.html">Forum Members</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Site</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="contact-us.html">Contact Us</a></li>
+        <li><a href="terms-of-use.html">Terms of Use</a></li>
+        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Partners</h5>
+      <ul class="fpartners">
+        <li><a href="http://www.censeindia.org/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/img/cense-logo.png" alt="CenSE — Centre for Social Ecology"></a></li>
+        <li><a href="https://fes.org.in/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/img/fes-logo.svg" alt="Foundation for Ecological Security"></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="bar">
+    <span class="legal">CC-BY 4.0 License. Indian Commoner.</span>
+    <div class="social">
+      <a href="https://www.facebook.com/Indian-Commoner-Forum-100238292592467/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+      <a href="https://www.instagram.com/indian_commoner_forum/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+      <a href="https://twitter.com/CommonerForum" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+      <a href="https://www.linkedin.com/company/indian-commoner-forum" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var loggedIn = false;
+  try { loggedIn = localStorage.getItem('ic-logged-in') === '1'; } catch (e) {}
+
+  var gate = document.getElementById('reply-gate');
+  var box = document.getElementById('reply-box');
+  if (loggedIn) {
+    if (gate) gate.hidden = true;
+    if (box) box.hidden = false;
+  }
+
+  // Deep link from a "Reply" CTA elsewhere (e.g. a matched-thread result in
+  // Start a Conversation) — jump straight to the reply composer if signed
+  // in, or to the sign-in prompt otherwise, instead of landing at the top.
+  if (location.hash === '#reply') {
+    var replyTarget = loggedIn ? box : gate;
+    if (replyTarget) {
+      replyTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (loggedIn) {
+        var replyField = document.getElementById('reply-text');
+        if (replyField) replyField.focus();
+      }
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ---- Reply composer attachments (file/photo) + mic dictation — same
+  // real browser APIs as the Start a Conversation composer, scoped here.
+  var attachments = [];
+  var nextAttId = 1;
+  var attWrap = document.getElementById('reply-attachments');
+  var statusEl = document.getElementById('reply-status');
+
+  function showStatus(msg, isError) {
+    if (!statusEl) return;
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('err', !!isError);
+    statusEl.hidden = !msg;
+  }
+
+  function humanSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function iconForAttachment(kind) {
+    return { file: 'paperclip', photo: 'image' }[kind] || 'paperclip';
+  }
+
+  function renderAttachments() {
+    if (!attWrap) return;
+    attWrap.innerHTML = attachments.map(function (a) {
+      var inner = a.kind === 'photo' && a.url
+        ? '<img src="' + a.url + '" alt="">'
+        : '<i class="att-ic" data-lucide="' + iconForAttachment(a.kind) + '"></i>';
+      inner += '<span>' + escapeHtml(a.label) + '</span>';
+      inner += '<button type="button" class="att-x" data-remove="' + a.id + '" aria-label="Remove"><i data-lucide="x"></i></button>';
+      return '<span class="att-chip" data-att="' + a.id + '">' + inner + '</span>';
+    }).join('');
+    attWrap.querySelectorAll('[data-remove]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = +btn.getAttribute('data-remove');
+        var removed = attachments.filter(function (a) { return a.id === id; })[0];
+        if (removed && removed.url) URL.revokeObjectURL(removed.url);
+        attachments = attachments.filter(function (a) { return a.id !== id; });
+        renderAttachments();
+      });
+    });
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function addAttachment(att) {
+    att.id = nextAttId++;
+    attachments.push(att);
+    renderAttachments();
+  }
+
+  var fileBtn = document.getElementById('reply-file-btn');
+  var fileInput = document.getElementById('reply-file-input');
+  if (fileBtn && fileInput) {
+    fileBtn.addEventListener('click', function () { fileInput.click(); });
+    fileInput.addEventListener('change', function (e) {
+      Array.from(e.target.files).forEach(function (f) {
+        addAttachment({ kind: 'file', label: f.name + ' · ' + humanSize(f.size) });
+      });
+      e.target.value = '';
+    });
+  }
+
+  var photoBtn = document.getElementById('reply-photo-btn');
+  var photoInput = document.getElementById('reply-photo-input');
+  if (photoBtn && photoInput) {
+    photoBtn.addEventListener('click', function () { photoInput.click(); });
+    photoInput.addEventListener('change', function (e) {
+      var f = e.target.files[0];
+      if (!f) return;
+      addAttachment({ kind: 'photo', label: f.name, url: URL.createObjectURL(f) });
+      e.target.value = '';
+    });
+  }
+
+  // Mic: dictates into the reply textarea via the Web Speech API, same as
+  // the Start a Conversation composer.
+  var micBtn = document.getElementById('reply-mic-btn');
+  var replyText = document.getElementById('reply-text');
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  var recognizing = false;
+
+  function stopMicUi() {
+    recognizing = false;
+    if (micBtn) {
+      micBtn.className = 'ctool';
+      micBtn.innerHTML = '<i data-lucide="mic"></i>';
+      if (window.lucide) lucide.createIcons();
+    }
+  }
+
+  if (micBtn) {
+    micBtn.addEventListener('click', function () {
+      if (recognizing) { recognition.stop(); return; }
+      if (!SpeechRecognitionCtor) { showStatus("Voice dictation isn't available in this browser — try Chrome or Edge.", true); return; }
+      showStatus('');
+      var base = replyText.value ? replyText.value.replace(/\s+$/, '') + ' ' : '';
+      recognition = new SpeechRecognitionCtor();
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.addEventListener('result', function (e) {
+        var finalText = '', interim = '';
+        for (var i = 0; i < e.results.length; i++) {
+          var t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) finalText += t + ' '; else interim += t;
+        }
+        replyText.value = (base + finalText + interim).trim();
+      });
+      recognition.addEventListener('error', function (e) {
+        showStatus('Voice dictation error — ' + (e.error || 'unknown') + '.', true);
+      });
+      recognition.addEventListener('end', stopMicUi);
+      recognition.start();
+      recognizing = true;
+      micBtn.className = 'ctool rec pulse';
+      micBtn.innerHTML = '<i data-lucide="square"></i><span>Listening…</span>';
+      if (window.lucide) lucide.createIcons();
+    });
+  }
+
+  // ======================================================================
+  // Community-posted thread: a question posted from Start a Conversation is
+  // saved in this browser (localStorage); this page renders it as the opening
+  // post and lets any signed-in member add comments, which are saved too.
+  // There is no server: threads and comments live on the device they were
+  // created on.
+  // ======================================================================
+  var THEME_SHORT = {
+    'Governing the Commons': 'Governing', 'Commons as Culture': 'Culture', 'Commons as Micro Habitats': 'Micro Habitats',
+    'Livelihoods, Subsistence & Valuation of Commons': 'Livelihoods', 'Gender and Commons': 'Gender',
+    'Power and Commons': 'Power', 'Conversion of Commons': 'Conversion', 'Others': 'Others'
+  };
+  var THEME_TINT = {
+    'Governing': 'tint-teal', 'Culture': 'tint-purple', 'Micro Habitats': 'tint-green', 'Livelihoods': 'tint-amber',
+    'Gender': 'tint-rose', 'Power': 'tint-blue', 'Conversion': 'tint-slate', 'Others': 'tint-slate'
+  };
+  var threadId = new URLSearchParams(location.search).get('id');
+  var thr = null;
+  try {
+    thr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]')
+      .filter(function (t) { return String(t.ts) === String(threadId); })[0] || null;
+  } catch (e) {}
+
+  function ago(ts) {
+    var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + ' min ago';
+    if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+    return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function getReplies() {
+    try { return (JSON.parse(localStorage.getItem('ic_thread_replies') || '{}')[threadId]) || []; } catch (e) { return []; }
+  }
+  function saveReply(r) {
+    try {
+      var all = JSON.parse(localStorage.getItem('ic_thread_replies') || '{}');
+      (all[threadId] = all[threadId] || []).push(r);
+      localStorage.setItem('ic_thread_replies', JSON.stringify(all));
+    } catch (e) {}
+  }
+
+  var layout = document.getElementById('t-layout');
+  var missing = document.getElementById('t-missing');
+  var cmList = document.querySelector('.cm-list');
+  var cmEmpty = document.getElementById('cm-empty');
+  var anonCheck = document.getElementById('reply-anon');
+  var sendBtn = document.getElementById('reply-send');
+
+  if (!thr) {
+    if (layout) layout.hidden = true;
+    if (missing) missing.hidden = false;
+    var crumbOnly = document.getElementById('t-crumb'); if (crumbOnly) crumbOnly.textContent = 'Not found';
+    var titleOnly = document.getElementById('t-title'); if (titleOnly) titleOnly.textContent = 'Discussion not found';
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  var authorName = thr.author || 'You';
+  var shortTheme = THEME_SHORT[thr.theme] || thr.theme || 'Others';
+  document.title = thr.title + ' — Indian Commoner';
+  document.getElementById('t-crumb').textContent = thr.title.length > 48 ? thr.title.slice(0, 48).trim() + '…' : thr.title;
+  document.getElementById('t-title').textContent = thr.title;
+  document.getElementById('t-author').textContent = authorName;
+  document.getElementById('t-when').textContent = 'posted ' + ago(thr.ts);
+  document.getElementById('t-author2').textContent = authorName;
+  document.getElementById('t-av').textContent = authorName.charAt(0).toUpperCase();
+  document.getElementById('t-body').textContent = thr.body || thr.title;
+  document.getElementById('t-reply-op').setAttribute('data-reply-to', authorName);
+
+  var place = thr.state
+    ? thr.state + (thr.district ? ', ' + thr.district : '')
+    : (thr.address ? thr.address.split(',').slice(0, 2).join(',').trim() : '');
+  var hasCoords = typeof thr.lat === 'number' && typeof thr.lng === 'number';
+  var tagsHtml = '<span class="tag ' + (THEME_TINT[shortTheme] || 'tint-slate') + '">' + escapeHtml(shortTheme) + '</span>';
+  if (thr.sub) tagsHtml += '<span class="tag tint-slate">' + escapeHtml(thr.sub) + '</span>';
+  if (place) tagsHtml += '<span class="tag solid">' + escapeHtml(place) + '</span>';
+  document.getElementById('t-tags').innerHTML = tagsHtml;
+
+  var themeLink = document.getElementById('t-theme-link');
+  themeLink.textContent = thr.theme || 'Others';
+  themeLink.href = 'forum.html?theme=' + encodeURIComponent(thr.theme || 'Others');
+  var relTheme = document.getElementById('t-rel-theme');
+  relTheme.href = themeLink.href;
+  relTheme.querySelector('b').textContent = shortTheme;
+  if (thr.sub) { document.getElementById('t-sub').textContent = thr.sub; document.getElementById('t-sub-row').hidden = false; }
+  document.getElementById('t-lang').textContent = thr.lang || 'English';
+  if (place) {
+    var placeEl = document.getElementById('t-place');
+    placeEl.textContent = place;
+    if (hasCoords) placeEl.title = (thr.address ? thr.address + ' · ' : '') + thr.lat.toFixed(4) + ', ' + thr.lng.toFixed(4);
+    document.getElementById('t-place-row').hidden = false;
+  }
+
+  var repliesTag = document.getElementById('t-replies');
+  var voicesTag = document.getElementById('t-voices');
+  var avstack = document.getElementById('t-avstack');
+
+  function renderCounts() {
+    var rs = getReplies();
+    var voices = {};
+    voices[authorName] = true;
+    rs.forEach(function (r) { voices[r.author] = true; });
+    var v = Object.keys(voices);
+    repliesTag.lastChild.textContent = ' ' + rs.length + (rs.length === 1 ? ' Reply' : ' Replies');
+    voicesTag.lastChild.textContent = ' ' + v.length + (v.length === 1 ? ' Voice' : ' Voices');
+    avstack.innerHTML = v.slice(0, 5).map(function (n) {
+      return '<span class="pw-av">' + escapeHtml(n.charAt(0).toUpperCase()) + '</span>';
+    }).join('');
+  }
+
+  function replyItemHtml(r) {
+    var isAnon = r.author === 'Anonymous';
+    return '<span class="pw-av" style="background:var(--blue)">' + (isAnon ? '?' : escapeHtml(r.author === 'You' ? 'PS' : r.author.charAt(0).toUpperCase())) + '</span>' +
+      '<div class="cm-grow">' +
+      '<div class="cm-h"><b>' + escapeHtml(r.author) + '</b> · ' + escapeHtml(ago(r.ts)) + '</div>' +
+      '<div class="cm-t">' + escapeHtml(r.text) + '</div>' +
+      (isAnon ? '' : '<button type="button" class="clearbtn reply-to-btn" style="margin-top:.5rem" data-reply-to="' + escapeHtml(r.author) + '"><i data-lucide="corner-up-left" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Reply</button>') +
+      '</div>';
+  }
+  function appendReply(r) {
+    if (cmEmpty) { cmEmpty.remove(); cmEmpty = null; }
+    var item = document.createElement('div');
+    item.className = 'cm-item';
+    item.style.padding = '1.5rem';
+    item.innerHTML = replyItemHtml(r);
+    cmList.appendChild(item);
+  }
+
+  getReplies().forEach(appendReply);
+  renderCounts();
+  if (window.lucide) lucide.createIcons();
+
+  if (sendBtn) {
+    sendBtn.addEventListener('click', function () {
+      var text = replyText.value.trim();
+      if (!text && !attachments.length) {
+        showStatus('Write a reply, or attach a file, before posting.', true);
+        replyText.focus();
+        return;
+      }
+      var isAnon = anonCheck && anonCheck.checked;
+      var reply = { author: isAnon ? 'Anonymous' : 'You', text: text || '(attachment)', ts: Date.now() };
+      saveReply(reply);
+      appendReply(reply);
+      renderCounts();
+      if (window.lucide) lucide.createIcons();
+      replyText.value = '';
+      attachments.forEach(function (a) { if (a.url) URL.revokeObjectURL(a.url); });
+      attachments = [];
+      renderAttachments();
+      showStatus('Your reply was posted.', false);
+    });
+  }
+
+  // Reply to a specific post/comment: tag its author at the top of the
+  // composer (or the sign-in gate, if not signed in yet) and focus it.
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.reply-to-btn');
+    if (!btn) return;
+    var name = btn.getAttribute('data-reply-to');
+    if (box && !box.hidden) {
+      var tag = '@' + name + ' ';
+      if (replyText.value.indexOf(tag) !== 0) replyText.value = tag + replyText.value;
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      replyText.focus();
+      var pos = replyText.value.length;
+      replyText.setSelectionRange(pos, pos);
+    } else if (gate) {
+      gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

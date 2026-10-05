@@ -620,7 +620,10 @@
     // Thread -> Theme -> Location -> Conversation: the thread's chosen theme
     // and (when given) its latitude, longitude and full address travel with
     // the post so the forum can later filter, search and map it.
-    var rec = { title: t.slice(0, 120), theme: th ? th.theme : classifyTheme(t), sub: th ? th.sub : '', state: '', district: '', author: 'You', ts: Date.now() };
+    // ts doubles as the thread's id (forum.html links to thread.html?id=<ts>);
+    // body keeps the full question, since the title is truncated for the list.
+    var rec = { title: t.slice(0, 120), body: t, theme: th ? th.theme : classifyTheme(t), sub: th ? th.sub : '',
+      lang: langSelect ? langSelect.value : 'English', state: '', district: '', author: 'You', ts: Date.now() };
     if (th && th.location) {
       rec.state = th.location.state || '';
       rec.district = th.location.district || '';
@@ -1065,7 +1068,18 @@
     thread.appendChild(row);
 
     var postBtn = row.querySelector('[data-act="postforum"]');
-    if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText, th); });
+    if (postBtn) postBtn.addEventListener('click', function () {
+      // Post once: a second click would otherwise create a duplicate thread.
+      if (postBtn.classList.contains('posted')) {
+        var again = document.getElementById('publishConfirmModal');
+        if (again) again.classList.add('open');
+        return;
+      }
+      postToForum(forText, th);
+      postBtn.classList.add('posted');
+      postBtn.innerHTML = '<i data-lucide="check"></i> Posted to forum';
+      if (window.lucide) lucide.createIcons();
+    });
     // Order below the reply bubble: related threads/resources, then the
     // new-thread card last — each its own card, not part of the reply.
     if (resultsHtml || resourceResultsHtml) {
