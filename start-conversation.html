@@ -1055,7 +1055,7 @@
     var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + resourceResultsHtml +
+      '<div class="msg-text">' + replyHtml + '</div>' +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
@@ -1074,6 +1074,13 @@
       threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
       thread.appendChild(threadRow);
       setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
+    }
+    // Related threads/resources are likewise their own card, not part of the reply.
+    if (resultsHtml || resourceResultsHtml) {
+      var relatedRow = document.createElement('div');
+      relatedRow.className = 'msg-row ai msg-related-row';
+      relatedRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-related-body">' + resultsHtml + resourceResultsHtml + '</div>';
+      thread.appendChild(relatedRow);
     }
 
     var replyBtn = row.querySelector('[data-act="reply"]');
