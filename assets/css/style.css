@@ -1656,7 +1656,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
   box-shadow:var(--shadow-card);overflow:hidden;transition:transform .15s,box-shadow .2s,border-color .15s}
 .membercard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--green)}
 .mc-link{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;color:inherit}
-.mc-cover{height:108px;width:100%;flex:none;position:relative;background:var(--wave-banner);background-size:cover;background-position:center}
+.mc-cover{height:108px;width:100%;flex:none;position:relative;background:#e8eef0 url(../img/members-banner.jpg) center/cover no-repeat}
 .mc-avatar{width:4.4rem;height:4.4rem;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;
   justify-content:center;border:4px solid #fff;box-shadow:var(--shadow-card);margin-top:-4.9rem;flex:none;
   font:700 1.5rem/1 var(--sans);position:relative;z-index:1}

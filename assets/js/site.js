@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
     for (var i = 0; i < name.length; i++) hash = (hash * 37 + name.charCodeAt(i)) >>> 0;
     return WAVE_GRADIENTS[hash % WAVE_GRADIENTS.length];
   }
-  document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
+  // (Directory cards use the shared banner illustration instead — see .mc-cover in style.css.)
+  document.querySelectorAll('.mp-cover').forEach(function (cover) {
     var card = cover.closest('.membercard');
     var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
     var name = nameEl ? nameEl.textContent.trim() : '';
