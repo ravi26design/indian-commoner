@@ -1572,6 +1572,11 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .tag.tint-pin{background:var(--amber-soft);color:var(--amber-d);border-color:var(--amber-line);display:inline-flex;align-items:center;gap:.25rem}
 .topicrow h3{font-size:1rem;line-height:1.4;margin:0 0 .3rem}
 .topicrow:hover h3{color:var(--green-d)}
+.topicrow .tr-ai{margin:0 0 .45rem;font-size:.84rem;line-height:1.5;color:var(--muted);display:-webkit-box;
+  -webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.topicrow .tr-ai-l{display:inline-flex;align-items:center;gap:.25rem;font-size:.68rem;font-weight:800;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--green-d);margin-right:.3rem;vertical-align:1px}
+.topicrow .tr-ai-l i,.topicrow .tr-ai-l svg{width:.78rem;height:.78rem;flex:none}
 .topicrow .tr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.8rem;color:var(--muted-2)}
 .topicrow .tr-meta b{color:var(--ink);font-weight:700}
 .topicrow .tr-stats{flex:none;display:flex;gap:1.5rem;align-items:center;padding-top:.2rem}

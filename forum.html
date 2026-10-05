@@ -210,6 +210,7 @@
             <div class="tr-tx">
               <div class="tr-tags"><span class="tag tint-purple">Culture</span><span class="tag tint-pin"><i data-lucide="pin" style="width:.65rem;height:.65rem;vertical-align:-1px"></i> Pinned</span><span class="tag tint-slate">Sacred Sites and Cultural Landscapes</span></div>
               <h3><i data-lucide="pin" style="width:.8rem;height:.8rem;margin-right:.35rem;color:var(--cta);vertical-align:-1px"></i>Andhra Pradesh-Culture and Commons: Great Backyard Bird Count (GBBC)</h3>
+              <p class="tr-ai"><span class="tr-ai-l"><i data-lucide="sparkles"></i> Platform Assistant</span> The Great Backyard Bird Count (GBBC) is an annual citizen-science event in which volunteers count the birds they see over a few days each February and report them online, helping build a picture of bird populations around the world.</p>
               <div class="tr-meta"><span>by <b>Indu</b></span><span>·</span><span class="tr-loc"><i data-lucide="map-pin" style="width:.75rem;height:.75rem;vertical-align:-1px"></i> Andhra Pradesh</span><span>·</span><span>2 months ago</span></div>
             </div>
             <div class="tr-stats"><div class="tr-stat"><b>4</b><span>Replies</span></div><div class="tr-stat"><b>5</b><span>Voices</span></div></div>
@@ -1261,6 +1262,7 @@
       (t.sub ? '<span class="tag tint-slate">' + esc(t.sub) + '</span>' : '') +
       '<span class="tag tint-slate">New · via Start a Conversation</span></div>' +
       '<h3>' + esc(t.title) + '</h3>' +
+      (t.answer && t.answer[0] ? '<p class="tr-ai"><span class="tr-ai-l"><i data-lucide="sparkles"></i> Platform Assistant</span> ' + esc(t.answer[0]) + '</p>' : '') +
       '<div class="tr-meta"><span>by <b>' + esc(t.author || 'You') + '</b></span>' + loc + '<span>·</span><span>' + agoLabel(t.ts) + '</span></div></div>' +
       '<div class="tr-stats"><div class="tr-stat"><b>' + rs.length + '</b><span>' + (rs.length === 1 ? 'Reply' : 'Replies') + '</span></div><div class="tr-stat"><b>' + voiceN + '</b><span>' + (voiceN === 1 ? 'Voice' : 'Voices') + '</span></div></div>';
     list.insertBefore(a, list.firstChild);
