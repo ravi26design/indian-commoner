@@ -31,18 +31,19 @@ document.addEventListener('DOMContentLoaded', function () {
   // random across the list, but a member's card and their own profile page
   // always show the same banner (and it doesn't change on every reload).
   var BANNER_COUNT = 15;
-  function bannerFor(name) {
+  function bannerFor(name, small) {
     var hash = 0;
     for (var i = 0; i < name.length; i++) hash = (hash * 37 + name.charCodeAt(i)) >>> 0;
     var n = (hash % BANNER_COUNT) + 1;
-    return 'assets/img/banners/banner-' + (n < 10 ? '0' : '') + n + '.jpg';
+    // Directory cards are small, so they use a lighter copy; profile covers use the full-size one.
+    return 'assets/img/banners/' + (small ? 'card/' : '') + 'banner-' + (n < 10 ? '0' : '') + n + '.jpg';
   }
   document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
     var card = cover.closest('.membercard');
     var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
     var name = nameEl ? nameEl.textContent.trim() : '';
     if (!name) return;
-    cover.style.backgroundImage = 'url(' + bannerFor(name) + ')';
+    cover.style.backgroundImage = 'url(' + bannerFor(name, cover.classList.contains('mc-cover')) + ')';
   });
 
   // No member has a real uploaded profile photo in this prototype, so the
