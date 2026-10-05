@@ -1,211 +1,272 @@
-/* Resources upload — Videos, Podcasts, Literature, Newsfeed, Laws and Regulations.
-   Only a user signed in with the "Resources" role sees the Upload button.
-   Prototype: there is no backend, so uploaded items (and the files themselves,
-   kept in IndexedDB) live in this browser only and are listed under
-   "Uploaded by you" on the page. */
+/* Resources uploads + moderation (prototype, no backend).
+   - Videos / Podcasts / Literature / Newsfeed / Laws and Regulations each get an
+     "Upload …" button. It captures the same metadata those pages show for a
+     resource (title, themes, level, link/file, and — per page — date/source or
+     region/subject/type).
+   - A submission goes to a Moderator queue (moderation.html). Once a Moderator
+     approves it, it appears on the page under "Community uploads".
+   - Everything (records in localStorage, file bytes in IndexedDB) lives in this
+     browser only. Exposes window.icRes for moderation.html. */
 (function () {
-  var MODS = {
-    videos:     { kind: 'Video',      icon: 'video',     accept: 'video/*,.mp4,.webm,.mov',            linkHint: 'YouTube or other video link',  extra: null,                         level: true  },
-    podcasts:   { kind: 'Podcast',    icon: 'mic',       accept: 'audio/*,.mp3,.m4a,.wav,.ogg',        linkHint: 'Podcast or audio link',        extra: 'Host / series',              level: false },
-    literature: { kind: 'Literature', icon: 'book-open', accept: '.pdf,.doc,.docx,.epub,.txt',         linkHint: 'Link to the publication',      extra: 'Author(s)',                  level: false },
-    newsfeed:   { kind: 'Newsfeed',   icon: 'newspaper', accept: '.pdf,.doc,.docx,image/*,.txt',       linkHint: 'Link to the article',          extra: 'Source / publication',       level: false },
-    laws:       { kind: 'Law',        icon: 'scale',     accept: '.pdf,.doc,.docx,.txt',               linkHint: 'Link to the official text',    extra: 'Jurisdiction (state / Centre)', level: false }
-  };
-  var m = location.pathname.match(/resources-([a-z]+)\.html/);
-  var page = m && m[1];
-  var cfg = MODS[page];
-  if (!cfg) return;
-  // The page's own Beginner / Intermediate / Advanced tabs (where it has them) -> ask for a level.
-  cfg.level = !!document.querySelector('[data-levelgroup]');
-
-  var role = '', logged = false;
-  try { role = localStorage.getItem('ic-role') || ''; logged = localStorage.getItem('ic-logged-in') === '1'; } catch (e) {}
-  if (!logged || role !== 'Resources') return;
-
+  var STORE = 'ic_resource_submissions';
+  var THEMES = ['Governing the Commons', 'Commons as Culture', 'Commons as Microhabitats',
+    'Livelihoods, Subsistence and Valuation of Commons', 'Gender and Commons', 'Power and Commons',
+    'Conversion of Commons', 'Others'];
+  var ME = 'Priya Sharma';          // the prototype's one signed-in persona
   var MAX_MB = 150;
-  var LANGS = ['English', 'हिन्दी', 'मराठी', 'తెలుగు', 'ಕನ್ನಡ', 'தமிழ்', 'ଓଡ଼ିଆ', 'Other'];
+
+  // What each page shows for a resource, and so what its upload form asks for.
+  var MODS = {
+    videos:     { kind: 'Video',      cta: 'Upload Video',                 icon: 'video',     accept: 'video/*,.mp4,.webm,.mov',      linkHint: 'YouTube or other video link', themes: true,  level: true,  file: true,  linkReq: false },
+    podcasts:   { kind: 'Podcast',    cta: 'Upload Podcasts',              icon: 'mic',       accept: 'audio/*,.mp3,.m4a,.wav,.ogg',  linkHint: 'Podcast or audio link',       themes: true,  level: false, file: true,  linkReq: false },
+    literature: { kind: 'Literature', cta: 'Upload Literature',            icon: 'book-open', accept: '.pdf,.doc,.docx,.epub,.txt',   linkHint: 'Link to the publication',     themes: true,  level: true,  file: true,  linkReq: false },
+    newsfeed:   { kind: 'Newsfeed',   cta: 'Upload Newsfeed',              icon: 'newspaper', accept: '',                             linkHint: 'Link to the article',         themes: false, level: false, file: false, linkReq: true, news: true },
+    laws:       { kind: 'Law',        cta: 'Upload Laws and Regulations',  icon: 'scale',     accept: '.pdf,.doc,.docx,.txt',         linkHint: 'Link to the official text',   themes: false, level: false, file: true,  linkReq: false, law: true }
+  };
 
   function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
   }
-  function fmtSize(b) {
-    if (b < 1024 * 1024) return Math.max(1, Math.round(b / 1024)) + ' KB';
-    return (b / 1024 / 1024).toFixed(1) + ' MB';
-  }
+  function fmtSize(b) { return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
   function fmtDate(ts) { return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  function fmtMonth(v) { return v ? new Date(v + '-01T00:00:00').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) : ''; }
+  function safeUrl(u) { return /^https?:\/\/\S+$/i.test(u || '') ? u : ''; }
+  function role() { try { return localStorage.getItem('ic-role') || ''; } catch (e) { return ''; } }
+  function loggedIn() { try { return localStorage.getItem('ic-logged-in') === '1'; } catch (e) { return false; } }
 
-  // ---- storage: metadata in localStorage, file bytes in IndexedDB ----------
-  function getItems() {
-    try { return JSON.parse(localStorage.getItem('ic_uploads') || '[]'); } catch (e) { return []; }
-  }
-  function setItems(list) {
-    try { localStorage.setItem('ic_uploads', JSON.stringify(list)); } catch (e) {}
-  }
+  // ---- storage: records in localStorage, file bytes in IndexedDB -------------
+  function getItems() { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch (e) { return []; } }
+  function setItems(l) { try { localStorage.setItem(STORE, JSON.stringify(l)); } catch (e) {} }
   function db() {
     return new Promise(function (res, rej) {
-      var req = indexedDB.open('ic-uploads', 1);
-      req.onupgradeneeded = function () { req.result.createObjectStore('files'); };
-      req.onsuccess = function () { res(req.result); };
-      req.onerror = function () { rej(req.error); };
+      var q = indexedDB.open('ic-uploads', 1);
+      q.onupgradeneeded = function () { q.result.createObjectStore('files'); };
+      q.onsuccess = function () { res(q.result); };
+      q.onerror = function () { rej(q.error); };
     });
   }
   function idb(mode, fn) {
     return db().then(function (d) {
       return new Promise(function (res, rej) {
-        var tx = d.transaction('files', mode), st = tx.objectStore('files'), r = fn(st);
+        var tx = d.transaction('files', mode), r = fn(tx.objectStore('files'));
         tx.oncomplete = function () { res(r && r.result); };
         tx.onerror = function () { rej(tx.error); };
       });
     });
   }
-  function putFile(id, blob) { return idb('readwrite', function (s) { return s.put(blob, id); }); }
+  function putFile(id, b) { return idb('readwrite', function (s) { return s.put(b, id); }); }
   function getFile(id) { return idb('readonly', function (s) { return s.get(id); }); }
   function delFile(id) { return idb('readwrite', function (s) { return s.delete(id); }); }
 
-  // ---- Upload button in the page header ----------------------------------
-  var head = document.querySelector('.pagehead .in');
-  if (!head) return;
-  var btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'btn btn-primary sm up-btn';
-  btn.innerHTML = '<i data-lucide="upload"></i> Upload ' + esc(cfg.kind.toLowerCase());
-  head.appendChild(btn);
+  function ytId(u) {
+    var m = /(?:youtube\.com\/watch\?(?:[^#]*&)?v=|youtu\.be\/)([\w-]{11})/.exec(u || '');
+    return m ? m[1] : '';
+  }
 
-  // ---- "Uploaded by you" section ---------------------------------------
-  var main = document.querySelector('main');
-  var sec = document.createElement('section');
-  sec.className = 'section resbg up-sec';
-  sec.style.paddingBottom = '0';
-  sec.hidden = true;
-  sec.innerHTML = '<div class="mx"><div class="up-sec-h"><h2>Uploaded by you</h2>' +
-    '<span>Saved in this browser only — there is no server behind this prototype yet.</span></div>' +
-    '<div class="grid g3 up-list"></div></div>';
-  var pagehead = document.querySelector('.pagehead');
-  pagehead.parentNode.insertBefore(sec, pagehead.nextSibling);
-  var listEl = sec.querySelector('.up-list');
+  // ---- one resource card, shared by the pages and the moderation queue --------
+  // mode: 'public' (approved, on the resource page) | 'mine' (own pending/rejected) | 'mod' (moderator)
+  function cardHtml(i, mode) {
+    var cfg = MODS[i.page] || MODS.literature;
+    var link = safeUrl(i.link), yt = ytId(link);
+    var tags = (i.themes || []).map(function (t) { return '<span class="tag">#' + esc(t) + '</span>'; }).join('');
+    if (i.level) tags += '<span class="tag">' + esc(i.level) + '</span>';
+    if (i.region) tags += '<span class="tag">' + esc(i.region) + '</span>';
+    if (i.subject) tags += '<span class="tag">' + esc(i.subject) + '</span>';
+    if (i.type) tags += '<span class="tag solid">' + esc(i.type) + '</span>';
+    var status = '';
+    if (mode !== 'public') {
+      status = '<span class="up-status st-' + i.status + '">' + (i.status === 'pending' ? 'Awaiting moderator review' : i.status === 'approved' ? 'Published' : 'Not approved') + '</span>';
+    }
+    var media = yt
+      ? '<a class="up-yt" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/' + yt + '/hqdefault.jpg" alt="" loading="lazy"><span class="v-play"><i data-lucide="play"></i></span></a>'
+      : '';
+    var line = i.news ? '<div class="up-extra">' + esc([fmtMonth(i.date), i.source].filter(Boolean).join(' · ')) + '</div>' : '';
+    var meta = [];
+    if (i.fileName) meta.push(esc(i.fileName) + ' · ' + fmtSize(i.fileSize));
+    meta.push('Submitted by ' + esc(i.by) + ' · ' + fmtDate(i.ts));
+    var acts = '';
+    if (link) acts += '<a class="btn btn-outline sm" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i> Open link</a>';
+    if (i.hasFile) acts += '<button type="button" class="btn btn-outline sm" data-act="open"><i data-lucide="eye"></i> Open file</button>' +
+                           '<button type="button" class="btn btn-outline sm" data-act="download"><i data-lucide="download"></i> Download</button>';
+    var reason = (i.status === 'rejected' && i.reason) ? '<p class="up-reason"><b>Moderator note:</b> ' + esc(i.reason) + '</p>' : '';
+    if (mode === 'mine') acts += '<button type="button" class="btn btn-ghost sm up-del" data-act="delete"><i data-lucide="trash-2"></i> Delete</button>';
+    if (mode === 'mod') {
+      if (i.status === 'pending') {
+        acts += '<button type="button" class="btn btn-primary sm" data-act="approve"><i data-lucide="check"></i> Approve</button>' +
+                '<button type="button" class="btn btn-outline sm up-del" data-act="reject"><i data-lucide="x"></i> Reject</button>';
+      } else {
+        acts += '<button type="button" class="btn btn-outline sm" data-act="reopen"><i data-lucide="rotate-ccw"></i> Move back to pending</button>';
+      }
+    }
+    return '<article class="card up-card" data-id="' + i.id + '"><div class="up-media">' + media + '</div><div class="up-body">' +
+      '<div class="up-tags"><span class="tag solid up-kind"><i data-lucide="' + cfg.icon + '"></i> ' + esc(cfg.kind) + '</span>' + status + '</div>' +
+      '<h3>' + esc(i.title) + '</h3>' + line +
+      (tags ? '<div class="up-tags">' + tags + '</div>' : '') + reason +
+      '<div class="up-meta">' + meta.join('<br>') + '</div>' +
+      '<div class="up-acts">' + acts + '</div></div></article>';
+  }
+
+  // Inline player for uploaded video/audio, then file open/download wiring.
   var urls = [];
-
-  function render() {
-    urls.forEach(function (u) { URL.revokeObjectURL(u); });
-    urls = [];
-    var items = getItems().filter(function (i) { return i.page === page; });
-    sec.hidden = !items.length;
-    listEl.innerHTML = items.map(function (i) {
-      return '<article class="card up-card" data-id="' + i.id + '">' +
-        '<div class="up-media"></div>' +
-        '<div class="up-body">' +
-          '<div class="up-tags"><span class="tag solid"><i data-lucide="' + cfg.icon + '"></i> ' + esc(cfg.kind) + '</span>' +
-            (i.level ? '<span class="tag">' + esc(i.level) + '</span>' : '') +
-            (i.lang ? '<span class="tag">' + esc(i.lang) + '</span>' : '') + '</div>' +
-          '<h3>' + esc(i.title) + '</h3>' +
-          (i.extra ? '<div class="up-extra">' + esc(i.extra) + '</div>' : '') +
-          (i.desc ? '<p>' + esc(i.desc) + '</p>' : '') +
-          '<div class="up-meta">' + (i.fileName ? esc(i.fileName) + ' · ' + fmtSize(i.fileSize) + ' · ' : '') + 'Added ' + fmtDate(i.ts) + '</div>' +
-          '<div class="up-acts">' +
-            (i.link ? '<a class="btn btn-outline sm" href="' + esc(i.link) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link"></i> Open link</a>' : '') +
-            (i.hasFile ? '<button type="button" class="btn btn-outline sm" data-act="open"><i data-lucide="eye"></i> Open file</button>' +
-                         '<button type="button" class="btn btn-outline sm" data-act="download"><i data-lucide="download"></i> Download</button>' : '') +
-            '<button type="button" class="btn btn-ghost sm up-del" data-act="delete"><i data-lucide="trash-2"></i> Delete</button>' +
-          '</div></div></article>';
-    }).join('');
-    // Inline player for uploaded video/audio files.
+  function hydrate(root, items) {
     items.forEach(function (i) {
       if (!i.hasFile || !/^(video|audio)\//.test(i.fileType || '')) return;
       getFile(i.id).then(function (blob) {
-        var card = listEl.querySelector('[data-id="' + i.id + '"] .up-media');
-        if (!blob || !card) return;
+        var slot = root.querySelector('[data-id="' + i.id + '"] .up-media');
+        if (!blob || !slot || slot.innerHTML) return;
         var u = URL.createObjectURL(blob); urls.push(u);
-        card.innerHTML = i.fileType.indexOf('video/') === 0
-          ? '<video controls preload="metadata" src="' + u + '"></video>'
-          : '<audio controls preload="metadata" src="' + u + '"></audio>';
+        slot.innerHTML = i.fileType.indexOf('video/') === 0 ? '<video controls preload="metadata" src="' + u + '"></video>' : '<audio controls preload="metadata" src="' + u + '"></audio>';
       }).catch(function () {});
     });
     if (window.lucide) lucide.createIcons();
   }
+  function fileAction(i, act) {
+    getFile(i.id).then(function (blob) {
+      if (!blob) return;
+      var u = URL.createObjectURL(blob);
+      if (act === 'open') window.open(u, '_blank');
+      else { var a = document.createElement('a'); a.href = u; a.download = i.fileName || 'download'; a.click(); }
+      setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+    });
+  }
+  function resetUrls() { urls.forEach(function (u) { URL.revokeObjectURL(u); }); urls = []; }
 
-  listEl.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-act]'); if (!b) return;
-    var card = b.closest('.up-card'), id = card.getAttribute('data-id');
-    var item = getItems().filter(function (i) { return i.id === id; })[0];
-    if (!item) return;
-    var act = b.getAttribute('data-act');
-    if (act === 'delete') {
-      if (!window.confirm('Delete “' + item.title + '”? This removes it from your uploads.')) return;
-      setItems(getItems().filter(function (i) { return i.id !== id; }));
-      delFile(id).catch(function () {});
-      render();
-    } else {
-      getFile(id).then(function (blob) {
-        if (!blob) return;
-        var u = URL.createObjectURL(blob);
-        if (act === 'open') { window.open(u, '_blank'); }
-        else { var a = document.createElement('a'); a.href = u; a.download = item.fileName || 'download'; a.click(); }
-        setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
-      });
-    }
+  window.icRes = { MODS: MODS, getItems: getItems, setItems: setItems, delFile: delFile, cardHtml: cardHtml, hydrate: hydrate,
+                   fileAction: fileAction, resetUrls: resetUrls, esc: esc };
+
+  // ======================= resource pages =======================
+  var m = location.pathname.match(/resources-([a-z]+)\.html/);
+  var page = m && m[1], cfg = MODS[page];
+  if (!cfg) return;
+  var head = document.querySelector('.pagehead .in');
+  if (!head) return;
+
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn btn-primary sm up-btn';
+  btn.innerHTML = '<i data-lucide="upload"></i> ' + esc(cfg.cta);
+  head.appendChild(btn);
+
+  function makeSection(title, note) {
+    var s = document.createElement('section');
+    s.className = 'section resbg up-sec'; s.style.paddingBottom = '0'; s.hidden = true;
+    s.innerHTML = '<div class="mx"><div class="up-sec-h"><h2>' + esc(title) + '</h2><span>' + esc(note) + '</span></div><div class="grid g3 up-list"></div></div>';
+    return s;
+  }
+  var pagehead = document.querySelector('.pagehead');
+  var secMine = makeSection('Your submissions', 'Waiting for a Moderator, or not approved. Approved items move to Community uploads.');
+  var secPub = makeSection('Community uploads', 'Approved by a Moderator. Saved in this browser only — there is no server behind this prototype yet.');
+  pagehead.parentNode.insertBefore(secPub, pagehead.nextSibling);
+  pagehead.parentNode.insertBefore(secMine, pagehead.nextSibling);
+
+  function render() {
+    resetUrls();
+    var all = getItems().filter(function (i) { return i.page === page; });
+    var pub = all.filter(function (i) { return i.status === 'approved'; });
+    var mine = all.filter(function (i) { return i.status !== 'approved' && i.by === ME; });
+    secPub.hidden = !pub.length; secMine.hidden = !mine.length;
+    secPub.querySelector('.up-list').innerHTML = pub.map(function (i) { return cardHtml(i, 'public'); }).join('');
+    secMine.querySelector('.up-list').innerHTML = mine.map(function (i) { return cardHtml(i, 'mine'); }).join('');
+    hydrate(secPub, pub); hydrate(secMine, mine);
+  }
+  [secPub, secMine].forEach(function (sec) {
+    sec.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-act]'); if (!b) return;
+      var id = b.closest('.up-card').getAttribute('data-id');
+      var item = getItems().filter(function (i) { return i.id === id; })[0]; if (!item) return;
+      var act = b.getAttribute('data-act');
+      if (act === 'delete') {
+        if (!window.confirm('Delete “' + item.title + '”?')) return;
+        setItems(getItems().filter(function (i) { return i.id !== id; })); delFile(id).catch(function () {}); render();
+      } else fileAction(item, act);
+    });
   });
 
-  // ---- Upload modal -------------------------------------------------------
+  // ---- upload modal ----
+  function opts(list) { return list.map(function (v) { return '<option>' + esc(v) + '</option>'; }).join(''); }
+  function pageValues(cat) {
+    return [].map.call(document.querySelectorAll('.fp-cat[data-cat="' + cat + '"] input[type=checkbox]'), function (c) { return c.value; });
+  }
   var modal = document.createElement('div');
   modal.className = 'modal-back';
+  var fields = '<label class="up-f"><span>Title <span class="req">*</span></span><input type="text" name="title" maxlength="200" placeholder="Title as it should appear"></label>';
+  if (cfg.themes) {
+    fields += '<fieldset class="up-f up-themes"><legend>Themes <span class="req">*</span></legend><div class="up-chips">' +
+      THEMES.map(function (t) { return '<label class="up-chip"><input type="checkbox" name="themes" value="' + esc(t) + '"><span>#' + esc(t) + '</span></label>'; }).join('') + '</div></fieldset>';
+  }
+  if (cfg.level) fields += '<label class="up-f"><span>Level <span class="req">*</span></span><select name="level">' + opts(['Beginner', 'Intermediate', 'Advanced']) + '</select></label>';
+  if (cfg.news) {
+    fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
+      '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>';
+  }
+  if (cfg.law) {
+    fields += '<div class="up-row"><label class="up-f"><span>Region <span class="req">*</span></span><select name="region">' + opts(['Central (India)'].concat(pageValues('region'), ['Other'])) + '</select></label>' +
+      '<label class="up-f"><span>Type <span class="req">*</span></span><select name="type">' + opts(pageValues('type').concat(['Other'])) + '</select></label></div>' +
+      '<label class="up-f"><span>Subject <span class="req">*</span></span><select name="subject">' + opts(pageValues('subject').concat(['Other'])) + '</select></label>';
+  }
+  if (cfg.file) {
+    fields += '<div class="up-f"><span>File</span><label class="up-drop"><i data-lucide="upload-cloud"></i><span class="up-drop-t">Choose a file</span><small>Up to ' + MAX_MB + ' MB</small>' +
+      '<input type="file" name="file" accept="' + esc(cfg.accept) + '" hidden></label></div><div class="up-or"><span>or</span></div>';
+  }
+  fields += '<label class="up-f"><span>' + (cfg.linkReq ? 'Link <span class="req">*</span>' : 'Link') + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
   modal.innerHTML =
     '<div class="modal-card wide pw-modal up-modal" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
-      '<div class="fm-head"><div><span class="kicker">Resources</span><b id="up-title">Upload ' + esc(cfg.kind.toLowerCase()) + '</b></div>' +
+      '<div class="fm-head"><div><span class="kicker">Goes to a Moderator for review</span><b id="up-title">' + esc(cfg.cta) + '</b></div>' +
         '<button type="button" class="modal-x" data-up-close aria-label="Close"><i data-lucide="x"></i></button></div>' +
-      '<form class="fm-body up-form" novalidate>' +
-        '<label class="up-f"><span>Title <span class="req">*</span></span><input type="text" name="title" maxlength="160" placeholder="Give it a clear title"></label>' +
-        '<label class="up-f">Description<textarea name="desc" rows="3" maxlength="600" placeholder="What is this about? (optional)"></textarea></label>' +
-        (cfg.extra ? '<label class="up-f">' + esc(cfg.extra) + '<input type="text" name="extra" maxlength="120"></label>' : '') +
-        '<div class="up-row">' +
-          (cfg.level ? '<label class="up-f">Level<select name="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></label>' : '') +
-          '<label class="up-f">Language<select name="lang">' + LANGS.map(function (l) { return '<option>' + esc(l) + '</option>'; }).join('') + '</select></label>' +
-        '</div>' +
-        '<div class="up-f">File<label class="up-drop"><i data-lucide="upload-cloud"></i><span class="up-drop-t">Choose a file</span>' +
-          '<small>Up to ' + MAX_MB + ' MB</small><input type="file" name="file" accept="' + esc(cfg.accept) + '" hidden></label></div>' +
-        '<div class="up-or"><span>or</span></div>' +
-        '<label class="up-f">Link<input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>' +
+      '<form class="fm-body up-form" novalidate>' + fields +
         '<p class="up-err" role="alert" hidden></p>' +
         '<div class="up-foot"><button type="button" class="btn btn-outline" data-up-close>Cancel</button>' +
-          '<button type="submit" class="btn btn-primary"><i data-lucide="upload"></i> Upload</button></div>' +
-      '</form></div>';
+        '<button type="submit" class="btn btn-primary"><i data-lucide="send"></i> Submit for review</button></div></form></div>';
   document.body.appendChild(modal);
 
   var form = modal.querySelector('form'), err = modal.querySelector('.up-err');
   var fileIn = form.elements.file, dropT = modal.querySelector('.up-drop-t');
   function showErr(t) { err.textContent = t; err.hidden = !t; }
-  function open() { form.reset(); dropT.textContent = 'Choose a file'; showErr(''); modal.classList.add('open'); form.elements.title.focus(); }
   function close() { modal.classList.remove('open'); }
-  btn.addEventListener('click', open);
+  btn.addEventListener('click', function () {
+    if (!loggedIn()) { location.href = 'login.html?return=' + encodeURIComponent(location.href); return; }
+    form.reset(); if (dropT) dropT.textContent = 'Choose a file'; showErr(''); modal.classList.add('open'); form.elements.title.focus();
+  });
   modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-up-close]')) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
-  fileIn.addEventListener('change', function () {
-    dropT.textContent = fileIn.files[0] ? fileIn.files[0].name : 'Choose a file';
-  });
+  if (fileIn) fileIn.addEventListener('change', function () { dropT.textContent = fileIn.files[0] ? fileIn.files[0].name : 'Choose a file'; });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var title = form.elements.title.value.trim();
-    var link = form.elements.link.value.trim();
-    var file = fileIn.files[0] || null;
-    if (!title) { showErr('Please add a title.'); return; }
-    if (!file && !link) { showErr('Choose a file or paste a link.'); return; }
-    if (link && !/^https?:\/\/\S+$/i.test(link)) { showErr('The link should start with http:// or https://'); return; }
-    if (file && file.size > MAX_MB * 1024 * 1024) { showErr('That file is larger than ' + MAX_MB + ' MB.'); return; }
-    var id = 'u' + Date.now() + Math.floor(Math.random() * 1000);
+    var f = form.elements, title = f.title.value.trim(), link = f.link.value.trim(), file = fileIn ? (fileIn.files[0] || null) : null;
+    var themes = cfg.themes ? [].filter.call(form.querySelectorAll('input[name=themes]'), function (c) { return c.checked; }).map(function (c) { return c.value; }) : [];
+    if (!title) return showErr('Please add a title.');
+    if (cfg.themes && !themes.length) return showErr('Pick at least one theme.');
+    if (cfg.news && !f.date.value) return showErr('Add the month it was published.');
+    if (cfg.news && !f.source.value.trim()) return showErr('Add the source / publication.');
+    if (cfg.linkReq && !link) return showErr('Add the link to the article.');
+    if (!cfg.linkReq && !file && !link) return showErr('Choose a file or paste a link.');
+    if (link && !safeUrl(link)) return showErr('The link should start with http:// or https://');
+    if (file && file.size > MAX_MB * 1048576) return showErr('That file is larger than ' + MAX_MB + ' MB.');
+    var isMod = role() === 'Moderator';           // a Moderator's own upload needs no second review
+    var id = 'r' + Date.now() + Math.floor(Math.random() * 1000);
     var item = {
-      id: id, page: page, kind: cfg.kind, title: title, desc: form.elements.desc.value.trim(),
-      extra: cfg.extra ? form.elements.extra.value.trim() : '', level: cfg.level ? form.elements.level.value : '',
-      lang: form.elements.lang.value, link: link, hasFile: !!file,
-      fileName: file ? file.name : '', fileSize: file ? file.size : 0, fileType: file ? file.type : '', ts: Date.now()
+      id: id, page: page, title: title, themes: themes, level: cfg.level ? f.level.value : '', link: link,
+      news: !!cfg.news, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
+      region: cfg.law ? f.region.value : '', subject: cfg.law ? f.subject.value : '', type: cfg.law ? f.type.value : '',
+      hasFile: !!file, fileName: file ? file.name : '', fileSize: file ? file.size : 0, fileType: file ? file.type : '',
+      status: isMod ? 'approved' : 'pending', by: ME, ts: Date.now()
     };
     var done = function () {
-      var all = getItems(); all.unshift(item); setItems(all);
-      close(); render();
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var all = getItems(); all.unshift(item); setItems(all); close(); render();
+      showToast(isMod ? 'Published — it’s now on this page.' : 'Submitted. A Moderator will review it before it appears here.');
+      (isMod ? secPub : secMine).scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     if (file) putFile(id, file).then(done).catch(function () { showErr('Couldn’t save the file in this browser (storage may be full or blocked).'); });
     else done();
   });
+
+  function showToast(t) {
+    var el = document.createElement('div');
+    el.className = 'up-toast'; el.setAttribute('role', 'status'); el.textContent = t;
+    document.body.appendChild(el);
+    setTimeout(function () { el.classList.add('out'); setTimeout(function () { el.remove(); }, 400); }, 3800);
+  }
 
   render();
   if (window.lucide) lucide.createIcons();

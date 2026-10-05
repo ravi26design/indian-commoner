@@ -2326,32 +2326,60 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .chat-att i,.chat-att svg{width:.9rem;height:.9rem}
 @media(max-width:560px){.modal-card.chat-card{height:100vh;max-height:100vh}}
 
-/* ---- Resources upload (Resources role) ---- */
+/* ---- Resources upload + Moderator queue ---- */
 .up-btn{margin-left:auto;flex:none}
+.mod-sub{margin:.4rem 0 0;font-size:.92rem;color:var(--muted);max-width:44rem}
+.mod-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem 1.5rem;margin:.5rem 0 1.25rem}
+.mod-filter{display:flex;align-items:center;gap:.6rem;font-size:.82rem;font-weight:700;color:var(--muted)}
+.mod-filter select{font:inherit;font-weight:600;font-size:.88rem;padding:.5rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff}
+.mod-n{display:inline-block;min-width:1.25rem;padding:0 .4rem;margin-left:.25rem;border-radius:999px;background:var(--green-soft);color:var(--green-d);font-size:.72rem;font-weight:800;text-align:center;line-height:1.35rem}
+.seg-tab.on .mod-n{background:rgba(255,255,255,.25);color:inherit}
+.up-empty{padding:2.5rem 1rem;text-align:center;color:var(--muted);font-size:.95rem}
+.up-empty[hidden]{display:none}
 .up-sec-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1rem;margin:.5rem 0 1rem}
 .up-sec-h h2{font-size:1.2rem;margin:0}
 .up-sec-h span{font-size:.8rem;color:var(--muted)}
 .up-card{display:flex;flex-direction:column;overflow:hidden}
 .up-media:empty{display:none}
+.up-media{margin:-1.35rem -1.35rem 1rem}
 .up-media video,.up-media audio{display:block;width:100%;background:#17201a}
 .up-media audio{background:none;padding:.75rem .75rem 0}
-.up-body{display:flex;flex-direction:column;gap:.45rem;flex:1}
+.up-yt{position:relative;display:block;aspect-ratio:16/9;background:#17201a}
+.up-yt img{width:100%;height:100%;object-fit:cover;display:block}
+.up-yt .v-play{position:absolute;inset:0;margin:auto}
+.up-body{display:flex;flex-direction:column;gap:.55rem;flex:1}
 .up-tags{display:flex;flex-wrap:wrap;gap:.4rem}
 .up-tags .tag i,.up-tags .tag svg{width:.8rem;height:.8rem}
+.up-tags .tag{white-space:normal}
 .up-body h3{font-size:1.02rem;line-height:1.4;margin:0}
 .up-extra{font-size:.8rem;font-weight:700;color:var(--green-d)}
-.up-body p{font-size:.86rem;line-height:1.55;color:var(--muted);margin:0}
-.up-meta{font-size:.74rem;color:var(--muted-2);overflow-wrap:anywhere}
+.up-meta{font-size:.74rem;color:var(--muted-2);overflow-wrap:anywhere;line-height:1.5}
+.up-reason{margin:0;font-size:.82rem;color:#8a2a22;background:#fdf1ef;padding:.5rem .7rem}
+.up-status{display:inline-flex;align-items:center;font-size:.72rem;font-weight:800;padding:.22rem .65rem;border-radius:999px}
+.up-status.st-pending{background:var(--amber-soft);color:var(--amber-d)}
+.up-status.st-approved{background:var(--green-soft);color:var(--green-d)}
+.up-status.st-rejected{background:#fdf1ef;color:#8a2a22}
 .up-acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto;padding-top:.5rem}
 .up-acts .btn i,.up-acts .btn svg{width:.85rem;height:.85rem}
 .up-del{color:#b3261e}
+.up-rej{display:flex;flex-direction:column;gap:.5rem;padding:.7rem;background:var(--bg-soft);border:1px solid var(--line-2)}
+.up-rej label{display:flex;flex-direction:column;gap:.35rem;font-size:.78rem;font-weight:700}
+.up-rej textarea{font:inherit;font-weight:400;font-size:.88rem;padding:.55rem .7rem;border:1px solid var(--line-2);border-radius:var(--r-sm);resize:vertical}
 .up-form{display:flex;flex-direction:column;gap:1rem}
+fieldset.up-f{border:0;padding:0;margin:0;min-width:0}
+fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 .up-f{display:flex;flex-direction:column;gap:.4rem;font-size:.84rem;font-weight:700;color:var(--ink)}
 .up-f .req{color:#b3261e}
-.up-f input[type=text],.up-f input[type=url],.up-f textarea,.up-f select{font:inherit;font-weight:400;font-size:.92rem;padding:.65rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
-.up-f textarea{resize:vertical}
-.up-f input:focus,.up-f textarea:focus,.up-f select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,125,65,.14)}
+.up-f input[type=text],.up-f input[type=url],.up-f input[type=month],.up-f textarea,.up-f select{font:inherit;font-weight:400;font-size:.92rem;padding:.65rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
+.up-f input:focus,.up-f select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,125,65,.14)}
 .up-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem}
+.up-chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.up-chip{cursor:pointer}
+.up-chip input{position:absolute;opacity:0;pointer-events:none}
+.up-chip span{display:inline-block;padding:.35rem .8rem;border:1px solid var(--line-2);border-radius:999px;background:#fff;font-size:.8rem;font-weight:600;color:var(--muted)}
+.up-chip:hover span{border-color:var(--green)}
+.up-chip input:checked+span{background:var(--green);border-color:var(--green);color:#fff}
+.up-chip input:focus-visible+span{box-shadow:0 0 0 3px rgba(79,125,65,.25)}
 .up-drop{display:flex;flex-direction:column;align-items:center;gap:.25rem;text-align:center;padding:1.2rem;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);background:var(--bg-soft);cursor:pointer;font-weight:700;color:var(--green-d)}
 .up-drop:hover{border-color:var(--green);background:var(--green-soft)}
 .up-drop i,.up-drop svg{width:1.6rem;height:1.6rem}
@@ -2363,4 +2391,6 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .up-err[hidden]{display:none}
 .up-foot{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.25rem}
 .up-foot .btn i,.up-foot .btn svg{width:.95rem;height:.95rem}
+.up-toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);z-index:120;max-width:calc(100vw - 2rem);background:var(--ink);color:#fff;padding:.8rem 1.2rem;font-size:.9rem;font-weight:600;box-shadow:var(--shadow-float);transition:opacity .4s}
+.up-toast.out{opacity:0}
 @media(max-width:560px){.up-btn{margin-left:0}.up-foot .btn{flex:1}}

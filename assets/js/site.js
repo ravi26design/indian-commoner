@@ -74,6 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
     try { if (v) localStorage.setItem(LOGIN_KEY, '1'); else localStorage.removeItem(LOGIN_KEY); } catch (e) {}
   }
 
+  function currentRole() { try { return localStorage.getItem('ic-role') || ''; } catch (e) { return ''; } }
+  // Moderators get a link to the resource moderation queue, with a count of what's waiting.
+  var modLink = '';
+  if (isLoggedIn() && currentRole() === 'Moderator') {
+    var pending = 0;
+    try { pending = JSON.parse(localStorage.getItem('ic_resource_submissions') || '[]').filter(function (i) { return i.status === 'pending'; }).length; } catch (e) {}
+    modLink = '<a href="moderation.html"><span class="nd-ic"><i data-lucide="shield-check"></i></span><span class="nd-tx"><b>Moderation queue' +
+      (pending ? ' <span class="mod-n">' + pending + '</span>' : '') + '</b><small>Review submitted resources</small></span></a>';
+  }
+
   if (isLoggedIn()) {
     document.querySelectorAll('a.signin-btn:not(.acctav)').forEach(function (a) {
       a.href = 'member-profile.html';
@@ -90,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
       drop.className = 'navdrop dd-right';
       drop.innerHTML = '<div class="navdrop-in">' +
         '<a href="member-profile.html"><span class="nd-ic"><i data-lucide="user"></i></span><span class="nd-tx"><b>My Profile</b><small>Your account details and preferences</small></span></a>' +
+        modLink +
         '<a href="change-password.html"><span class="nd-ic"><i data-lucide="key-round"></i></span><span class="nd-tx"><b>Change Password</b><small>Update your login credentials</small></span></a>' +
         '<a id="signout-link-nav" href="index.html"><span class="nd-ic"><i data-lucide="log-out"></i></span><span class="nd-tx"><b>Sign out</b></span></a>' +
         '</div>';
@@ -98,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#mobnav a[href="login.html"]').forEach(function (a) {
       a.href = 'member-profile.html';
       a.innerHTML = '<i data-lucide="user"></i> My Profile';
+      if (modLink) a.insertAdjacentHTML('afterend', '<a href="moderation.html"><i data-lucide="shield-check"></i> Moderation queue</a>');
     });
     if (window.lucide) lucide.createIcons();
   }
@@ -172,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // (e.g. "Resources" can upload on the Resources pages). Display-only: no real auth.
       var roleSel = document.getElementById('lg-role');
       try { localStorage.setItem('ic-role', roleSel ? roleSel.value : 'Registered User'); } catch (e) {}
+      if (roleSel && roleSel.value === 'Moderator' && !new URLSearchParams(location.search).get('return')) signinBtn.href = 'moderation.html';
     });
   }
 
