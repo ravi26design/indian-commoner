@@ -589,9 +589,17 @@
   // ---- New-thread card: theme mapping + location capture ----------------
   // Every fresh question becomes a thread: it is mapped to a theme and, when
   // it concerns a place/resource/community, the user is asked where. Location
-  // comes from the browser's Geolocation API, an OpenStreetMap (Nominatim)
-  // place search, or a pin dropped on an OpenStreetMap/Leaflet map; the
-  // latitude, longitude and full address are saved with the thread.
+  // comes from the browser's Geolocation API, a place search, or a pin
+  // dropped on a map; the latitude, longitude and full address are saved
+  // with the thread.
+  //
+  // Maps/geocoding use Google when a key is configured below. This is a
+  // static site, so the key is public: create a "Maps JavaScript API" key
+  // (plus the Geocoding API for address lookup) in Google Cloud and restrict
+  // it by HTTP referrer to your site (e.g. https://<user>.github.io/*).
+  // With no key — or if Google rejects it — the map falls back to a keyless
+  // Leaflet/CARTO map and addresses come from OpenStreetMap's Nominatim.
+  var GOOGLE_MAPS_API_KEY = '';
   var NOMINATIM = 'https://nominatim.openstreetmap.org';
   var nextThreadId = 1;
 
@@ -600,20 +608,80 @@
            Math.abs(lng).toFixed(4) + '° ' + (lng >= 0 ? 'E' : 'W');
   }
 
-  function parseNominatim(j) {
+  var gmapsPromise = null;
+  var onGoogleAuthFailure = null;
+  function loadGoogleMaps() {
+    if (!GOOGLE_MAPS_API_KEY) return Promise.reject(new Error('no key'));
+    if (window.google && google.maps) return Promise.resolve();
+    if (gmapsPromise) return gmapsPromise;
+    gmapsPromise = new Promise(function (resolve, reject) {
+      window.__icGmapsReady = resolve;
+      window.gm_authFailure = function () {
+        gmapsPromise = null;
+        reject(new Error('auth'));
+        if (onGoogleAuthFailure) onGoogleAuthFailure();
+      };
+      var s = document.createElement('script');
+      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(GOOGLE_MAPS_API_KEY) + '&callback=__icGmapsReady&v=weekly';
+      s.async = true;
+      s.onerror = function () { gmapsPromise = null; reject(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return gmapsPromise;
+  }
+
+  // Both providers are normalised to { lat, lng, address, state, district }.
+  function fromNominatim(j) {
     var a = (j && j.address) || {};
-    return { address: (j && j.display_name) || '', state: a.state || '', district: a.state_district || a.county || a.district || '' };
+    return {
+      lat: j && j.lat != null ? parseFloat(j.lat) : null,
+      lng: j && j.lon != null ? parseFloat(j.lon) : null,
+      address: (j && j.display_name) || '',
+      state: a.state || '',
+      district: a.state_district || a.county || a.district || ''
+    };
+  }
+
+  function fromGoogle(r) {
+    var state = '', district = '';
+    (r.address_components || []).forEach(function (c) {
+      if (c.types.indexOf('administrative_area_level_1') !== -1) state = c.long_name;
+      if (c.types.indexOf('administrative_area_level_2') !== -1) district = c.long_name;
+    });
+    return { lat: r.geometry.location.lat(), lng: r.geometry.location.lng(), address: r.formatted_address || '', state: state, district: district };
+  }
+
+  function googleGeocode(request) {
+    return new Promise(function (resolve, reject) {
+      new google.maps.Geocoder().geocode(request, function (results, status) {
+        if (status === 'OK') resolve(results.map(fromGoogle));
+        else if (status === 'ZERO_RESULTS') resolve([]);
+        else reject(new Error(status));
+      });
+    });
+  }
+
+  // Try Google first when a key is set; on any Google failure (no key,
+  // Geocoding API not enabled, quota, offline) fall back to OpenStreetMap.
+  function geocode(googleRequest, nominatimFn) {
+    if (!GOOGLE_MAPS_API_KEY) return nominatimFn();
+    return loadGoogleMaps().then(function () { return googleGeocode(googleRequest); }).catch(nominatimFn);
   }
 
   function reverseGeocode(lat, lng) {
-    return fetch(NOMINATIM + '/reverse?format=jsonv2&addressdetails=1&accept-language=en&zoom=16&lat=' + lat + '&lon=' + lng)
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (j) { return j && j.error ? { address: '', state: '', district: '' } : parseNominatim(j); });
+    return geocode({ location: { lat: lat, lng: lng } }, function () {
+      return fetch(NOMINATIM + '/reverse?format=jsonv2&addressdetails=1&accept-language=en&zoom=16&lat=' + lat + '&lon=' + lng)
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (j) { return [j && j.error ? { address: '', state: '', district: '' } : fromNominatim(j)]; });
+    }).then(function (list) { return list[0] || { address: '', state: '', district: '' }; });
   }
 
   function searchPlaces(q) {
-    return fetch(NOMINATIM + '/search?format=jsonv2&addressdetails=1&accept-language=en&limit=5&q=' + encodeURIComponent(q))
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+    return geocode({ address: q }, function () {
+      return fetch(NOMINATIM + '/search?format=jsonv2&addressdetails=1&accept-language=en&limit=5&q=' + encodeURIComponent(q))
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (list) { return list.map(fromNominatim); });
+    }).then(function (list) { return list.slice(0, 5); });
   }
 
   function threadCardHtml(th) {
@@ -650,7 +718,7 @@
     var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
     var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved');
     var chainTheme = $('.tc-chain-theme'), chainLoc = $('.tc-chain-loc');
-    var map = null, marker = null;
+    var destroyMap = null, pinToken = null;
 
     function refreshTheme() {
       themeName.textContent = th.theme;
@@ -666,7 +734,8 @@
       status.hidden = !msg;
     }
     function closePanel() {
-      if (map) { map.remove(); map = null; marker = null; }
+      pinToken = null;
+      if (destroyMap) { destroyMap(); destroyMap = null; }
       panel.hidden = true;
       panel.innerHTML = '';
       card.querySelectorAll('.tc-loc-btn').forEach(function (b) { b.classList.remove('on'); });
@@ -741,14 +810,13 @@
           btn.disabled = false;
           if (!list.length) { results.innerHTML = '<div class="tc-hint">No places found. Try a nearby town, or add the district and state.</div>'; return; }
           results.innerHTML = list.map(function (p, i) {
-            return '<button type="button" class="tc-result" data-i="' + i + '"><i data-lucide="map-pin"></i><span>' + escapeHtml(p.display_name) + '</span></button>';
+            return '<button type="button" class="tc-result" data-i="' + i + '"><i data-lucide="map-pin"></i><span>' + escapeHtml(p.address) + '</span></button>';
           }).join('');
           if (window.lucide) lucide.createIcons();
           results.querySelectorAll('.tc-result').forEach(function (b) {
             b.addEventListener('click', function () {
               var p = list[+b.getAttribute('data-i')];
-              var info = parseNominatim(p);
-              setLocation({ lat: parseFloat(p.lat), lng: parseFloat(p.lon), address: info.address, state: info.state, district: info.district });
+              setLocation({ lat: p.lat, lng: p.lng, address: p.address, state: p.state, district: p.district });
             });
           });
         }).catch(function () {
@@ -760,26 +828,79 @@
 
     function openPin() {
       panel.hidden = false;
-      if (!window.L) {
-        panel.innerHTML = '<div class="tc-hint err">The map couldn’t load. Try Search Location instead.</div>';
-        return;
-      }
       panel.innerHTML = '<div class="tc-map"></div><div class="tc-pin-row"><span class="tc-hint">Click the map to drop a pin; drag it to fine-tune.</span>' +
         '<button type="button" class="btn btn-primary sm" disabled>Use this pin</button></div>';
+      var mapEl = panel.querySelector('.tc-map');
       var useBtn = panel.querySelector('.tc-pin-row button');
-      map = L.map(panel.querySelector('.tc-map'), { scrollWheelZoom: false }).setView([22.5, 79], 4);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-      map.on('click', function (e) {
-        if (marker) marker.setLatLng(e.latlng);
-        else marker = L.marker(e.latlng, { draggable: true }).addTo(map);
-        useBtn.disabled = false;
-      });
-      setTimeout(function () { if (map) map.invalidateSize(); }, 60);
-      useBtn.addEventListener('click', function () {
-        var ll = marker.getLatLng();
-        resolveAndSet(ll.lat, ll.lng);
+      var picked = null;
+      var token = {};           // lets a stale async init notice the panel was closed/reopened
+      pinToken = token;
+      useBtn.addEventListener('click', function () { if (picked) resolveAndSet(picked.lat, picked.lng); });
+
+      function pick(lat, lng) { picked = { lat: lat, lng: lng }; useBtn.disabled = false; }
+
+      // Google Maps: click to drop a draggable marker.
+      function initGoogle() {
+        var gmap = new google.maps.Map(mapEl, {
+          center: { lat: 22.5, lng: 79 }, zoom: 4, gestureHandling: 'cooperative',
+          streetViewControl: false, fullscreenControl: false, mapTypeControl: true
+        });
+        var gmarker = null;
+        gmap.addListener('click', function (e) {
+          if (gmarker) gmarker.setPosition(e.latLng);
+          else {
+            gmarker = new google.maps.Marker({ position: e.latLng, map: gmap, draggable: true });
+            gmarker.addListener('dragend', function (ev) { pick(ev.latLng.lat(), ev.latLng.lng()); });
+          }
+          pick(e.latLng.lat(), e.latLng.lng());
+        });
+        destroyMap = function () { google.maps.event.clearInstanceListeners(gmap); };
+      }
+
+      // Keyless fallback (no Google key, or Google rejected it): Leaflet over
+      // Esri World Street Map tiles. tile.openstreetmap.org refuses pages
+      // opened without a website referrer (e.g. straight from a local file)
+      // and CARTO's free tiles now need a key; Esri's don't.
+      function initLeaflet() {
+        if (!window.L) {
+          panel.innerHTML = '<div class="tc-hint err">The map couldn’t load. Try Search Location instead.</div>';
+          return;
+        }
+        picked = null; useBtn.disabled = true;
+        mapEl.innerHTML = '';
+        var lmap = L.map(mapEl, { scrollWheelZoom: false }).setView([22.5, 79], 4);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19,
+          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
+        }).addTo(lmap);
+        var lmarker = null;
+        lmap.on('click', function (e) {
+          if (lmarker) lmarker.setLatLng(e.latlng);
+          else {
+            lmarker = L.marker(e.latlng, { draggable: true }).addTo(lmap);
+            lmarker.on('dragend', function () { var ll = lmarker.getLatLng(); pick(ll.lat, ll.lng); });
+          }
+          pick(e.latlng.lat, e.latlng.lng);
+        });
+        setTimeout(function () { lmap.invalidateSize(); }, 60);
+        destroyMap = function () { lmap.remove(); };
+      }
+
+      onGoogleAuthFailure = function () {
+        if (pinToken !== token || panel.hidden) return;
+        if (destroyMap) { destroyMap(); destroyMap = null; }
+        panel.innerHTML = '<div class="tc-map"></div><div class="tc-pin-row"><span class="tc-hint">Click the map to drop a pin; drag it to fine-tune.</span>' +
+          '<button type="button" class="btn btn-primary sm" disabled>Use this pin</button></div>';
+        mapEl = panel.querySelector('.tc-map');
+        useBtn = panel.querySelector('.tc-pin-row button');
+        useBtn.addEventListener('click', function () { if (picked) resolveAndSet(picked.lat, picked.lng); });
+        initLeaflet();
+      };
+
+      loadGoogleMaps().then(function () {
+        if (pinToken === token && !panel.hidden) initGoogle();
+      }).catch(function () {
+        if (pinToken === token && !panel.hidden) initLeaflet();
       });
     }
 
