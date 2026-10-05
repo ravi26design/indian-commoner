@@ -68,6 +68,7 @@ nav.top .bar{display:flex;align-items:center;gap:1.75rem;height:5rem;max-width:9
   color:#fff;flex:none;box-shadow:0 8px 16px -8px rgba(57,162,72,.6)}
 .brand .mk i,.brand .mk svg.lucide{width:21px;height:21px}
 .brand .bt{font-family:'Poppins',var(--sans);font-size:1.3rem;font-weight:800;letter-spacing:-.01em;color:#111;line-height:1.05}
+.brand-logo{height:2.6rem;width:auto;display:block}
 .brand .bt em{display:block;font-size:.62rem;font-weight:700;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase;margin-top:2px}
 nav.top .links{display:flex;align-items:center;gap:2rem;flex:1;justify-content:flex-end;min-width:0}
 nav.top .links a{color:var(--ink-2);font-size:.95rem;font-weight:600;padding:.35rem 0;
