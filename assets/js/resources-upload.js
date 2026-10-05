@@ -203,9 +203,9 @@
     fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
       '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>' +
       '<div class="up-f up-article"><span>Article <span class="req">*</span></span>' +
-        '<p class="up-hint">Use the button to add sub-titles and paragraphs — as many as you need.</p>' +
+        '<p class="up-hint">Use Add for each sub-title and paragraph — as many as you need.</p>' +
         '<div class="up-secs"></div>' +
-        '<button type="button" class="btn btn-outline sm up-add"><i data-lucide="plus"></i> Add sub-title &amp; paragraph</button></div>';
+        '<button type="button" class="btn btn-outline sm up-add" title="Add a sub-title and paragraph"><i data-lucide="plus"></i> Add</button></div>';
   }
   if (cfg.law) {
     fields += '<div class="up-row"><label class="up-f"><span>Region <span class="req">*</span></span><select name="region">' + opts(['Central (India)'].concat(pageValues('region'), ['Other'])) + '</select></label>' +
