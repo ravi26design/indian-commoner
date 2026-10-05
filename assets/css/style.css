@@ -1598,6 +1598,7 @@ nav.top .links a.navlink:hover i,nav.top .links a.navlink:hover svg.lucide{color
 .post-ai-h{display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green-d);margin-bottom:.6rem}
 .post-ai-h i,.post-ai-h svg{width:.9rem;height:.9rem;flex:none}
 .post-ai p{font-size:.92rem;line-height:1.7;color:var(--muted)}
+.post-ai p.post-ai-note{font-size:.76rem;line-height:1.5;color:var(--muted-2);margin-top:.6rem}
 .post-foot{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
   margin-top:1.35rem;padding-top:1.1rem;border-top:1px solid var(--line)}
 .reply-count{display:flex;align-items:center;gap:.6rem;font-size:.92rem;font-weight:800;color:var(--ink);margin:2.25rem 0 1.1rem}
