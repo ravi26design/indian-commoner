@@ -218,7 +218,7 @@
   }
   fields += '<label class="up-f"><span>' + (cfg.news ? 'Original link <small class="up-opt">(optional)</small>' : 'Link') + '</span><input type="url" name="link" placeholder="https://… (' + esc(cfg.linkHint) + ')"></label>';
   modal.innerHTML =
-    '<div class="modal-card wide pw-modal up-modal" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
+    '<div class="modal-card wide pw-modal up-modal' + (cfg.news ? ' up-news' : '') + '" role="dialog" aria-modal="true" aria-labelledby="up-title">' +
       '<div class="fm-head"><div><span class="kicker">Goes to a Moderator for review</span><b id="up-title">' + esc(cfg.cta) + '</b></div>' +
         '<button type="button" class="modal-x" data-up-close aria-label="Close"><i data-lucide="x"></i></button></div>' +
       '<form class="fm-body up-form" novalidate>' + fields +
