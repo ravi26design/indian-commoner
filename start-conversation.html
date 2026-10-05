@@ -828,6 +828,13 @@
         LANGS.map(function (l) { return '<option value="' + l.code + '"' + (l.code === th.lang.code ? ' selected' : '') + '>' + escapeHtml(l.label) + '</option>'; }).join('') +
         '</select></label></div></div>' +
       '<p class="tc-note"></p>' +
+    '</div>';
+  }
+
+  // Second step, shown as its own assistant message after the mapping card.
+  function threadLocHtml() {
+    return '<div class="thread-card">' +
+      '<div class="tc-head"><i data-lucide="map-pin"></i> Next &middot; Location</div>' +
       '<div class="tc-loc">' +
         '<button type="button" class="tc-link tc-optional"><i data-lucide="map-pin"></i> Add a location (optional)</button>' +
         '<div class="tc-ask-wrap">' +
@@ -1167,12 +1174,21 @@
       addUserMessage('Create a New Thread', composerLang().label);
       if (th) {
         postToForum(forText, th, reply, true);
-        var threadRow = document.createElement('div');
-        threadRow.className = 'msg-row ai msg-thread-row';
-        threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
-        thread.appendChild(threadRow);
-        setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
-        threadRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Step 1: what the assistant mapped. Step 2 (a moment later, as its
+        // own message): ask where it is taking place.
+        var group = document.createElement('div');
+        group.className = 'tc-group';
+        group.innerHTML =
+          '<div class="msg-row ai msg-thread-row"><span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div></div>' +
+          '<div class="msg-row ai msg-thread-row tc-loc-row" hidden><span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadLocHtml() + '</div></div>';
+        thread.appendChild(group);
+        setupThreadCard(group, th, row);
+        var locRow = group.querySelector('.tc-loc-row');
+        group.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(function () {
+          locRow.hidden = false;
+          locRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 700);
       } else {
         postToForum(forText, null, reply);
       }

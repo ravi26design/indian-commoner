@@ -2042,6 +2042,8 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .thread-card{background:#fff;border:1px solid var(--line-2);border-left:4px solid var(--green);
   border-radius:0;padding:.9rem 1rem}
 .thread-card [hidden]{display:none!important}
+.tc-group{display:contents}
+.msg-thread-row[hidden]{display:none}
 .tc-head{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;
   text-transform:uppercase;color:var(--green-d)}
 .tc-head i,.tc-head svg{width:.9rem;height:.9rem;flex:none}
