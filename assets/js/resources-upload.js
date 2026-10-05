@@ -166,12 +166,12 @@
   function makeSection(title, note) {
     var s = document.createElement('section');
     s.className = 'section resbg up-sec'; s.style.paddingBottom = '0'; s.hidden = true;
-    s.innerHTML = '<div class="mx"><div class="up-sec-h"><h2>' + esc(title) + '</h2><span>' + esc(note) + '</span></div><div class="grid g3 up-list"></div></div>';
+    s.innerHTML = '<div class="mx">' + (title ? '<div class="up-sec-h"><h2>' + esc(title) + '</h2><span>' + esc(note) + '</span></div>' : '') + '<div class="grid g3 up-list"></div></div>';
     return s;
   }
   var pagehead = document.querySelector('.pagehead');
-  var secMine = makeSection('Your submissions', cfg.news ? 'Waiting for a Moderator, or not approved. Approved articles join the list below.' : 'Waiting for a Moderator, or not approved. Approved items move to Community uploads.');
-  var secPub = makeSection('Community uploads', 'Approved by a Moderator. Saved in this browser only — there is no server behind this prototype yet.');
+  var secMine = makeSection('Your submissions', cfg.news ? 'Waiting for a Moderator, or not approved. Approved articles join the list below.' : 'Waiting for a Moderator, or not approved. Approved items appear on this page.');
+  var secPub = makeSection('', '');   // approved items: just the cards, no heading
   pagehead.parentNode.insertBefore(secPub, pagehead.nextSibling);
   pagehead.parentNode.insertBefore(secMine, pagehead.nextSibling);
 
