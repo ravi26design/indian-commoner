@@ -1240,12 +1240,19 @@
   arr.forEach(function (t) {
     var tag = TAG[t.theme] || TAG['Others'];
     var st = t.state || '';
-    var loc = st ? '<span>·</span><span class="tr-loc"><i data-lucide="map-pin" style="width:.75rem;height:.75rem;vertical-align:-1px"></i> ' + esc(st + (t.district ? ', ' + t.district : '')) + '</span>' : '';
+    // Threads started with a captured location carry lat/lng + a full address;
+    // show the state/district when known, else the first parts of the address.
+    var locLabel = st ? st + (t.district ? ', ' + t.district : '')
+      : (t.address ? t.address.split(',').slice(0, 2).join(',').trim() : '');
+    var hasCoords = typeof t.lat === 'number' && typeof t.lng === 'number';
+    var locTip = hasCoords ? ' title="' + esc((t.address ? t.address + ' · ' : '') + t.lat.toFixed(4) + ', ' + t.lng.toFixed(4)) + '"' : '';
+    var loc = locLabel ? '<span>·</span><span class="tr-loc"' + locTip + '><i data-lucide="map-pin" style="width:.75rem;height:.75rem;vertical-align:-1px"></i> ' + esc(locLabel) + '</span>' : '';
     var a = document.createElement('a');
     a.className = 'topicrow';
     a.href = 'topic-empty.html';
     a.setAttribute('data-theme', t.theme || 'Others');
     a.setAttribute('data-state', st);
+    if (hasCoords) { a.setAttribute('data-lat', t.lat); a.setAttribute('data-lng', t.lng); }
     a.setAttribute('data-replies', '0');
     a.setAttribute('data-lang', 'en');
     a.innerHTML =

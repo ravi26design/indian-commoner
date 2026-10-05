@@ -2015,6 +2015,58 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .msg-related-head{font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
   color:var(--muted-2);margin-top:1.1rem}
 .msg-results{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+
+/* ---- new-thread card in the assistant reply (theme + location) ---- */
+.thread-card{margin-top:1rem;background:var(--bg-soft);border:1px solid var(--line-2);border-left:4px solid var(--green);
+  border-radius:0;padding:.9rem 1rem}
+.thread-card [hidden]{display:none!important}
+.tc-head{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--green-d)}
+.tc-head i{width:.95rem;height:.95rem}
+.tc-theme{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.6rem}
+.tc-k{font-size:.82rem;font-weight:700;color:var(--muted-2)}
+.tc-theme-name{font-size:.84rem;font-weight:800;color:var(--green-d);background:var(--green-soft);
+  border:1px solid var(--green-line);padding:.15rem .65rem;border-radius:999px}
+.tc-change{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;font-weight:700;color:var(--muted-2)}
+.tc-change select{font:inherit;font-size:.74rem;color:var(--ink);background:#fff;border:1px solid var(--line-2);
+  border-radius:.4rem;padding:.2rem .35rem;max-width:11rem}
+.tc-note{margin:.45rem 0 0;font-size:.86rem;color:var(--muted);line-height:1.5}
+.tc-ask{margin:.85rem 0 .55rem;font-size:.92rem;font-weight:700;color:var(--ink)}
+.tc-loc-btns{display:flex;flex-wrap:wrap;gap:.5rem}
+.tc-loc-btn{display:inline-flex;align-items:center;gap:.4rem;background:#fff;border:1px solid var(--line-2);
+  color:var(--ink-2);font:700 .8rem/1 var(--sans);padding:.55rem .85rem;border-radius:999px;cursor:pointer;transition:.15s}
+.tc-loc-btn i{width:.95rem;height:.95rem;color:var(--green-d)}
+.tc-loc-btn:hover,.tc-loc-btn.on{border-color:var(--green);color:var(--green-d);background:var(--green-soft)}
+.tc-link{display:inline-flex;align-items:center;gap:.35rem;background:none;border:0;padding:0;cursor:pointer;
+  font:700 .8rem/1.2 var(--sans);color:var(--green-d)}
+.tc-link:hover{text-decoration:underline}
+.tc-link i{width:.9rem;height:.9rem}
+.tc-optional{margin-top:.7rem}
+.tc-panel{margin-top:.75rem}
+.tc-status{margin-top:.6rem;font-size:.82rem;color:var(--muted)}
+.tc-status.err,.tc-hint.err{color:var(--red)}
+.tc-hint{font-size:.78rem;color:var(--muted-2);line-height:1.45}
+.tc-search{display:flex;gap:.5rem}
+.tc-search input{flex:1;min-width:0;font:inherit;font-size:.86rem;color:var(--ink);background:#fff;
+  border:1px solid var(--line-2);border-radius:0;padding:.55rem .7rem}
+.tc-search input:focus{outline:none;border-color:var(--green)}
+.tc-results{display:flex;flex-direction:column;gap:.35rem;margin-top:.55rem}
+.tc-result{display:flex;align-items:flex-start;gap:.5rem;text-align:left;background:#fff;border:1px solid var(--line-2);
+  border-radius:0;padding:.55rem .7rem;font:600 .82rem/1.4 var(--sans);color:var(--ink);cursor:pointer}
+.tc-result:hover{border-color:var(--green)}
+.tc-result i{width:.95rem;height:.95rem;color:var(--green-d);flex:none;margin-top:.15rem}
+.tc-map{height:240px;border:1px solid var(--line-2);border-radius:0;background:#e8ecf0;z-index:0}
+.tc-pin-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;margin-top:.55rem}
+.tc-saved{display:flex;align-items:flex-start;gap:.6rem;margin-top:.85rem;padding:.7rem .8rem;background:#fff;
+  border:1px solid var(--green-line)}
+.tc-saved>i{width:1.05rem;height:1.05rem;color:var(--green-d);flex:none;margin-top:.15rem}
+.tc-saved-tx{flex:1;min-width:0;font-size:.84rem;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.tc-saved-tx b{color:var(--muted-2);font-weight:700}
+.tc-muted{color:var(--muted-2)}
+.tc-chain{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;margin-top:.85rem;font-size:.72rem;font-weight:700;color:var(--muted-2)}
+.tc-chain span{background:#fff;border:1px solid var(--line-2);padding:.12rem .5rem;border-radius:999px}
+.tc-chain span.set{color:var(--green-d);border-color:var(--green-line);background:var(--green-soft)}
+.tc-chain i{width:.8rem;height:.8rem}
 .msg-map-link{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;font-size:.8rem;
   font-weight:700;color:var(--green-d);text-decoration:none}
 .msg-map-link:hover{text-decoration:underline}

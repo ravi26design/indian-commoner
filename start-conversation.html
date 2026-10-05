@@ -11,7 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body style="background:#eef0f4">
 
@@ -209,12 +211,37 @@
   var STATES = ['Andhra Pradesh', 'Gujarat', 'Karnataka', 'Madhya Pradesh', 'Maharashtra', 'Meghalaya',
     'Odisha', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'];
 
+  // Keyword scorer over the site's real 8-theme taxonomy: each theme counts
+  // the distinct keyword patterns the message hits, highest wins, ties go to
+  // the earlier entry. Nothing matched falls back to Governing the Commons
+  // (the forum's default home for community-management questions). The user
+  // can always override the pick on the thread card.
+  var THEME_KEYWORDS = [
+    ['Gender and Commons', [/\bwom[ae]n\b/, /\bgender/, /\bgirls?\b/, /\bmahila/, /\bwidow/, /\bfemale/, /\bdaughter/]],
+    ['Conversion of Commons', [/encroach/, /\bmining\b|\bquarry|sand mining/, /acquisition|acquire/, /\bconvert|conversion/, /\bindustr/, /\bconstruction|\bhighway|\broad\b/, /real estate|\bprivati[sz]/, /\bgrab/, /diver(t|sion)/]],
+    ['Power and Commons', [/\belite/, /\bcaste/, /\bpower/, /\bdominan/, /\bmovement/, /exclu(de|sion)/, /\bpoliti/, /\bbureaucra|\bofficials?\b/, /forest rights act|\bfra\b|\btitles?\b/, /\bdalit|\badivasi/]],
+    ['Commons as Culture', [/festival/, /ritual/, /sacred/, /\bculture|\bcultural/, /\bcraft/, /tradition/, /temple|deity|devrai|\bgrove/, /\bfolk|\bsong|\bstor(y|ies)\b|\boral\b/, /jatra/]],
+    ['Commons as Micro Habitats', [/\bbirds?\b/, /habitat/, /wildlife|\bfauna|\bflora/, /biodiversity|\bspecies/, /ecolog/, /pollinator/, /wetland/, /restor(e|ation)/, /lantana|prosopis|invasive/, /\bforests?\b/, /\btrees?\b/, /elephant|\bboar\b|leopard|\btiger/]],
+    ['Livelihoods, Subsistence & Valuation of Commons', [/\bpond|\btank\b|\bwater|irrigat|groundwater|\bwells?\b|handpump/, /fodder|grazing|livestock|\bcattle/, /\bincome|\bwages?\b|mgnrega|\bnrega/, /\bntfp|minor forest|\bharvest/, /\bmarket|\bprice|valuation/, /\bfish(ing|ermen)?\b/, /firewood|\bfuel/, /\bmigrat/, /reveget/]],
+    ['Governing the Commons', [/governance|\bgovern/, /gram sabha|\bpanchayat/, /\brules?\b|bylaw|regulat/, /committee|institution/, /management|\bmanage/, /dispute|conflict/, /\bcommunity|\bvillage/, /\bprotect|\bconserv/, /\blaw\b|\blegal/, /document/]]
+  ];
   function classifyTheme(text) {
-    var t = text.toLowerCase();
-    if (/pond|tank|water|irrigat|reveget/.test(t)) return 'Livelihoods, Subsistence & Valuation of Commons';
-    if (/festival|ritual|sacred|culture|craft/.test(t)) return 'Commons as Culture';
-    if (/bird|habitat|wildlife|forest|ecolog/.test(t)) return 'Commons as Micro Habitats';
-    return 'Governing the Commons';
+    var t = (text || '').toLowerCase();
+    var best = 'Governing the Commons', bestScore = 0;
+    THEME_KEYWORDS.forEach(function (entry) {
+      var score = entry[1].reduce(function (n, re) { return n + (re.test(t) ? 1 : 0); }, 0);
+      if (score > bestScore) { best = entry[0]; bestScore = score; }
+    });
+    return best;
+  }
+
+  // Does the message point at a specific place, resource or community? If so
+  // the assistant asks where it is; otherwise a location stays optional.
+  var PLACE_RE = /\b(village|hamlet|forest|pond|tank|river|stream|lake|wetland|grove|pasture|grazing|gauchar|oran|panchayat|gram sabha|community|land|well|handpump|talab|johad|mine|mining|quarry|temple|district|block|taluka|ward|our |my )/i;
+  function isPlaceRelated(text) {
+    if (PLACE_RE.test(text || '')) return true;
+    var t = (text || '').toLowerCase();
+    return STATES.some(function (s) { return t.indexOf(s.toLowerCase()) !== -1; });
   }
 
   function escapeHtml(s) {
@@ -535,12 +562,23 @@
   // Post the asked question into the Discussion forum: persist it so forum.html
   // renders it as a new thread, then show the confirmation modal (whose CTA
   // opens the forum).
-  function postToForum(text) {
+  function postToForum(text, th) {
     var t = (text || '').trim();
     if (!t) return;
+    // Thread -> Theme -> Location -> Conversation: the thread's chosen theme
+    // and (when given) its latitude, longitude and full address travel with
+    // the post so the forum can later filter, search and map it.
+    var rec = { title: t.slice(0, 120), theme: th ? th.theme : classifyTheme(t), state: '', district: '', author: 'You', ts: Date.now() };
+    if (th && th.location) {
+      rec.state = th.location.state || '';
+      rec.district = th.location.district || '';
+      rec.lat = th.location.lat;
+      rec.lng = th.location.lng;
+      rec.address = th.location.address || '';
+    }
     try {
       var arr = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]');
-      arr.unshift({ title: t.slice(0, 120), theme: classifyTheme(t), state: '', district: '', author: 'You', ts: Date.now() });
+      arr.unshift(rec);
       localStorage.setItem('ic_pending_threads', JSON.stringify(arr));
     } catch (e) {}
     var modal = document.getElementById('publishConfirmModal');
@@ -548,12 +586,233 @@
     else location.href = 'forum.html';
   }
 
+  // ---- New-thread card: theme mapping + location capture ----------------
+  // Every fresh question becomes a thread: it is mapped to a theme and, when
+  // it concerns a place/resource/community, the user is asked where. Location
+  // comes from the browser's Geolocation API, an OpenStreetMap (Nominatim)
+  // place search, or a pin dropped on an OpenStreetMap/Leaflet map; the
+  // latitude, longitude and full address are saved with the thread.
+  var NOMINATIM = 'https://nominatim.openstreetmap.org';
+  var nextThreadId = 1;
+
+  function formatCoords(lat, lng) {
+    return Math.abs(lat).toFixed(4) + '° ' + (lat >= 0 ? 'N' : 'S') + ', ' +
+           Math.abs(lng).toFixed(4) + '° ' + (lng >= 0 ? 'E' : 'W');
+  }
+
+  function parseNominatim(j) {
+    var a = (j && j.address) || {};
+    return { address: (j && j.display_name) || '', state: a.state || '', district: a.state_district || a.county || a.district || '' };
+  }
+
+  function reverseGeocode(lat, lng) {
+    return fetch(NOMINATIM + '/reverse?format=jsonv2&addressdetails=1&accept-language=en&zoom=16&lat=' + lat + '&lon=' + lng)
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (j) { return j && j.error ? { address: '', state: '', district: '' } : parseNominatim(j); });
+  }
+
+  function searchPlaces(q) {
+    return fetch(NOMINATIM + '/search?format=jsonv2&addressdetails=1&accept-language=en&limit=5&q=' + encodeURIComponent(q))
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+  }
+
+  function threadCardHtml(th) {
+    var opts = THEMES.map(function (t) {
+      return '<option value="' + escapeHtml(t) + '"' + (t === th.theme ? ' selected' : '') + '>' + escapeHtml(t) + '</option>';
+    }).join('');
+    return '<div class="thread-card">' +
+      '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created</div>' +
+      '<div class="tc-theme"><span class="tc-k">Theme</span><span class="tc-theme-name"></span>' +
+        '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div>' +
+      '<p class="tc-note"></p>' +
+      '<div class="tc-loc">' +
+        '<button type="button" class="tc-link tc-optional"><i data-lucide="map-pin"></i> Add a location (optional)</button>' +
+        '<div class="tc-ask-wrap">' +
+          '<p class="tc-ask">Where is this taking place?</p>' +
+          '<div class="tc-loc-btns">' +
+            '<button type="button" class="tc-loc-btn" data-loc="current"><i data-lucide="locate-fixed"></i> Use Current Location</button>' +
+            '<button type="button" class="tc-loc-btn" data-loc="search"><i data-lucide="search"></i> Search Location</button>' +
+            '<button type="button" class="tc-loc-btn" data-loc="pin"><i data-lucide="map"></i> Drop a Pin</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tc-panel" hidden></div>' +
+        '<div class="tc-status" hidden></div>' +
+      '</div>' +
+      '<div class="tc-saved" hidden></div>' +
+      '<div class="tc-chain"><span>Thread</span><i data-lucide="chevron-right"></i><span class="tc-chain-theme"></span>' +
+        '<i data-lucide="chevron-right"></i><span class="tc-chain-loc">Location</span><i data-lucide="chevron-right"></i><span>Conversation</span></div>' +
+    '</div>';
+  }
+
+  function setupThreadCard(card, th) {
+    var $ = function (s) { return card.querySelector(s); };
+    var themeName = $('.tc-theme-name'), themeSel = $('.tc-theme-sel'), note = $('.tc-note');
+    var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
+    var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved');
+    var chainTheme = $('.tc-chain-theme'), chainLoc = $('.tc-chain-loc');
+    var map = null, marker = null;
+
+    function refreshTheme() {
+      themeName.textContent = th.theme;
+      note.textContent = 'This conversation seems to be related to ' + th.theme + '.';
+      chainTheme.textContent = THEME_SHORT[th.theme] || th.theme;
+      chainTheme.classList.add('set');
+      var post = card.parentNode.querySelector('[data-act="postforum"]');
+      if (post) post.title = 'Post this to the Public Forum under ' + th.theme;
+    }
+    function setStatus(msg, isErr) {
+      status.textContent = msg || '';
+      status.classList.toggle('err', !!isErr);
+      status.hidden = !msg;
+    }
+    function closePanel() {
+      if (map) { map.remove(); map = null; marker = null; }
+      panel.hidden = true;
+      panel.innerHTML = '';
+      card.querySelectorAll('.tc-loc-btn').forEach(function (b) { b.classList.remove('on'); });
+    }
+    function showAsk() {
+      askWrap.hidden = false;
+      optional.hidden = true;
+    }
+
+    function setLocation(loc, addressMissing) {
+      th.location = loc;
+      var coords = formatCoords(loc.lat, loc.lng);
+      var addr = loc.address
+        ? escapeHtml(loc.address)
+        : '<span class="tc-muted">Address not available — coordinates saved</span>';
+      saved.innerHTML = '<i data-lucide="map-pin"></i><div class="tc-saved-tx">' +
+        '<div><b>Location:</b> ' + addr + '</div>' +
+        '<div><b>Coordinates:</b> ' + coords + '</div></div>' +
+        '<button type="button" class="tc-link" data-act="change-loc">Change</button>';
+      saved.hidden = false;
+      locBlock.hidden = true;
+      closePanel();
+      setStatus('');
+      var short = loc.state || (loc.address ? loc.address.split(',')[0] : coords);
+      chainLoc.textContent = short;
+      chainLoc.classList.add('set');
+      if (window.lucide) lucide.createIcons();
+      saved.querySelector('[data-act="change-loc"]').addEventListener('click', function () {
+        th.location = null;
+        saved.hidden = true;
+        locBlock.hidden = false;
+        showAsk();
+        chainLoc.textContent = 'Location';
+        chainLoc.classList.remove('set');
+      });
+    }
+
+    function resolveAndSet(lat, lng) {
+      setStatus('Finding the address…');
+      reverseGeocode(lat, lng).then(function (info) {
+        setLocation({ lat: lat, lng: lng, address: info.address, state: info.state, district: info.district });
+      }).catch(function () {
+        setLocation({ lat: lat, lng: lng, address: '', state: '', district: '' });
+      });
+    }
+
+    function useCurrent() {
+      closePanel();
+      if (!navigator.geolocation) { setStatus("Location isn't available in this browser — try Search Location or Drop a Pin.", true); return; }
+      setStatus('Getting your location…');
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        resolveAndSet(pos.coords.latitude, pos.coords.longitude);
+      }, function (err) {
+        setStatus('Could not get your location (' + (err.message || 'permission denied') + '). Try Search Location or Drop a Pin instead.', true);
+      }, { timeout: 10000 });
+    }
+
+    function openSearch() {
+      panel.hidden = false;
+      panel.innerHTML = '<form class="tc-search"><input type="text" placeholder="Search a village, town, landmark or address…" aria-label="Search location">' +
+        '<button type="submit" class="btn btn-primary sm">Search</button></form><div class="tc-results"></div>';
+      var form = panel.querySelector('form'), input = panel.querySelector('input');
+      var results = panel.querySelector('.tc-results'), btn = panel.querySelector('button');
+      input.focus();
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var q = input.value.trim();
+        if (!q) return;
+        btn.disabled = true;
+        results.innerHTML = '<div class="tc-hint">Searching…</div>';
+        searchPlaces(q).then(function (list) {
+          btn.disabled = false;
+          if (!list.length) { results.innerHTML = '<div class="tc-hint">No places found. Try a nearby town, or add the district and state.</div>'; return; }
+          results.innerHTML = list.map(function (p, i) {
+            return '<button type="button" class="tc-result" data-i="' + i + '"><i data-lucide="map-pin"></i><span>' + escapeHtml(p.display_name) + '</span></button>';
+          }).join('');
+          if (window.lucide) lucide.createIcons();
+          results.querySelectorAll('.tc-result').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var p = list[+b.getAttribute('data-i')];
+              var info = parseNominatim(p);
+              setLocation({ lat: parseFloat(p.lat), lng: parseFloat(p.lon), address: info.address, state: info.state, district: info.district });
+            });
+          });
+        }).catch(function () {
+          btn.disabled = false;
+          results.innerHTML = '<div class="tc-hint err">Couldn’t reach the location service. Check your connection and try again.</div>';
+        });
+      });
+    }
+
+    function openPin() {
+      panel.hidden = false;
+      if (!window.L) {
+        panel.innerHTML = '<div class="tc-hint err">The map couldn’t load. Try Search Location instead.</div>';
+        return;
+      }
+      panel.innerHTML = '<div class="tc-map"></div><div class="tc-pin-row"><span class="tc-hint">Click the map to drop a pin; drag it to fine-tune.</span>' +
+        '<button type="button" class="btn btn-primary sm" disabled>Use this pin</button></div>';
+      var useBtn = panel.querySelector('.tc-pin-row button');
+      map = L.map(panel.querySelector('.tc-map'), { scrollWheelZoom: false }).setView([22.5, 79], 4);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      map.on('click', function (e) {
+        if (marker) marker.setLatLng(e.latlng);
+        else marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+        useBtn.disabled = false;
+      });
+      setTimeout(function () { if (map) map.invalidateSize(); }, 60);
+      useBtn.addEventListener('click', function () {
+        var ll = marker.getLatLng();
+        resolveAndSet(ll.lat, ll.lng);
+      });
+    }
+
+    card.querySelectorAll('.tc-loc-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var kind = b.getAttribute('data-loc');
+        var reopen = b.classList.contains('on');
+        closePanel();
+        setStatus('');
+        if (kind === 'current') { useCurrent(); return; }
+        if (reopen) return;
+        b.classList.add('on');
+        if (kind === 'search') openSearch(); else openPin();
+      });
+    });
+    optional.addEventListener('click', showAsk);
+    themeSel.addEventListener('change', function () { th.theme = themeSel.value; refreshTheme(); });
+
+    askWrap.hidden = !th.placeRelated;
+    optional.hidden = th.placeRelated;
+    refreshTheme();
+  }
+
   var RESOURCE_ICON = { Video: 'play', Podcast: 'mic', Article: 'book-open' };
 
-  function addAssistantMessage(forText) {
+  function addAssistantMessage(forText, opts) {
     var matches = findMatches(forText || '');
     var resourceMatches = findResourceMatches(forText || '');
-    var theme = classifyTheme(forText || '');
+    // A fresh question (not a reply to an earlier message) starts a new thread.
+    var th = (forText && forText.trim() && !(opts && opts.followUp))
+      ? { id: nextThreadId++, text: forText, theme: classifyTheme(forText), placeRelated: isPlaceRelated(forText), location: null }
+      : null;
+    var theme = th ? th.theme : classifyTheme(forText || '');
     // Always lead with a short practical paragraph about what was actually
     // asked, then — separately, below it — any real matching threads and
     // resources (AI-assisted identification of related content, surfaced
@@ -592,7 +851,7 @@
     var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + resourceResultsHtml +
+      '<div class="msg-text">' + replyHtml + '</div>' + (th ? threadCardHtml(th) : '') + resultsHtml + resourceResultsHtml +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
@@ -603,7 +862,8 @@
     thread.appendChild(row);
 
     var postBtn = row.querySelector('[data-act="postforum"]');
-    if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText); });
+    if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText, th); });
+    if (th) setupThreadCard(row.querySelector('.thread-card'), th);
 
     var replyBtn = row.querySelector('[data-act="reply"]');
     if (replyBtn) replyBtn.addEventListener('click', function () {
@@ -935,7 +1195,7 @@
       addUserMessage(text, lang, attachments, replyingTo);
       attachments = [];
       renderComposerAttachments();
-      addAssistantMessage(text);
+      addAssistantMessage(text, { followUp: !!replyingTo });
       if (!firstSendDone) {
         firstSendDone = true;
         renderPublishCard(text, lang);
