@@ -137,7 +137,7 @@
         </div>
         <div class="post-foot">
           <div class="row">
-            <span class="tag" id="t-voices"><i data-lucide="users"></i> 1 Voice</span>
+            <button type="button" class="tag like-btn" id="t-like" aria-pressed="false" title="Like this thread"><i data-lucide="heart"></i><span>0 Likes</span></button>
             <span class="tag" id="t-replies"><i data-lucide="message-square"></i> 0 Replies</span>
           </div>
           <div class="row" style="gap:.6rem">
@@ -548,6 +548,9 @@
         var all = JSON.parse(localStorage.getItem('ic_thread_replies') || '{}');
         delete all[threadId];
         localStorage.setItem('ic_thread_replies', JSON.stringify(all));
+        var lk = JSON.parse(localStorage.getItem('ic_thread_likes') || '{}');
+        delete lk[threadId];
+        localStorage.setItem('ic_thread_likes', JSON.stringify(lk));
       } catch (e) {}
       location.href = 'forum.html';
     });
@@ -584,8 +587,37 @@
   }
 
   var repliesTag = document.getElementById('t-replies');
-  var voicesTag = document.getElementById('t-voices');
+  var likeBtn = document.getElementById('t-like');
   var avstack = document.getElementById('t-avstack');
+
+  // Likes: one per person, toggled. Saved per thread; with no accounts or
+  // backend yet, the count only reflects likes made in this browser.
+  function getLikes() {
+    try { return (JSON.parse(localStorage.getItem('ic_thread_likes') || '{}')[threadId]) || {}; } catch (e) { return {}; }
+  }
+  function toggleLike(key) {
+    var on = false;
+    try {
+      var all = JSON.parse(localStorage.getItem('ic_thread_likes') || '{}');
+      var t = all[threadId] = all[threadId] || {};
+      if (t[key]) delete t[key]; else t[key] = 1;
+      on = !!t[key];
+      localStorage.setItem('ic_thread_likes', JSON.stringify(all));
+    } catch (e) {}
+    return on;
+  }
+  function paintLike(btn, on) {
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    var n = on ? 1 : 0;
+    btn.querySelector('span').textContent = btn.id === 't-like' ? n + (n === 1 ? ' Like' : ' Likes') : String(n);
+  }
+  likeBtn.addEventListener('click', function () { paintLike(likeBtn, toggleLike('post')); });
+  paintLike(likeBtn, !!getLikes().post);
+  cmList.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.reply-like');
+    if (b) paintLike(b, toggleLike('r' + b.getAttribute('data-ts')));
+  });
 
   function renderCounts() {
     var rs = getReplies();
@@ -594,7 +626,6 @@
     rs.forEach(function (r) { voices[r.author] = true; });
     var v = Object.keys(voices);
     repliesTag.lastChild.textContent = ' ' + rs.length + (rs.length === 1 ? ' Reply' : ' Replies');
-    voicesTag.lastChild.textContent = ' ' + v.length + (v.length === 1 ? ' Voice' : ' Voices');
     avstack.innerHTML = v.slice(0, 5).map(function (n) {
       return '<span class="pw-av">' + escapeHtml(n.charAt(0).toUpperCase()) + '</span>';
     }).join('');
@@ -606,8 +637,10 @@
       '<div class="cm-grow">' +
       '<div class="cm-h"><b>' + escapeHtml(r.author) + '</b> · ' + escapeHtml(ago(r.ts)) + '</div>' +
       '<div class="cm-t">' + escapeHtml(r.text) + '</div>' +
-      (isAnon ? '' : '<button type="button" class="clearbtn reply-to-btn" style="margin-top:.5rem" data-reply-to="' + escapeHtml(r.author) + '"><i data-lucide="corner-up-left" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Reply</button>') +
-      '</div>';
+      '<div class="cm-acts">' +
+      '<button type="button" class="clearbtn like-btn reply-like' + (getLikes()['r' + r.ts] ? ' on' : '') + '" data-ts="' + r.ts + '" aria-pressed="' + (getLikes()['r' + r.ts] ? 'true' : 'false') + '" title="Like this reply"><i data-lucide="heart"></i><span>' + (getLikes()['r' + r.ts] ? 1 : 0) + '</span></button>' +
+      (isAnon ? '' : '<button type="button" class="clearbtn reply-to-btn" data-reply-to="' + escapeHtml(r.author) + '"><i data-lucide="corner-up-left" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Reply</button>') +
+      '</div></div>';
   }
   function appendReply(r) {
     if (cmEmpty) { cmEmpty.remove(); cmEmpty = null; }

@@ -549,6 +549,15 @@ nav.top .links a.active{color:var(--green-d);background:none;font-weight:700}
 .clearbtn:hover{text-decoration:underline}
 .clearbtn[hidden]{display:none}
 .clearbtn.danger{color:#b3261e}
+.like-btn{cursor:pointer;font-family:inherit}
+.like-btn i,.like-btn svg{width:.95rem;height:.95rem;flex:none}
+button.tag.like-btn:hover{border-color:var(--green-line);color:var(--green-d)}
+.like-btn.on{color:#c0392b}
+button.tag.like-btn.on{background:#fdecea;border-color:#f3c4be;color:#c0392b}
+.like-btn.on svg{fill:currentColor}
+.clearbtn.like-btn{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted)}
+.clearbtn.like-btn.on{color:#c0392b}
+.cm-acts{display:flex;align-items:center;gap:1rem;margin-top:.5rem}
 .layout-wide{display:grid;grid-template-columns:21rem 1fr;gap:2rem;align-items:start}
 @media(max-width:1080px){.layout-wide{grid-template-columns:1fr}}
 
