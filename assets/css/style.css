@@ -2410,7 +2410,8 @@ fieldset.up-f legend{padding:0;margin-bottom:.4rem}
 textarea.up-in{resize:vertical;line-height:1.55}
 .up-sect[data-type=title] .up-in{font-size:1.15rem;font-weight:800}
 .up-sect[data-type=subtitle] .up-in{font-weight:700}
-.up-prev{display:block;max-width:100%;max-height:18rem;object-fit:contain;background:#fff;border:1px solid var(--line-2)}
+.up-prev{display:block;width:100%;height:auto;background:#fff}
+.up-prev[hidden]{display:none}
 .up-cap,.up-ltext,.up-lurl{font:inherit;font-size:.9rem;padding:.6rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);background:#fff;width:100%}
 .up-thumb{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
 .up-add i,.up-add svg{width:.9rem;height:.9rem}
