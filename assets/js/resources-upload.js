@@ -230,8 +230,7 @@
   }
   if (cfg.level) fields += '<label class="up-f"><span>Level <span class="req">*</span></span><select name="level">' + opts(['Beginner', 'Intermediate', 'Advanced']) + '</select></label>';
   if (cfg.news) {
-    fields += '<div class="up-row"><label class="up-f"><span>Published <span class="req">*</span></span><input type="month" name="date"></label>' +
-      '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label></div>' +
+    fields += '<label class="up-f"><span>Source / publication <span class="req">*</span></span><input type="text" name="source" maxlength="120" placeholder="e.g. Down To Earth"></label>' +
       '<div class="up-f up-article"><span>Article <span class="req">*</span></span>' +
         '<p class="up-hint">Build the article block by block — add a title, subtitle, paragraph, image or link, in any order.</p>' +
         '<div class="up-secs"></div>' +
@@ -345,7 +344,6 @@
     var themes = cfg.themes ? [].filter.call(form.querySelectorAll('input[name=themes]'), function (c) { return c.checked; }).map(function (c) { return c.value; }) : [];
     if (!title) return showErr('Please add a title.');
     if (cfg.themes && !themes.length) return showErr('Pick at least one theme.');
-    if (cfg.news && !f.date.value) return showErr('Add the month it was published.');
     if (cfg.news && !f.source.value.trim()) return showErr('Add the source / publication.');
     var blocks = [], imgFiles = [];
     var id = 'r' + Date.now() + Math.floor(Math.random() * 1000);
@@ -379,7 +377,7 @@
     var isMod = role() === 'Moderator';           // a Moderator's own upload needs no second review
     var item = {
       id: id, page: page, title: title, themes: themes, level: cfg.level ? f.level.value : '', link: link,
-      news: !!cfg.news, blocks: blocks, date: cfg.news ? f.date.value : '', source: cfg.news ? f.source.value.trim() : '',
+      news: !!cfg.news, blocks: blocks, date: cfg.news ? new Date().toISOString().slice(0, 7) : '', source: cfg.news ? f.source.value.trim() : '',
       region: cfg.law ? f.region.value : '', subject: cfg.law ? f.subject.value : '', type: cfg.law ? f.type.value : '',
       hasFile: !!file, fileName: file ? file.name : '', fileSize: file ? file.size : 0, fileType: file ? file.type : '',
       status: isMod ? 'approved' : 'pending', by: ME, ts: Date.now()

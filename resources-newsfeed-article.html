@@ -231,7 +231,9 @@
       document.getElementById('art-title').textContent = rec.title;
       document.getElementById('art-title-tag').textContent = rec.title + ' \u2014 Indian Commoner';
       document.getElementById('art-crumb').textContent = rec.title;
-      document.getElementById('art-date').textContent = [month, rec.source].filter(Boolean).join(' \u00b7 ') || 'Newsfeed';
+      // Posted date and time come from the moment it was posted.
+      var posted = rec.ts ? new Date(rec.ts).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : month;
+      document.getElementById('art-date').textContent = [posted, rec.source].filter(Boolean).join(' \u00b7 ') || 'Newsfeed';
       var html = '';
       if (rec.status !== 'approved') html += '<p class="up-status st-pending" style="margin-bottom:1.5rem">Awaiting moderator review — only you and Moderators can see this.</p>';
       var blocks = rec.blocks;
