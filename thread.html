@@ -141,7 +141,6 @@
             <span class="tag" id="t-replies"><i data-lucide="message-square"></i> 0 Replies</span>
           </div>
           <div class="row" style="gap:.6rem">
-            <div class="tags" id="t-tags"></div>
             <button type="button" class="clearbtn reply-to-btn" id="t-reply-op" data-reply-to="You"><i data-lucide="corner-up-left" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Reply</button>
             <button type="button" class="clearbtn danger" id="t-delete" data-open-modal="deleteModal" hidden><i data-lucide="trash-2" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Delete</button>
             <button type="button" class="clearbtn" id="t-report" data-open-modal="reportModal"><i data-lucide="flag" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Report</button>
@@ -492,10 +491,6 @@
     'Livelihoods, Subsistence & Valuation of Commons': 'Livelihoods', 'Gender and Commons': 'Gender',
     'Power and Commons': 'Power', 'Conversion of Commons': 'Conversion', 'Others': 'Others'
   };
-  var THEME_TINT = {
-    'Governing': 'tint-teal', 'Culture': 'tint-purple', 'Micro Habitats': 'tint-green', 'Livelihoods': 'tint-amber',
-    'Gender': 'tint-rose', 'Power': 'tint-blue', 'Conversion': 'tint-slate', 'Others': 'tint-slate'
-  };
   var threadId = new URLSearchParams(location.search).get('id');
   var thr = null;
   try {
@@ -557,7 +552,6 @@
       location.href = 'forum.html';
     });
   }
-  var shortTheme = THEME_SHORT[thr.theme] || thr.theme || 'Others';
   document.title = thr.title + ' — Indian Commoner';
   document.getElementById('t-crumb').textContent = thr.title.length > 48 ? thr.title.slice(0, 48).trim() + '…' : thr.title;
   document.getElementById('t-role').textContent = 'Topic author \u00b7 posted ' + ago(thr.ts);
@@ -576,10 +570,6 @@
     ? thr.state + (thr.district ? ', ' + thr.district : '')
     : (thr.address ? thr.address.split(',').slice(0, 2).join(',').trim() : '');
   var hasCoords = typeof thr.lat === 'number' && typeof thr.lng === 'number';
-  var tagsHtml = '<span class="tag ' + (THEME_TINT[shortTheme] || 'tint-slate') + '">' + escapeHtml(shortTheme) + '</span>';
-  if (thr.sub) tagsHtml += '<span class="tag tint-slate">' + escapeHtml(thr.sub) + '</span>';
-  if (place) tagsHtml += '<span class="tag solid">' + escapeHtml(place) + '</span>';
-  document.getElementById('t-tags').innerHTML = tagsHtml;
 
   var themeLink = document.getElementById('t-theme-link');
   themeLink.textContent = thr.theme || 'Others';
