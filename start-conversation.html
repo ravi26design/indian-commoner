@@ -712,7 +712,7 @@
     '</div>';
   }
 
-  function setupThreadCard(card, th) {
+  function setupThreadCard(card, th, msgRow) {
     var $ = function (s) { return card.querySelector(s); };
     var themeName = $('.tc-theme-name'), themeSel = $('.tc-theme-sel'), note = $('.tc-note');
     var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
@@ -725,7 +725,7 @@
       note.textContent = 'This conversation seems to be related to ' + th.theme + '.';
       chainTheme.textContent = THEME_SHORT[th.theme] || th.theme;
       chainTheme.classList.add('set');
-      var post = card.parentNode.querySelector('[data-act="postforum"]');
+      var post = msgRow.querySelector('[data-act="postforum"]');
       if (post) post.title = 'Post this to the Public Forum under ' + th.theme;
     }
     function setStatus(msg, isErr) {
@@ -972,7 +972,7 @@
     var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' + (th ? threadCardHtml(th) : '') + resultsHtml + resourceResultsHtml +
+      '<div class="msg-text">' + replyHtml + '</div>' + resultsHtml + resourceResultsHtml +
       '<div class="msg-actions">' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
@@ -984,7 +984,14 @@
 
     var postBtn = row.querySelector('[data-act="postforum"]');
     if (postBtn) postBtn.addEventListener('click', function () { postToForum(forText, th); });
-    if (th) setupThreadCard(row.querySelector('.thread-card'), th);
+    // The new-thread card is its own card below the reply bubble, not part of it.
+    if (th) {
+      var threadRow = document.createElement('div');
+      threadRow.className = 'msg-row ai msg-thread-row';
+      threadRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-thread-body">' + threadCardHtml(th) + '</div>';
+      thread.appendChild(threadRow);
+      setupThreadCard(threadRow.querySelector('.thread-card'), th, row);
+    }
 
     var replyBtn = row.querySelector('[data-act="reply"]');
     if (replyBtn) replyBtn.addEventListener('click', function () {

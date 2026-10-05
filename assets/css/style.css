@@ -2017,7 +2017,10 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 .msg-results{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
 
 /* ---- new-thread card in the assistant reply (theme + location) ---- */
-.thread-card{margin-top:1rem;background:var(--bg-soft);border:1px solid var(--line-2);border-left:4px solid var(--green);
+.msg-av-spacer{flex:none;width:2.3rem}
+.msg-thread-body{flex:none;width:70%;max-width:70%;min-width:0}
+@media(max-width:700px){.msg-thread-body{width:85%;max-width:85%}}
+.thread-card{background:#fff;border:1px solid var(--line-2);border-left:4px solid var(--green);
   border-radius:0;padding:.9rem 1rem}
 .thread-card [hidden]{display:none!important}
 .tc-head{display:flex;align-items:center;gap:.45rem;font-size:.74rem;font-weight:800;letter-spacing:.05em;
