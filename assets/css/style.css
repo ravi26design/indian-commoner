@@ -2195,8 +2195,7 @@ table.admin .iconbtn:hover{border-color:var(--green);color:var(--green-d);backgr
 img, svg, video, iframe, canvas, table{ max-width: 100%; }
 
 /* ============ Public member profile (member.html) ============ */
-/* Whole illustration, never cropped: it scales with the width up to 340px tall, and the cream sky colour fills any space beside it on wide screens. */
-.mp-cover{width:100%;aspect-ratio:8/3;max-height:340px;position:relative;background:#f8f9f4 url(../img/members-banner.jpg) center/contain no-repeat}
+.mp-cover{height:220px;position:relative;background:#e8eef0 url(../img/members-banner.jpg) center/cover no-repeat}
 .mp-id{display:flex;align-items:center;gap:1.1rem;margin-top:1.4rem;position:relative;z-index:1}
 .mp-avatar{width:118px;height:118px;border-radius:50%;background:#c3cad3;color:#fff;display:flex;align-items:center;justify-content:center;border:5px solid #fff;box-shadow:var(--shadow-card);flex:none;font:700 2.8rem/1 var(--sans)}
 .mp-idtx{padding-bottom:.55rem}
@@ -2271,7 +2270,7 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 .mp-compose textarea:focus{outline:none;border-color:var(--green)}
 .mp-compose-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.7rem}
 .mp-compose-sent{display:flex;align-items:center;gap:.5rem;color:var(--green-d);font-size:.88rem;font-weight:700}
-@media (max-width:520px){.mp-id{margin-top:1.1rem}.mp-avatar{width:92px;height:92px;font-size:2.1rem}.mp-idtx h1{font-size:1.35rem}}
+@media (max-width:520px){.mp-cover{height:150px}.mp-id{margin-top:1.1rem}.mp-avatar{width:92px;height:92px;font-size:2.1rem}.mp-idtx h1{font-size:1.35rem}}
 
 /* ---- Chat window (member.html -> Message) ---- */
 .modal-card.chat-card{width:min(34rem,100%);height:min(40rem,88vh);padding:0;text-align:left;display:flex;flex-direction:column;overflow:visible}
