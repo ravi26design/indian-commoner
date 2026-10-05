@@ -170,7 +170,7 @@
     return s;
   }
   var pagehead = document.querySelector('.pagehead');
-  var secMine = makeSection('Your submissions', 'Waiting for a Moderator, or not approved. Approved items move to Community uploads.');
+  var secMine = makeSection('Your submissions', cfg.news ? 'Waiting for a Moderator, or not approved. Approved articles join the list below.' : 'Waiting for a Moderator, or not approved. Approved items move to Community uploads.');
   var secPub = makeSection('Community uploads', 'Approved by a Moderator. Saved in this browser only — there is no server behind this prototype yet.');
   pagehead.parentNode.insertBefore(secPub, pagehead.nextSibling);
   pagehead.parentNode.insertBefore(secMine, pagehead.nextSibling);
@@ -180,10 +180,27 @@
     var all = getItems().filter(function (i) { return i.page === page; });
     var pub = all.filter(function (i) { return i.status === 'approved'; });
     var mine = all.filter(function (i) { return i.status !== 'approved' && i.by === ME; });
-    secPub.hidden = !pub.length; secMine.hidden = !mine.length;
-    secPub.querySelector('.up-list').innerHTML = pub.map(function (i) { return cardHtml(i, 'public'); }).join('');
+    secMine.hidden = !mine.length;
+    if (cfg.news) {
+      // Approved articles join the page's own list, in the same card style as the existing ones.
+      var grid = document.querySelector('main .grid.g3 .newscard'); grid = grid && grid.parentNode;
+      if (grid) {
+        [].forEach.call(grid.querySelectorAll('.up-news-inj'), function (n) { n.remove(); });
+        pub.slice().reverse().forEach(function (i) {
+          var a = document.createElement('a');
+          a.className = 'card click newscard up-news-inj';
+          a.href = blocksOf(i).length ? 'resources-newsfeed-article.html?id=' + encodeURIComponent(i.id) : (safeUrl(i.link) || '#');
+          a.innerHTML = '<h3>' + esc(i.title) + '</h3><div class="newscard-foot"><span class="newsitem-date">' + esc([fmtMonth(i.date), i.source].filter(Boolean).join(' · ')) + '</span></div>';
+          grid.insertBefore(a, grid.firstChild);
+        });
+        secPub.hidden = true;
+      }
+    } else {
+      secPub.hidden = !pub.length;
+    }
+    secPub.querySelector('.up-list').innerHTML = cfg.news ? '' : pub.map(function (i) { return cardHtml(i, 'public'); }).join('');
     secMine.querySelector('.up-list').innerHTML = mine.map(function (i) { return cardHtml(i, 'mine'); }).join('');
-    hydrate(secPub, pub); hydrate(secMine, mine);
+    if (!cfg.news) hydrate(secPub, pub); hydrate(secMine, mine);
   }
   [secPub, secMine].forEach(function (sec) {
     sec.addEventListener('click', function (e) {
