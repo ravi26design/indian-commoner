@@ -102,6 +102,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.lucide) lucide.createIcons();
   }
 
+  // My Profile: show the role the user signed in with.
+  var roleChip = document.querySelector('#mp-name ~ .mp-status');
+  if (roleChip && document.title.indexOf('My Profile') === 0) {
+    try { var r = localStorage.getItem('ic-role'); if (r && isLoggedIn()) roleChip.textContent = r; } catch (e) {}
+  }
+
   // Topic page: tint the post author, reply authors, and "Voices in this
   // thread" avatars the same deterministic way as the forum list (moderator
   // shield avatars and the "+N more" chip are left as-is — they're not tied
@@ -160,14 +166,26 @@ document.addEventListener('DOMContentLoaded', function () {
         signinBtn.href = ref;
       }
     }
-    signinBtn.addEventListener('click', function () { setLoggedIn(true); });
+    signinBtn.addEventListener('click', function () {
+      setLoggedIn(true);
+      // The role picked on the login form decides what the signed-in user can do
+      // (e.g. "Resources" can upload on the Resources pages). Display-only: no real auth.
+      var roleSel = document.getElementById('lg-role');
+      try { localStorage.setItem('ic-role', roleSel ? roleSel.value : 'Registered User'); } catch (e) {}
+    });
   }
 
   var signupBtn = document.getElementById('rg-signup');
-  if (signupBtn) signupBtn.addEventListener('click', function () { setLoggedIn(true); });
+  if (signupBtn) signupBtn.addEventListener('click', function () {
+    setLoggedIn(true);
+    try { localStorage.setItem('ic-role', 'Registered User'); } catch (e) {}
+  });
 
   document.querySelectorAll('#signout-link, #signout-link-nav').forEach(function (link) {
-    link.addEventListener('click', function () { setLoggedIn(false); });
+    link.addEventListener('click', function () {
+      setLoggedIn(false);
+      try { localStorage.removeItem('ic-role'); } catch (e) {}
+    });
   });
 
   document.querySelectorAll('.fp-more').forEach(function (btn) {
