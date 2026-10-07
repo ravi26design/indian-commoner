@@ -110,7 +110,9 @@
 </nav>
 
 <main>
-  <section class="mp-cover"><div class="mx mp-cover-in"></div></section>
+  <section class="mp-cover"><div class="mx mp-cover-in">
+    <button type="button" class="mp-cover-edit" id="mp-edit-cover"><i data-lucide="camera"></i> Edit cover</button>
+  </div></section>
   <section class="section" style="padding-top:0">
     <div class="mx">
 
@@ -649,6 +651,137 @@
     demoFriends();
     demoPosts();
     demoMedia();
+
+    // ---- Edit cover: pick one of the banner illustrations or upload your own ----
+    // The choice (ic_cover) is remembered in this browser; an uploaded image is kept in IndexedDB.
+    (function () {
+      var cover = document.querySelector('.mp-cover'), editBtn = document.getElementById('mp-edit-cover');
+      if (!cover || !editBtn) return;
+      var N = 15, MAX_MB = 10, saved = null, customUrl = '';
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      function full(n) { return 'assets/img/banners/banner-' + pad(n) + '.jpg'; }
+      function thumb(n) { return 'assets/img/banners/card/banner-' + pad(n) + '.jpg'; }
+      function db() {
+        return new Promise(function (res, rej) {
+          var q = indexedDB.open('ic-uploads', 1);
+          q.onupgradeneeded = function () { q.result.createObjectStore('files'); };
+          q.onsuccess = function () { res(q.result); }; q.onerror = function () { rej(q.error); };
+        });
+      }
+      function idb(mode, fn) {
+        return db().then(function (d) { return new Promise(function (res, rej) {
+          var tx = d.transaction('files', mode), r = fn(tx.objectStore('files'));
+          tx.oncomplete = function () { res(r && r.result); }; tx.onerror = function () { rej(tx.error); };
+        }); });
+      }
+      function setCover(url) { cover.style.backgroundImage = 'url(' + url + ')'; }
+      function defaultUrl() { return window.icBannerFor ? window.icBannerFor(name) : full(1); }
+      function apply() {
+        try { saved = JSON.parse(localStorage.getItem('ic_cover') || 'null'); } catch (e) { saved = null; }
+        if (saved && saved.type === 'preset') { setCover(full(saved.n)); return; }
+        if (saved && saved.type === 'custom') {
+          idb('readonly', function (s) { return s.get('profile-cover'); }).then(function (b) {
+            if (b) { if (customUrl) URL.revokeObjectURL(customUrl); customUrl = URL.createObjectURL(b); setCover(customUrl); }
+          }).catch(function () {});
+          return;
+        }
+        // First load: site.js sets the default banner (it runs after this script). After a reset it exists.
+        if (window.icBannerFor) setCover(defaultUrl());
+      }
+
+      // Downscale an uploaded picture so it stays light, and keep it as JPEG.
+      function shrink(file) {
+        return new Promise(function (res, rej) {
+          var img = new Image(), u = URL.createObjectURL(file);
+          img.onload = function () {
+            var w = img.naturalWidth, h = img.naturalHeight, max = 2400, k = Math.min(1, max / w);
+            var cv = document.createElement('canvas'); cv.width = Math.round(w * k); cv.height = Math.round(h * k);
+            cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+            URL.revokeObjectURL(u);
+            cv.toBlob(function (b) { b ? res(b) : rej(); }, 'image/jpeg', 0.9);
+          };
+          img.onerror = function () { URL.revokeObjectURL(u); rej(); };
+          img.src = u;
+        });
+      }
+
+      var modal = document.createElement('div');
+      modal.className = 'modal-back';
+      modal.innerHTML = '<div class="modal-card wide cv-card" role="dialog" aria-modal="true" aria-labelledby="cv-title">' +
+        '<div class="fm-head"><div><b id="cv-title">Change cover image</b></div>' +
+        '<button type="button" class="modal-x" data-cv-close aria-label="Close"><i data-lucide="x"></i></button></div>' +
+        '<div class="fm-body cv-body">' +
+          '<div class="cv-preview" id="cv-preview"></div>' +
+          '<p class="cv-err" id="cv-err" role="alert" hidden></p>' +
+          '<div class="cv-row"><b>Choose a banner</b>' +
+            '<label class="btn btn-outline sm cv-up"><i data-lucide="upload"></i> Upload your own<input type="file" id="cv-file" accept="image/*" hidden></label></div>' +
+          '<div class="cv-grid" id="cv-grid"></div>' +
+        '</div>' +
+        '<div class="cv-foot"><button type="button" class="btn btn-ghost sm" id="cv-reset"><i data-lucide="rotate-ccw"></i> Reset to default</button><span class="mm-sp"></span>' +
+          '<button type="button" class="btn btn-outline" data-cv-close>Cancel</button>' +
+          '<button type="button" class="btn btn-primary" id="cv-save">Save</button></div></div>';
+      document.body.appendChild(modal);
+      var grid = modal.querySelector('#cv-grid'), prev = modal.querySelector('#cv-preview'), err = modal.querySelector('#cv-err');
+      var pick = null, pendingBlob = null, pendingUrl = '';   // pick: {type:'preset',n} | {type:'custom'} | {type:'reset'}
+      var html = '';
+      for (var n = 1; n <= N; n++) html += '<button type="button" class="cv-opt" data-n="' + n + '" aria-label="Banner ' + n + '"><img src="' + thumb(n) + '" alt="" loading="lazy"><i data-lucide="check"></i></button>';
+      grid.innerHTML = html;
+      function showErr(t) { err.textContent = t; err.hidden = !t; }
+      function paint() {
+        var url = '';
+        if (pick && pick.type === 'preset') url = full(pick.n);
+        else if (pick && pick.type === 'custom') url = pendingUrl;
+        else if (pick && pick.type === 'reset') url = defaultUrl();
+        prev.style.backgroundImage = url ? 'url(' + url + ')' : '';
+        grid.querySelectorAll('.cv-opt').forEach(function (b) {
+          b.classList.toggle('on', !!pick && pick.type === 'preset' && +b.getAttribute('data-n') === pick.n);
+        });
+        modal.querySelector('#cv-save').disabled = !pick;
+      }
+      function open() {
+        showErr(''); pendingBlob = null; if (pendingUrl) { URL.revokeObjectURL(pendingUrl); pendingUrl = ''; }
+        pick = null;
+        // show what is currently set
+        prev.style.backgroundImage = cover.style.backgroundImage;
+        if (saved && saved.type === 'preset') pick = { type: 'preset', n: saved.n };
+        grid.querySelectorAll('.cv-opt').forEach(function (b) { b.classList.toggle('on', !!pick && +b.getAttribute('data-n') === pick.n); });
+        modal.querySelector('#cv-save').disabled = true;
+        modal.classList.add('open');
+        if (window.lucide) lucide.createIcons();
+      }
+      function close() { modal.classList.remove('open'); }
+      editBtn.addEventListener('click', open);
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal || e.target.closest('[data-cv-close]')) return close();
+        var o = e.target.closest('.cv-opt'); if (o) { showErr(''); pick = { type: 'preset', n: +o.getAttribute('data-n') }; paint(); }
+      });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+      modal.querySelector('#cv-reset').addEventListener('click', function () { showErr(''); pick = { type: 'reset' }; paint(); });
+      modal.querySelector('#cv-file').addEventListener('change', function (e) {
+        var f = e.target.files[0]; e.target.value = ''; if (!f) return;
+        if (!/^image\//.test(f.type)) return showErr('Please choose an image file.');
+        if (f.size > MAX_MB * 1048576) return showErr('Images can be up to ' + MAX_MB + ' MB.');
+        shrink(f).then(function (b) {
+          showErr(''); pendingBlob = b; if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+          pendingUrl = URL.createObjectURL(b); pick = { type: 'custom' }; paint();
+        }).catch(function () { showErr('That image couldn’t be read. Try a JPG or PNG.'); });
+      });
+      modal.querySelector('#cv-save').addEventListener('click', function () {
+        if (!pick) return;
+        if (pick.type === 'custom' && pendingBlob) {
+          idb('readwrite', function (s) { return s.put(pendingBlob, 'profile-cover'); }).then(function () {
+            localStorage.setItem('ic_cover', JSON.stringify({ type: 'custom', ts: Date.now() })); apply(); close();
+          }).catch(function () { showErr('Couldn’t save the image in this browser (storage may be full or blocked).'); });
+          return;
+        }
+        if (pick.type === 'preset') localStorage.setItem('ic_cover', JSON.stringify({ type: 'preset', n: pick.n }));
+        else { localStorage.removeItem('ic_cover'); }
+        if (pick.type !== 'custom') idb('readwrite', function (s) { return s.delete('profile-cover'); }).catch(function () {});
+        apply(); close();
+      });
+      apply();
+    })();
+
 
     // ---- Account Settings: remember each toggle, show the signed-in role ----
     (function () {

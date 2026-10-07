@@ -38,7 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Directory cards are small, so they use a lighter copy; profile covers use the full-size one.
     return 'assets/img/banners/' + (small ? 'card/' : '') + 'banner-' + (n < 10 ? '0' : '') + n + '.jpg';
   }
+  window.icBannerFor = bannerFor;
   document.querySelectorAll('.mc-cover, .mp-cover').forEach(function (cover) {
+    // My Profile lets its owner pick their own cover (#mp-edit-cover); don't overwrite a saved choice.
+    if (document.getElementById('mp-edit-cover') && cover.classList.contains('mp-cover') && localStorage.getItem('ic_cover')) return;
     var card = cover.closest('.membercard');
     var nameEl = card ? card.querySelector('.mc-name') : document.getElementById('mp-name');
     var name = nameEl ? nameEl.textContent.trim() : '';
