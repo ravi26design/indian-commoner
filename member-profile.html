@@ -229,6 +229,12 @@
             <button class="mp-mt" data-media="audios"><i data-lucide="volume-2"></i><span>Audios</span></button>
             <button class="mp-mt" data-media="files"><i data-lucide="download-cloud"></i><span>Files</span></button>
           </div>
+          <div class="mp-media-bar">
+            <span class="mp-media-count" id="mm-count"></span>
+            <button type="button" class="btn btn-primary sm" id="mm-upload"><i data-lucide="upload"></i> <span id="mm-upload-t">Upload photos</span></button>
+            <input type="file" id="mm-file" multiple hidden>
+          </div>
+          <p class="mp-media-err" id="mm-err" role="alert" hidden></p>
           <div class="mp-media-pane" data-media-pane="photos"></div>
           <div class="mp-media-pane" data-media-pane="videos" hidden></div>
           <div class="mp-media-pane" data-media-pane="audios" hidden></div>
@@ -458,31 +464,186 @@
           '<a class="btn btn-primary sm" href="start-conversation.html">Start a Conversation</a></div>';
     }
 
-    var MEDIA_TINTS = ['#4f7d41', '#a89c50', '#6c9c5c', '#8f8440', '#5f9c8a', '#7d6f4a'];
+    // ---- My media: upload, view, download and delete your own photos, videos, audio and files ----
+    // Records live in localStorage (ic_media); the file bytes live in IndexedDB. Both stay in this
+    // browser only — there is no server behind this prototype yet.
     function demoMedia() {
+      var KINDS = {
+        photos: { one: 'photo', many: 'photos', accept: 'image/*', test: /^image\//, icon: 'image' },
+        videos: { one: 'video', many: 'videos', accept: 'video/*', test: /^video\//, icon: 'film' },
+        audios: { one: 'audio file', many: 'audio files', accept: 'audio/*', test: /^audio\//, icon: 'volume-2' },
+        files:  { one: 'file', many: 'files', accept: '', test: null, icon: 'file' }
+      };
+      var ORDER = ['photos', 'videos', 'audios', 'files'], MAX_MB = 150;
+      var active = 'photos', urlCache = {};
       var badge = document.querySelector('.mp-tab[data-tab="media"] .mp-badge');
-      var total = 0;
-      ['photos', 'videos', 'audios', 'files'].forEach(function (kind, ki) {
-        var pane = document.querySelector('.mp-media-pane[data-media-pane="' + kind + '"]');
-        if (!pane) return;
-        var count = 3 + Math.floor(rng() * 4); // 3-6
-        total += count;
-        var html = '';
-        for (var i = 1; i <= count; i++) {
-          var tint = MEDIA_TINTS[(ki + i) % MEDIA_TINTS.length];
-          if (kind === 'photos') {
-            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="image"></i><span>Photo ' + i + '</span></div>';
-          } else if (kind === 'videos') {
-            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="play"></i><span>Clip ' + i + '</span></div>';
-          } else if (kind === 'audios') {
-            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="volume-2"></i><span>Voice note ' + i + '</span><small>' + (1 + Math.floor(rng() * 4)) + ' min</small></div>';
-          } else {
-            html += '<div class="mp-media-tile" style="background:' + tint + '"><i data-lucide="file"></i><span>Document ' + i + '</span><small>' + (120 + Math.floor(rng() * 800)) + ' KB</small></div>';
+      var fileIn = document.getElementById('mm-file'), upBtn = document.getElementById('mm-upload');
+      var upTxt = document.getElementById('mm-upload-t'), countEl = document.getElementById('mm-count'), errEl = document.getElementById('mm-err');
+
+      function list() { try { return JSON.parse(localStorage.getItem('ic_media') || '[]'); } catch (e) { return []; } }
+      function save(l) { try { localStorage.setItem('ic_media', JSON.stringify(l)); } catch (e) {} }
+      function db() {
+        return new Promise(function (res, rej) {
+          var q = indexedDB.open('ic-uploads', 1);
+          q.onupgradeneeded = function () { q.result.createObjectStore('files'); };
+          q.onsuccess = function () { res(q.result); }; q.onerror = function () { rej(q.error); };
+        });
+      }
+      function idb(mode, fn) {
+        return db().then(function (d) { return new Promise(function (res, rej) {
+          var tx = d.transaction('files', mode), r = fn(tx.objectStore('files'));
+          tx.oncomplete = function () { res(r && r.result); }; tx.onerror = function () { rej(tx.error); };
+        }); });
+      }
+      function urlFor(id) {
+        if (urlCache[id]) return Promise.resolve(urlCache[id]);
+        return idb('readonly', function (s) { return s.get('media-' + id); }).then(function (b) {
+          if (!b) return '';
+          return (urlCache[id] = URL.createObjectURL(b));
+        });
+      }
+      function size(b) { return b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
+      function showErr(t) { errEl.textContent = t; errEl.hidden = !t; }
+
+      function render() {
+        var all = list();
+        ORDER.forEach(function (k) {
+          var pane = document.querySelector('.mp-media-pane[data-media-pane="' + k + '"]');
+          var items = all.filter(function (m) { return m.kind === k; });
+          if (!items.length) {
+            pane.classList.add('empty');
+            pane.innerHTML = '<div class="mp-media-empty-card"><i data-lucide="' + KINDS[k].icon + '"></i><b>No ' + KINDS[k].many + ' yet</b>' +
+              '<span>Upload your ' + KINDS[k].many + ' with the button above, or drop them here.</span></div>';
+            return;
           }
-        }
-        pane.innerHTML = html;
+          pane.classList.remove('empty');
+          pane.innerHTML = items.map(function (m) {
+            var nm = escapeHtml(m.name);
+            if (k === 'photos') return '<button type="button" class="mp-mtile mp-mph" data-id="' + m.id + '" title="' + nm + '"><img alt="' + nm + '"></button>';
+            if (k === 'videos') return '<button type="button" class="mp-mtile mp-mvid" data-id="' + m.id + '" title="' + nm + '"><video muted preload="metadata"></video><span class="mp-mplay"><i data-lucide="play"></i></span><span class="mp-mname">' + nm + '</span></button>';
+            return '<button type="button" class="mp-mtile mp-mdoc" data-id="' + m.id + '" title="' + nm + '"><i data-lucide="' + KINDS[k].icon + '"></i><span class="mp-mname">' + nm + '</span><small>' + size(m.size) + '</small></button>';
+          }).join('');
+          items.forEach(function (m) {
+            if (k !== 'photos' && k !== 'videos') return;
+            urlFor(m.id).then(function (u) {
+              var el = pane.querySelector('[data-id="' + m.id + '"] ' + (k === 'photos' ? 'img' : 'video'));
+              if (el && u) el.src = u;
+            }).catch(function () {});
+          });
+        });
+        if (badge) badge.textContent = all.length;
+        paintBar();
+        if (window.lucide) lucide.createIcons();
+      }
+      function paintBar() {
+        var k = KINDS[active], n = list().filter(function (m) { return m.kind === active; }).length;
+        upTxt.textContent = 'Upload ' + k.many;
+        fileIn.accept = k.accept;
+        countEl.textContent = n + ' ' + (n === 1 ? k.one : k.many);
+      }
+
+      function addFiles(fileList) {
+        showErr('');
+        var k = KINDS[active], files = [].slice.call(fileList), bad = [], good = [];
+        files.forEach(function (f) {
+          if (k.test && !k.test.test(f.type)) bad.push(f.name + ' isn’t ' + (active === 'audios' ? 'an audio file' : 'a ' + k.one));
+          else if (f.size > MAX_MB * 1048576) bad.push(f.name + ' is larger than ' + MAX_MB + ' MB');
+          else good.push(f);
+        });
+        var now = Date.now();
+        var recs = good.map(function (f, i) {
+          return { id: 'm' + now + i + Math.floor(Math.random() * 1000), kind: active, name: f.name, size: f.size, type: f.type, ts: now + i, _f: f };
+        });
+        Promise.all(recs.map(function (r) { return idb('readwrite', function (s) { return s.put(r._f, 'media-' + r.id); }); })).then(function () {
+          var l = list();
+          recs.slice().reverse().forEach(function (r) { delete r._f; l.unshift(r); });
+          save(l); render();
+          if (bad.length) showErr(bad.join('. ') + '.');
+        }).catch(function () { showErr('Couldn’t save in this browser (storage may be full or blocked).'); });
+        if (!good.length && bad.length) showErr(bad.join('. ') + '.');
+      }
+      upBtn.addEventListener('click', function () { fileIn.click(); });
+      fileIn.addEventListener('change', function () { if (fileIn.files.length) addFiles(fileIn.files); fileIn.value = ''; });
+      document.querySelectorAll('.mp-media-pane').forEach(function (pane) {
+        pane.addEventListener('dragover', function (e) { e.preventDefault(); pane.classList.add('drag'); });
+        pane.addEventListener('dragleave', function () { pane.classList.remove('drag'); });
+        pane.addEventListener('drop', function (e) { e.preventDefault(); pane.classList.remove('drag'); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
       });
-      if (badge) badge.textContent = total;
+      document.querySelectorAll('.mp-mt').forEach(function (b) {
+        b.addEventListener('click', function () { active = b.getAttribute('data-media'); showErr(''); paintBar(); });
+      });
+
+      // ---- viewer ----
+      var viewer = document.createElement('div');
+      viewer.className = 'modal-back mm-viewer';
+      viewer.innerHTML = '<div class="mm-box" role="dialog" aria-modal="true" aria-label="Media viewer">' +
+        '<div class="mm-top"><div class="mm-title"><b></b><small></small></div><button type="button" class="modal-x" data-mm-close aria-label="Close"><i data-lucide="x"></i></button></div>' +
+        '<div class="mm-stage"></div>' +
+        '<div class="mm-foot"><button type="button" class="btn btn-outline sm" data-mm="prev"><i data-lucide="chevron-left"></i> Previous</button>' +
+        '<button type="button" class="btn btn-outline sm" data-mm="next">Next <i data-lucide="chevron-right"></i></button>' +
+        '<span class="mm-sp"></span>' +
+        '<button type="button" class="btn btn-outline sm" data-mm="download"><i data-lucide="download"></i> Download</button>' +
+        '<button type="button" class="btn btn-ghost sm mm-del" data-mm="delete"><i data-lucide="trash-2"></i> Delete</button></div></div>';
+      document.body.appendChild(viewer);
+      var cur = null;   // {kind, ids, i}
+      function curItem() { return list().filter(function (m) { return m.id === cur.ids[cur.i]; })[0]; }
+      function show() {
+        var m = curItem(); if (!m) return closeViewer();
+        var stage = viewer.querySelector('.mm-stage');
+        viewer.querySelector('.mm-title b').textContent = m.name;
+        viewer.querySelector('.mm-title small').textContent = size(m.size) + ' · ' + new Date(m.ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        viewer.querySelector('[data-mm=prev]').disabled = cur.i === 0;
+        viewer.querySelector('[data-mm=next]').disabled = cur.i === cur.ids.length - 1;
+        stage.innerHTML = '';
+        urlFor(m.id).then(function (u) {
+          if (!u || curItem().id !== m.id) return;
+          if (m.kind === 'photos') stage.innerHTML = '<img alt="' + escapeHtml(m.name) + '" src="' + u + '">';
+          else if (m.kind === 'videos') stage.innerHTML = '<video controls autoplay src="' + u + '"></video>';
+          else if (m.kind === 'audios') stage.innerHTML = '<div class="mm-aud"><i data-lucide="volume-2"></i><audio controls autoplay src="' + u + '"></audio></div>';
+          else stage.innerHTML = '<div class="mm-aud"><i data-lucide="file"></i><p>Preview isn’t available for this file type.</p><a class="btn btn-primary sm" href="' + u + '" target="_blank" rel="noopener">Open in a new tab</a></div>';
+          if (window.lucide) lucide.createIcons();
+        });
+        if (window.lucide) lucide.createIcons();
+      }
+      function openViewer(kind, id) {
+        var ids = list().filter(function (m) { return m.kind === kind; }).map(function (m) { return m.id; });
+        cur = { kind: kind, ids: ids, i: Math.max(0, ids.indexOf(id)) };
+        viewer.classList.add('open'); show();
+      }
+      function closeViewer() { viewer.classList.remove('open'); viewer.querySelector('.mm-stage').innerHTML = ''; cur = null; }
+      document.querySelectorAll('.mp-media-pane').forEach(function (pane) {
+        pane.addEventListener('click', function (e) {
+          var t = e.target.closest('.mp-mtile'); if (!t) return;
+          openViewer(pane.getAttribute('data-media-pane'), t.getAttribute('data-id'));
+        });
+      });
+      viewer.addEventListener('click', function (e) {
+        if (e.target === viewer || e.target.closest('[data-mm-close]')) return closeViewer();
+        var b = e.target.closest('[data-mm]'); if (!b || !cur) return;
+        var act = b.getAttribute('data-mm');
+        if (act === 'prev' && cur.i > 0) { cur.i--; show(); }
+        else if (act === 'next' && cur.i < cur.ids.length - 1) { cur.i++; show(); }
+        else if (act === 'download') {
+          var m = curItem(); urlFor(m.id).then(function (u) { var a = document.createElement('a'); a.href = u; a.download = m.name; a.click(); });
+        } else if (act === 'delete') {
+          var m2 = curItem();
+          if (!window.confirm('Delete “' + m2.name + '”? This can’t be undone.')) return;
+          save(list().filter(function (x) { return x.id !== m2.id; }));
+          idb('readwrite', function (s) { return s.delete('media-' + m2.id); }).catch(function () {});
+          if (urlCache[m2.id]) { URL.revokeObjectURL(urlCache[m2.id]); delete urlCache[m2.id]; }
+          cur.ids.splice(cur.i, 1);
+          render();
+          if (!cur.ids.length) closeViewer(); else { cur.i = Math.min(cur.i, cur.ids.length - 1); show(); }
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (!cur || !viewer.classList.contains('open')) return;
+        if (e.key === 'Escape') closeViewer();
+        else if (e.key === 'ArrowLeft' && cur.i > 0) { cur.i--; show(); }
+        else if (e.key === 'ArrowRight' && cur.i < cur.ids.length - 1) { cur.i++; show(); }
+      });
+
+      render();
     }
 
     demoFriends();
