@@ -225,7 +225,6 @@
           <div class="mp-friend-grid" id="mp-friend-grid"></div>
         </div>
         <div id="mp-posts" class="mp-pane" hidden>
-          <div class="mp-sec-h">Posts</div>
           <div class="mp-post-list" id="mp-post-list"></div>
         </div>
         <div id="mp-media" class="mp-pane" hidden>
@@ -442,7 +441,6 @@
         var v = Object.keys(voices).length, tag = TAG[t.theme] || TAG['Others'];
         // Same row the Discussion forum list uses for this thread.
         items.push({ ts: t.ts, html: '<a class="topicrow mp-topic" href="thread.html?id=' + encodeURIComponent(t.ts) + '">' +
-          '<span class="pw-av" data-avatar-name="' + escapeHtml(t.author || 'You') + '">' + escapeHtml((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
           '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
           (t.sub ? '<span class="tag tint-slate">' + escapeHtml(t.sub) + '</span>' : '') +
           '<span class="tag tint-slate">New \u00b7 via Start a Conversation</span></div>' +
@@ -453,7 +451,7 @@
           '<div class="tr-stat"><b>' + v + '</b><span>' + (v === 1 ? 'Voice' : 'Voices') + '</span></div></div></a>' });
         (replies[t.ts] || []).forEach(function (r) {
           if (r.author !== 'You') return;
-          items.push({ ts: r.ts, html: '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="corner-down-right"></i></span>' +
+          items.push({ ts: r.ts, html: '<div class="mp-post-item">' +
             '<div class="mp-post-body"><p class="mp-post-kind">Commented on <a href="thread.html?id=' + encodeURIComponent(t.ts) + '">' + escapeHtml(t.title) + '</a></p>' +
             '<p class="mp-post-quote">' + escapeHtml(String(r.text || '').slice(0, 180)) + '</p>' +
             '<span class="mp-post-time">' + postAgo(r.ts) + '</span></div></div>' });
