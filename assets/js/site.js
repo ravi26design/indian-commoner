@@ -120,6 +120,59 @@ document.addEventListener('DOMContentLoaded', function () {
     try { var r = localStorage.getItem('ic-role'); if (r && isLoggedIn()) roleChip.textContent = r; } catch (e) {}
   }
 
+
+  // ---- Forum Members: Add Friend -> "Request Sent" (click again to cancel) ----
+  // Prototype-only state in localStorage: ic_friends (already friends) and
+  // ic_friend_requests (requests this user has sent).
+  (function () {
+    var cards = document.querySelectorAll('.membercard');
+    if (!cards.length) return;
+    function read(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+    function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+    function paint(btn, name) {
+      var friend = read('ic_friends').indexOf(name) !== -1, sent = read('ic_friend_requests').indexOf(name) !== -1;
+      btn.classList.remove('btn-primary', 'btn-outline', 'sent');
+      btn.disabled = false; btn.removeAttribute('title');
+      if (friend) {
+        btn.classList.add('btn-outline'); btn.innerHTML = '<i data-lucide="check"></i> Friends';
+        btn.title = name + ' is already your friend'; btn.setAttribute('data-state', 'friend');
+      } else if (sent) {
+        btn.classList.add('sent'); btn.innerHTML = '<i data-lucide="check"></i> Request Sent';
+        btn.title = 'Click to cancel your request'; btn.setAttribute('data-state', 'sent');
+      } else {
+        btn.classList.add('btn-primary'); btn.innerHTML = '<i data-lucide="user-plus"></i> Add Friend';
+        btn.setAttribute('data-state', 'add');
+      }
+      btn.setAttribute('aria-pressed', sent ? 'true' : 'false');
+      if (window.lucide) lucide.createIcons();
+    }
+    cards.forEach(function (card) {
+      var btn = card.querySelector('.mc-actions .btn:first-child');
+      var nameEl = card.querySelector('.mc-name');
+      if (!btn || !nameEl) return;
+      var name = nameEl.textContent.trim();
+      paint(btn, name);
+      btn.addEventListener('click', function () {
+        if (!isLoggedIn()) { location.href = 'login.html?return=' + encodeURIComponent(location.href); return; }
+        var state = btn.getAttribute('data-state');
+        if (state === 'friend') return;
+        var reqs = read('ic_friend_requests'), i = reqs.indexOf(name);
+        if (state === 'sent') { if (i !== -1) reqs.splice(i, 1); }
+        else if (i === -1) reqs.push(name);
+        write('ic_friend_requests', reqs);
+        paint(btn, name);
+      });
+    });
+    // Coming back from a profile (back button) after sending or cancelling there.
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      cards.forEach(function (card) {
+        var btn = card.querySelector('.mc-actions .btn:first-child'), n = card.querySelector('.mc-name');
+        if (btn && n) paint(btn, n.textContent.trim());
+      });
+    });
+  })();
+
   // Topic page: tint the post author, reply authors, and "Voices in this
   // thread" avatars the same deterministic way as the forum list (moderator
   // shield avatars and the "+N more" chip are left as-is — they're not tied

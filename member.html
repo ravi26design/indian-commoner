@@ -378,6 +378,16 @@
       try { localStorage.setItem('ic_friends', JSON.stringify(list)); } catch (e) {}
     }
     function isFriend(n) { return getFriends().indexOf(n) !== -1; }
+    // Friend requests this user has sent (shared with the Forum Members cards).
+    function getRequests() {
+      try { return JSON.parse(localStorage.getItem('ic_friend_requests') || '[]'); } catch (e) { return []; }
+    }
+    function isRequested(n) { return getRequests().indexOf(n) !== -1; }
+    function toggleRequest(n) {
+      var list = getRequests(), i = list.indexOf(n);
+      if (i === -1) list.push(n); else list.splice(i, 1);
+      try { localStorage.setItem('ic_friend_requests', JSON.stringify(list)); } catch (e) {}
+    }
     function toggleFriend(n) {
       var list = getFriends();
       var i = list.indexOf(n);
@@ -557,13 +567,15 @@
       // Already friends: the CTA becomes a plain "Friends" state, not an
       // "Add Friend" prompt — unfriending is tucked behind a click on that
       // state (a small dropdown) rather than offered as the primary action.
-      var friend = isFriend(name);
-      addBtn.className = 'btn sm ' + (friend ? 'btn-outline' : 'btn-primary');
-      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends <i data-lucide="chevron-down"></i>' : '<i data-lucide="user-plus"></i> Add Friend';
+      var friend = isFriend(name), sent = !friend && isRequested(name);
+      addBtn.className = 'btn sm ' + (friend ? 'btn-outline' : sent ? 'sent' : 'btn-primary');
+      addBtn.innerHTML = friend ? '<i data-lucide="check"></i> Friends <i data-lucide="chevron-down"></i>'
+        : sent ? '<i data-lucide="check"></i> Request Sent' : '<i data-lucide="user-plus"></i> Add Friend';
+      addBtn.title = sent ? 'Click to cancel your request' : '';
       addBtn.disabled = false;
       msgBtn.innerHTML = '<i data-lucide="mail"></i> Message';
       msgBtn.disabled = !friend;
-      msgBtn.title = friend ? '' : ('Add ' + name + ' as a friend to send a message.');
+      msgBtn.title = friend ? '' : ('You can message ' + name + ' once you are friends.');
       if (window.lucide) lucide.createIcons();
     }
 
@@ -574,7 +586,7 @@
         friendDropdown.hidden = !friendDropdown.hidden;
         return;
       }
-      toggleFriend(name);
+      toggleRequest(name);          // send, or cancel an already-sent request
       renderActions();
     });
     unfriendOpt.addEventListener('click', function (e) {

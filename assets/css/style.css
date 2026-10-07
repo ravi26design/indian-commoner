@@ -2439,3 +2439,9 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .up-toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%);z-index:120;max-width:calc(100vw - 2rem);background:var(--ink);color:#fff;padding:.8rem 1.2rem;font-size:.9rem;font-weight:600;box-shadow:var(--shadow-float);transition:opacity .4s}
 .up-toast.out{opacity:0}
 @media(max-width:560px){.up-btn{margin-left:0}.up-foot .btn{flex:1}}
+
+/* "Request Sent" state of Add Friend (click again to cancel) */
+.btn.sent{background:#d6d1a8;color:#7b7864;border:1px solid transparent;box-shadow:none;cursor:pointer}
+.btn.sent:hover{background:#cdc79a;color:#5f5c4a}
+.btn.sent i,.btn.sent svg{width:.95rem;height:.95rem}
+.mc-actions .btn.sent i,.mc-actions .btn.sent svg{width:.85rem;height:.85rem}
