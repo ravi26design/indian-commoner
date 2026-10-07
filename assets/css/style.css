@@ -2452,9 +2452,8 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .mc-actions .btn.sent i,.mc-actions .btn.sent svg{width:.85rem;height:.85rem}
 
 /* ---- My Profile: Account Settings tab ---- */
-.set-head{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
-.set-saved{font-size:.8rem;font-weight:700;color:var(--green-d);min-height:1.2em}
-.set-note{margin:.4rem 0 1.5rem;font-size:.86rem;color:var(--muted)}
+#mp-settings{position:relative}
+.set-saved{position:absolute;top:1.1rem;right:1.4rem;font-size:.8rem;font-weight:700;color:var(--green-d)}
 .set-group{padding:1.35rem 0;border-top:1px solid var(--line)}
 .set-group:first-of-type{border-top:0;padding-top:0}
 .set-group h3{display:flex;align-items:center;gap:.55rem;font-size:1.05rem;margin:0 0 .9rem}
