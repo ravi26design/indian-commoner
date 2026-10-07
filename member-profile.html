@@ -125,6 +125,7 @@
           <button class="mp-tab" data-tab="friends"><i data-lucide="users"></i> Friends <span class="mp-badge">0</span></button>
           <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
           <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
+          <button class="mp-tab" data-tab="settings"><i data-lucide="settings"></i> Account Settings</button>
         </div>
         <div class="mp-tabsrow-actions">
           <a class="btn btn-outline sm" id="signout-link" href="index.html"><i data-lucide="log-out"></i> Sign out</a>
@@ -155,6 +156,67 @@
             <div class="prefrow">
               <div><b>Platform Updates</b><p>Occasional emails about new features on the repository.</p></div>
               <button class="switch" aria-label="Toggle platform updates"></button>
+            </div>
+          </div>
+        </div>
+        <div id="mp-settings" class="mp-pane" hidden>
+          <div class="set-head">
+            <div class="mp-sec-h" style="margin:0">Account Settings</div>
+            <span class="set-saved" id="set-saved" role="status" aria-live="polite"></span>
+          </div>
+          <p class="set-note">Changes save automatically in this browser — there is no server behind this prototype yet.</p>
+
+          <div class="set-group">
+            <h3><i data-lucide="user-cog"></i> Account</h3>
+            <div class="mp-field"><span class="mp-field-k">Email</span><span class="mp-field-v">priya@fes.org</span></div>
+            <div class="mp-field"><span class="mp-field-k">Signed in as</span><span class="mp-field-v" id="set-role">Registered User</span></div>
+            <div class="mp-field set-pw">
+              <div><span class="mp-field-k">Password</span><span class="mp-field-v">Keep your account secure with a strong password.</span></div>
+              <a class="btn btn-outline sm" href="change-password.html"><i data-lucide="key-round"></i> Change password</a>
+            </div>
+          </div>
+
+          <div class="set-group">
+            <h3><i data-lucide="bell"></i> Notifications</h3>
+            <div class="prefcard" style="border:0;padding:0;box-shadow:none">
+              <div class="prefrow">
+                <div><b>Replies to my threads</b><p>Tell me when someone comments on a thread I started.</p></div>
+                <button type="button" class="switch on" data-setting="notifyReplies" role="switch" aria-checked="true" aria-label="Replies to my threads"></button>
+              </div>
+              <div class="prefrow">
+                <div><b>Friend requests</b><p>Tell me when someone sends or accepts a friend request.</p></div>
+                <button type="button" class="switch on" data-setting="notifyFriends" role="switch" aria-checked="true" aria-label="Friend requests"></button>
+              </div>
+              <div class="prefrow">
+                <div><b>Decisions on my uploads</b><p>Tell me when a Moderator approves or declines a resource I submitted.</p></div>
+                <button type="button" class="switch on" data-setting="notifyUploads" role="switch" aria-checked="true" aria-label="Decisions on my uploads"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-group">
+            <h3><i data-lucide="shield-check"></i> Privacy</h3>
+            <div class="prefcard" style="border:0;padding:0;box-shadow:none">
+              <div class="prefrow">
+                <div><b>Only friends can message me</b><p>People who aren’t your friends can’t start a chat with you.</p></div>
+                <button type="button" class="switch on" data-setting="friendsOnlyMessages" role="switch" aria-checked="true" aria-label="Only friends can message me"></button>
+              </div>
+              <div class="prefrow">
+                <div><b>Show my friends on my profile</b><p>Let other members see who is on your Friends list.</p></div>
+                <button type="button" class="switch on" data-setting="showFriends" role="switch" aria-checked="true" aria-label="Show my friends on my profile"></button>
+              </div>
+              <div class="prefrow">
+                <div><b>Show my posts and media</b><p>Let other members see the Posts and Media tabs on your profile.</p></div>
+                <button type="button" class="switch on" data-setting="showActivity" role="switch" aria-checked="true" aria-label="Show my posts and media"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="set-group">
+            <h3><i data-lucide="log-out"></i> Session</h3>
+            <div class="mp-field set-pw">
+              <div><span class="mp-field-k">Sign out</span><span class="mp-field-v">End your session on this browser.</span></div>
+              <a class="btn btn-outline sm" id="set-signout" href="index.html"><i data-lucide="log-out"></i> Sign out</a>
             </div>
           </div>
         </div>
@@ -390,6 +452,32 @@
     demoFriends();
     demoPosts();
     demoMedia();
+
+    // ---- Account Settings: remember each toggle, show the signed-in role ----
+    (function () {
+      var KEY = 'ic_settings', saved = {}, note = document.getElementById('set-saved'), timer;
+      try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+      document.querySelectorAll('#mp-settings .switch[data-setting]').forEach(function (sw) {
+        var k = sw.getAttribute('data-setting');
+        if (k in saved) sw.classList.toggle('on', !!saved[k]);
+        sw.setAttribute('aria-checked', sw.classList.contains('on') ? 'true' : 'false');
+        sw.addEventListener('click', function () {
+          setTimeout(function () {                      // site.js flips the class first
+            var on = sw.classList.contains('on');
+            sw.setAttribute('aria-checked', on ? 'true' : 'false');
+            saved[k] = on;
+            try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+            note.textContent = 'Saved'; clearTimeout(timer);
+            timer = setTimeout(function () { note.textContent = ''; }, 1800);
+          }, 0);
+        });
+      });
+      var roleEl = document.getElementById('set-role');
+      try { var r = localStorage.getItem('ic-role'); if (r) roleEl.textContent = r; } catch (e) {}
+      document.getElementById('set-signout').addEventListener('click', function () {
+        try { localStorage.removeItem('ic-logged-in'); localStorage.removeItem('ic-role'); } catch (e) {}
+      });
+    })();
 
     document.querySelectorAll('.mp-tab').forEach(function (t) {
       t.addEventListener('click', function () {

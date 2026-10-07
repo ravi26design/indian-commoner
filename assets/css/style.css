@@ -2445,3 +2445,16 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .btn.sent:hover{background:#cdc79a;color:#5f5c4a}
 .btn.sent i,.btn.sent svg{width:.95rem;height:.95rem}
 .mc-actions .btn.sent i,.mc-actions .btn.sent svg{width:.85rem;height:.85rem}
+
+/* ---- My Profile: Account Settings tab ---- */
+.set-head{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.set-saved{font-size:.8rem;font-weight:700;color:var(--green-d);min-height:1.2em}
+.set-note{margin:.4rem 0 1.5rem;font-size:.86rem;color:var(--muted)}
+.set-group{padding:1.35rem 0;border-top:1px solid var(--line)}
+.set-group:first-of-type{border-top:0;padding-top:0}
+.set-group h3{display:flex;align-items:center;gap:.55rem;font-size:1.05rem;margin:0 0 .9rem}
+.set-group h3 i,.set-group h3 svg{width:1.1rem;height:1.1rem;color:var(--green-d)}
+.set-pw{flex-direction:row;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.set-pw>div{display:flex;flex-direction:column;gap:.25rem}
+.set-pw .btn i,.set-pw .btn svg{width:.9rem;height:.9rem}
+#mp-settings .switch.on{background:var(--green-d)}
