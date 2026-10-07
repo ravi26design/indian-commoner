@@ -2476,3 +2476,8 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .mp-post-empty i,.mp-post-empty svg{width:2rem;height:2rem;color:var(--faint)}
 .mp-post-empty b{color:var(--ink);font-size:1rem}
 .mp-post-empty .btn{margin-top:.5rem}
+
+/* My Profile > Posts: threads use the same row as the Discussion forum list, as an independent card */
+.mp-post-list .topicrow.mp-topic{padding:1.1rem 1.25rem;background:var(--white);border:1px solid var(--line-2);border-radius:var(--r);
+  box-shadow:var(--shadow-card);color:inherit;transition:border-color .15s,box-shadow .15s}
+.mp-post-list .topicrow.mp-topic:hover{background:var(--white);border-color:var(--green-line);box-shadow:var(--shadow-lift)}

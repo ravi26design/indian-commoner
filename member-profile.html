@@ -410,6 +410,17 @@
       'Commons as Microhabitats': 'Micro Habitats', 'Livelihoods, Subsistence & Valuation of Commons': 'Livelihoods',
       'Gender and Commons': 'Gender', 'Power and Commons': 'Power', 'Conversion of Commons': 'Conversion', 'Others': 'Others'
     };
+    var TAG = {
+      'Commons as Culture': ['tint-purple', 'Culture'],
+      'Livelihoods, Subsistence & Valuation of Commons': ['tint-amber', 'Livelihoods'],
+      'Governing the Commons': ['tint-teal', 'Governing'],
+      'Commons as Micro Habitats': ['tint-green', 'Micro Habitats'],
+      'Commons as Microhabitats': ['tint-green', 'Micro Habitats'],
+      'Power and Commons': ['tint-blue', 'Power'],
+      'Gender and Commons': ['tint-rose', 'Gender'],
+      'Conversion of Commons': ['tint-slate', 'Conversion'],
+      'Others': ['tint-slate', 'Others']
+    };
     function postAgo(ts) {
       var sec = Math.max(0, Math.round((Date.now() - ts) / 1000));
       if (sec < 60) return 'just now';
@@ -426,13 +437,20 @@
       try { replies = JSON.parse(localStorage.getItem('ic_thread_replies') || '{}'); } catch (e) {}
       var items = [];
       threads.forEach(function (t) {
-        var n = (replies[t.ts] || []).length;
-        items.push({ ts: t.ts, html: '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="message-square"></i></span>' +
-          '<div class="mp-post-body"><p class="mp-post-kind">Started a thread</p>' +
-          '<a class="mp-post-title" href="thread.html?id=' + encodeURIComponent(t.ts) + '">' + escapeHtml(t.title) + '</a>' +
-          '<div class="mp-post-tags"><span class="tag tint-green">' + escapeHtml(THEME_SHORT[t.theme] || t.theme || 'Others') + '</span>' +
-          (t.sub ? '<span class="tag tint-slate">' + escapeHtml(t.sub) + '</span>' : '') + '</div>' +
-          '<span class="mp-post-time">' + postAgo(t.ts) + ' · ' + n + (n === 1 ? ' reply' : ' replies') + '</span></div></div>' });
+        var rs = replies[t.ts] || [], n = rs.length;
+        var voices = {}; voices[t.author || 'You'] = true; rs.forEach(function (r) { voices[r.author] = true; });
+        var v = Object.keys(voices).length, tag = TAG[t.theme] || TAG['Others'];
+        // Same row the Discussion forum list uses for this thread.
+        items.push({ ts: t.ts, html: '<a class="topicrow mp-topic" href="thread.html?id=' + encodeURIComponent(t.ts) + '">' +
+          '<span class="pw-av" data-avatar-name="' + escapeHtml(t.author || 'You') + '">' + escapeHtml((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
+          '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
+          (t.sub ? '<span class="tag tint-slate">' + escapeHtml(t.sub) + '</span>' : '') +
+          '<span class="tag tint-slate">New \u00b7 via Start a Conversation</span></div>' +
+          '<h3>' + escapeHtml(t.title) + '</h3>' +
+          (t.answer && t.answer[0] ? '<p class="tr-ai"><span class="tr-ai-l"><i data-lucide="sparkles"></i> Platform Assistant</span> ' + escapeHtml(t.answer[0]) + '</p>' : '') +
+          '<div class="tr-meta"><span>by <b>' + escapeHtml(t.author || 'You') + '</b></span><span>\u00b7</span><span>' + postAgo(t.ts) + '</span></div></div>' +
+          '<div class="tr-stats"><div class="tr-stat"><b>' + n + '</b><span>' + (n === 1 ? 'Reply' : 'Replies') + '</span></div>' +
+          '<div class="tr-stat"><b>' + v + '</b><span>' + (v === 1 ? 'Voice' : 'Voices') + '</span></div></div></a>' });
         (replies[t.ts] || []).forEach(function (r) {
           if (r.author !== 'You') return;
           items.push({ ts: r.ts, html: '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="corner-down-right"></i></span>' +
