@@ -2458,3 +2458,16 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .set-pw>div{display:flex;flex-direction:column;gap:.25rem}
 .set-pw .btn i,.set-pw .btn svg{width:.9rem;height:.9rem}
 #mp-settings .switch.on{background:var(--green-d)}
+
+/* My Profile > Posts: the user's real forum threads and comments */
+.mp-post-kind{margin:0 0 .15rem!important;font-size:.76rem!important;font-weight:700;color:var(--muted-2)!important;text-transform:uppercase;letter-spacing:.04em}
+.mp-post-kind a{color:var(--green-d);text-transform:none;letter-spacing:0;font-size:.9rem}
+.mp-post-title{display:block;font-size:1rem;font-weight:800;color:var(--ink);line-height:1.4;margin-bottom:.4rem}
+.mp-post-title:hover{color:var(--green-d)}
+.mp-post-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.4rem}
+.mp-post-tags .tag{font-size:.72rem;padding:.15rem .55rem;font-weight:700}
+.mp-post-quote{color:var(--muted)!important;border-left:3px solid var(--line-2);padding-left:.7rem;margin:.3rem 0 .4rem!important}
+.mp-post-empty{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.9rem}
+.mp-post-empty i,.mp-post-empty svg{width:2rem;height:2rem;color:var(--faint)}
+.mp-post-empty b{color:var(--ink);font-size:1rem}
+.mp-post-empty .btn{margin-top:.5rem}

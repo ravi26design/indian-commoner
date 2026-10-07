@@ -402,24 +402,50 @@
     // Coming back from a profile after an unfriend (back button / bfcache).
     window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 
-    var POST_STUBS = [
-      'Shared a thought on the Discussion forum.',
-      'Replied to a thread in the Discussion forum.',
-      'Posted a question under Start a Conversation.',
-      'Commented on a resource in the Resources section.',
-      'Joined a new discussion thread.',
-      'Looked through the Map exploration page.'
-    ];
-    var POST_TIMES = ['2 days ago', '5 days ago', '1 week ago', '2 weeks ago', '3 weeks ago', '1 month ago', '2 months ago'];
+    // Posts = what this user has actually shared in the Discussion forum from this
+    // browser: threads they started (Start a Conversation -> Create a New Thread) and
+    // comments they wrote on them. Nothing is invented.
+    var THEME_SHORT = {
+      'Governing the Commons': 'Governing', 'Commons as Culture': 'Culture', 'Commons as Micro Habitats': 'Micro Habitats',
+      'Commons as Microhabitats': 'Micro Habitats', 'Livelihoods, Subsistence & Valuation of Commons': 'Livelihoods',
+      'Gender and Commons': 'Gender', 'Power and Commons': 'Power', 'Conversion of Commons': 'Conversion', 'Others': 'Others'
+    };
+    function postAgo(ts) {
+      var sec = Math.max(0, Math.round((Date.now() - ts) / 1000));
+      if (sec < 60) return 'just now';
+      if (sec < 3600) return Math.floor(sec / 60) + ' min ago';
+      if (sec < 86400) return Math.floor(sec / 3600) + ' h ago';
+      if (sec < 7 * 86400) return Math.floor(sec / 86400) + ' days ago';
+      return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
     function demoPosts() {
-      var count = 2 + Math.floor(rng() * 3); // 2-4
-      var stubs = shuffled(POST_STUBS).slice(0, count);
       var list = document.getElementById('mp-post-list');
       if (!list) return;
-      list.innerHTML = stubs.map(function (s) {
-        return '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="message-square"></i></span>' +
-          '<div class="mp-post-body"><p>' + escapeHtml(s) + '</p><span class="mp-post-time">' + pick(POST_TIMES) + '</span></div></div>';
-      }).join('');
+      var threads = [], replies = {};
+      try { threads = JSON.parse(localStorage.getItem('ic_pending_threads') || '[]').filter(function (t) { return t.author === 'You'; }); } catch (e) {}
+      try { replies = JSON.parse(localStorage.getItem('ic_thread_replies') || '{}'); } catch (e) {}
+      var items = [];
+      threads.forEach(function (t) {
+        var n = (replies[t.ts] || []).length;
+        items.push({ ts: t.ts, html: '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="message-square"></i></span>' +
+          '<div class="mp-post-body"><p class="mp-post-kind">Started a thread</p>' +
+          '<a class="mp-post-title" href="thread.html?id=' + encodeURIComponent(t.ts) + '">' + escapeHtml(t.title) + '</a>' +
+          '<div class="mp-post-tags"><span class="tag tint-green">' + escapeHtml(THEME_SHORT[t.theme] || t.theme || 'Others') + '</span>' +
+          (t.sub ? '<span class="tag tint-slate">' + escapeHtml(t.sub) + '</span>' : '') + '</div>' +
+          '<span class="mp-post-time">' + postAgo(t.ts) + ' · ' + n + (n === 1 ? ' reply' : ' replies') + '</span></div></div>' });
+        (replies[t.ts] || []).forEach(function (r) {
+          if (r.author !== 'You') return;
+          items.push({ ts: r.ts, html: '<div class="mp-post-item"><span class="mp-post-ic"><i data-lucide="corner-down-right"></i></span>' +
+            '<div class="mp-post-body"><p class="mp-post-kind">Commented on <a href="thread.html?id=' + encodeURIComponent(t.ts) + '">' + escapeHtml(t.title) + '</a></p>' +
+            '<p class="mp-post-quote">' + escapeHtml(String(r.text || '').slice(0, 180)) + '</p>' +
+            '<span class="mp-post-time">' + postAgo(r.ts) + '</span></div></div>' });
+        });
+      });
+      items.sort(function (x, y) { return y.ts - x.ts; });
+      list.innerHTML = items.length ? items.map(function (i) { return i.html; }).join('')
+        : '<div class="mp-post-empty"><i data-lucide="message-square"></i><b>No forum posts yet</b>' +
+          '<span>Threads you start and comments you write in the Discussion forum will show up here.</span>' +
+          '<a class="btn btn-primary sm" href="start-conversation.html">Start a Conversation</a></div>';
     }
 
     var MEDIA_TINTS = ['#4f7d41', '#a89c50', '#6c9c5c', '#8f8440', '#5f9c8a', '#7d6f4a'];
