@@ -2242,8 +2242,13 @@ img, svg, video, iframe, canvas, table{ max-width: 100%; }
 
 /* ---- Posts tab ---- */
 .mp-post-list{display:flex;flex-direction:column}
-.mp-post-item{display:flex;gap:.8rem;padding:.9rem 0;border-top:1px solid var(--line)}
-.mp-post-item:first-child{border-top:0;padding-top:0}
+/* Posts: each post is its own card on the page background, not a row inside one big panel */
+#mp-posts.mp-pane{background:none;border:0;padding:0}
+.mp-post-list{gap:.9rem}
+.mp-post-item{display:flex;gap:.9rem;padding:1.1rem 1.25rem;background:var(--white);border:1px solid var(--line-2);
+  border-radius:var(--r);box-shadow:var(--shadow-card);transition:border-color .15s,box-shadow .15s}
+.mp-post-item:hover{border-color:var(--green-line);box-shadow:var(--shadow-lift)}
+.mp-post-body{min-width:0;flex:1}
 .mp-post-ic{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--green-soft);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;flex:none}
 .mp-post-ic i{width:16px;height:16px}
@@ -2467,7 +2472,7 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .mp-post-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.4rem}
 .mp-post-tags .tag{font-size:.72rem;padding:.15rem .55rem;font-weight:700}
 .mp-post-quote{color:var(--muted)!important;border-left:3px solid var(--line-2);padding-left:.7rem;margin:.3rem 0 .4rem!important}
-.mp-post-empty{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.9rem}
+.mp-post-empty{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;padding:2.25rem 1rem;color:var(--muted);font-size:.9rem;background:var(--white);border:1px solid var(--line-2);border-radius:var(--r);box-shadow:var(--shadow-card)}
 .mp-post-empty i,.mp-post-empty svg{width:2rem;height:2rem;color:var(--faint)}
 .mp-post-empty b{color:var(--ink);font-size:1rem}
 .mp-post-empty .btn{margin-top:.5rem}
