@@ -76,8 +76,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function currentRole() { try { return localStorage.getItem('ic-role') || ''; } catch (e) { return ''; } }
   // Moderators get a link to the resource moderation queue, with a count of what's waiting.
+  // Switched off for now: the account-menu shortcut to the Moderation queue (page and queue still work).
+  var SHOW_MOD_LINK = false;
   var modLink = '';
-  if (isLoggedIn() && currentRole() === 'Moderator') {
+  if (SHOW_MOD_LINK && isLoggedIn() && currentRole() === 'Moderator') {
     var pending = 0;
     try { pending = JSON.parse(localStorage.getItem('ic_resource_submissions') || '[]').filter(function (i) { return i.status === 'pending'; }).length; } catch (e) {}
     modLink = '<a href="moderation.html"><span class="nd-ic"><i data-lucide="shield-check"></i></span><span class="nd-tx"><b>Moderation queue' +
