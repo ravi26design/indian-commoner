@@ -2552,3 +2552,23 @@ textarea.up-in{resize:vertical;line-height:1.55}
 /* Footer brand: Promise of Commons initiative line */
 .foot-initiative{margin-top:.6rem;font-size:.82rem;line-height:1.5;color:var(--muted)}
 .foot-initiative strong{color:var(--ink-2);font-weight:700}
+
+/* ============ Are you a Commoner? quiz ============ */
+.quiz{display:flex;flex-direction:column;gap:1.1rem}
+.quiz-q{border:1px solid var(--line-2);border-radius:var(--r);padding:1.25rem 1.3rem;margin:0;background:var(--white)}
+.quiz-q legend{font-weight:700;color:var(--ink);line-height:1.45;padding:0;margin-bottom:.9rem;display:flex;gap:.6rem;align-items:flex-start}
+.quiz-num{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--green-soft);color:var(--green-d);display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800}
+.quiz-opt{display:flex;align-items:center;gap:.7rem;padding:.65rem .8rem;border:1px solid var(--line-2);border-radius:var(--r-sm);margin-top:.5rem;cursor:pointer;transition:border-color .15s,background .15s}
+.quiz-opt:first-of-type{margin-top:0}
+.quiz-opt:hover{border-color:var(--green-line);background:var(--bg-soft)}
+.quiz-opt input{accent-color:var(--green);width:1.05rem;height:1.05rem;flex:none}
+.quiz-opt:has(input:checked){border-color:var(--green);background:var(--green-soft)}
+.quiz-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.3rem}
+.quiz-note{color:var(--red);font-size:.88rem;font-weight:600}
+.quiz-result{border:1px solid var(--green-line);background:linear-gradient(to bottom,var(--green-soft),var(--white));border-radius:var(--r-lg);padding:2rem 1.75rem;text-align:center}
+.quiz-badge{display:inline-flex;align-items:center;justify-content:center;width:3.4rem;height:3.4rem;border-radius:50%;background:var(--green);color:#fff;margin-bottom:.9rem}
+.quiz-badge i{width:26px;height:26px}
+.quiz-result h2{font-size:1.5rem;margin:0 0 .6rem}
+.quiz-result p{color:var(--ink-2);max-width:40rem;margin:0 auto 1.4rem;line-height:1.6}
+.quiz-cta{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+@media(max-width:560px){.quiz-cta .btn{width:100%}}
