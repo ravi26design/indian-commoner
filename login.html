@@ -18,8 +18,14 @@
   <a class="sso-close" href="index.html" aria-label="Close"><i data-lucide="x"></i></a>
   <div class="ssocard">
     <div class="sso-left">
+      <span class="sso-kicker"><i data-lucide="sprout"></i> Promise of Commons</span>
       <h2>Indian Commoner<br>Community Forum</h2>
-      <p>Indian Commoner is a forum to which individuals and organisations interested in the current state of common pool resources, from India and other parts of the world, may contribute.</p>
+      <p>A forum where individuals and organisations across India and beyond come together around the commons — our shared lands, waters, forests and knowledge.</p>
+      <ul class="sso-feats">
+        <li><span class="sso-feat-ic"><i data-lucide="message-square"></i></span> Discuss the commons across eight themes</li>
+        <li><span class="sso-feat-ic"><i data-lucide="map"></i></span> Explore conversations by region</li>
+        <li><span class="sso-feat-ic"><i data-lucide="users"></i></span> Connect with commoners across India</li>
+      </ul>
     </div>
 
     <div class="sso-right">
@@ -29,37 +35,33 @@
           <h1 class="lg-h1" style="margin-top:.3rem">Sign in</h1>
         </div>
       </div>
-      <p style="color:var(--muted);margin:-.6rem 0 1.5rem;font-size:.92rem">Enter your account credentials to continue.</p>
+      <p style="color:var(--muted);margin:-.4rem 0 1.4rem;font-size:.92rem">Enter your mobile number and we'll send you a one-time password.</p>
 
       <div class="lgf">
-        <label for="lg-email">Username or Email</label>
+        <label for="lg-mobile">Mobile number</label>
         <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="mail"></i></span>
-          <input id="lg-email" type="text" placeholder="you@example.com" autocomplete="username">
+          <span class="lg-ic"><i data-lucide="smartphone"></i></span>
+          <span class="lg-cc">+91</span>
+          <input id="lg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
         </div>
       </div>
-      <div class="lgf">
-        <label for="lg-pass">Password</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="lock"></i></span>
-          <input id="lg-pass" type="password" placeholder="Enter your password" autocomplete="current-password">
-          <button class="lg-eye" type="button" aria-label="Show password"><i data-lucide="eye"></i></button>
+      <button type="button" class="btn btn-primary block lg-btn" id="lg-send-otp">Send OTP</button>
+
+      <div id="lg-otp-step" hidden>
+        <div class="lgf" style="margin-top:1.1rem">
+          <label for="lg-otp-0">Enter OTP</label>
+          <div class="lg-otp" id="lg-otp">
+            <input class="lg-otp-box" id="lg-otp-0" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+          </div>
+          <p class="lg-otp-note">Code sent to <b id="lg-otp-to"></b>. <button type="button" class="lg-linkbtn" id="lg-resend">Resend OTP</button></p>
         </div>
+        <a class="btn btn-primary block lg-btn" id="lg-otp-verify" href="member-profile.html">Verify &amp; Sign in</a>
       </div>
-      <div class="field selw">
-        <label for="lg-role">Sign in as (role)</label>
-        <select id="lg-role">
-          <option>Registered User</option>
-          <option>Moderator</option>
-          <option>Admin User</option>
-        </select>
-      </div>
-      <div class="between lg-forgot">
-        <label style="display:flex;align-items:center;gap:.5rem;font-size:.87rem;color:var(--muted)">
-          <input type="checkbox" style="accent-color:var(--green)"> Remember me
-        </label>
-      </div>
-      <a class="btn btn-primary block lg-btn" id="lg-signin" href="member-profile.html">Sign in</a>
 
       <div class="sso-links">
         <a href="register.html">Create account</a>
@@ -70,6 +72,45 @@
 
 </div>
 
+<script>
+(function () {
+  // Mobile OTP flow
+  var mobile = document.getElementById('lg-mobile');
+  var sendBtn = document.getElementById('lg-send-otp');
+  var otpStep = document.getElementById('lg-otp-step');
+  var otpTo = document.getElementById('lg-otp-to');
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.lg-otp-box'));
+  var resend = document.getElementById('lg-resend');
+
+  if (mobile) {
+    mobile.addEventListener('input', function () {
+      mobile.value = mobile.value.replace(/\D/g, '').slice(0, 10);
+    });
+  }
+  function sendOtp() {
+    if (!mobile || mobile.value.length !== 10) {
+      if (mobile) { mobile.focus(); }
+      return;
+    }
+    if (otpTo) { otpTo.textContent = '+91 ' + mobile.value; }
+    if (otpStep) { otpStep.hidden = false; }
+    if (boxes[0]) { boxes[0].focus(); }
+  }
+  if (sendBtn) { sendBtn.addEventListener('click', sendOtp); }
+  if (resend) { resend.addEventListener('click', function () { boxes.forEach(function (b) { b.value = ''; }); if (boxes[0]) boxes[0].focus(); }); }
+
+  // OTP box auto-advance / backspace
+  boxes.forEach(function (box, i) {
+    box.addEventListener('input', function () {
+      box.value = box.value.replace(/\D/g, '').slice(0, 1);
+      if (box.value && boxes[i + 1]) { boxes[i + 1].focus(); }
+    });
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !box.value && boxes[i - 1]) { boxes[i - 1].focus(); }
+    });
+  });
+})();
+</script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

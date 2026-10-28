@@ -960,7 +960,7 @@ button.dd-btn.lg-input{justify-content:space-between;font-weight:600;text-align:
 footer.site{position:relative;z-index:1;background:#fff;color:var(--muted);
   border-top:1px solid var(--line-2);margin-top:0}
 footer.site .cols{max-width:90rem;margin:0 auto;padding:3.75rem 2rem 2.5rem;display:grid;
-  grid-template-columns:minmax(0,1.3fr) repeat(5,minmax(0,1fr));gap:2rem}
+  grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:2rem}
 footer.site .fbrand{display:inline-flex;align-items:center;gap:10px}
 footer.site .fbrand .mk{width:34px;height:34px;border-radius:10px;background:var(--green);
   display:grid;place-items:center;color:#fff}
@@ -2572,3 +2572,41 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .quiz-result p{color:var(--ink-2);max-width:40rem;margin:0 auto 1.4rem;line-height:1.6}
 .quiz-cta{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
 @media(max-width:560px){.quiz-cta .btn{width:100%}}
+
+/* Combined Podcasts & Webinars page section sub-headings */
+.res-subhead{font-size:1.25rem;margin:0 0 1.1rem;padding-bottom:.5rem;border-bottom:2px solid var(--green-line);color:var(--ink)}
+.res-subhead + .grid{margin-top:0}
+
+/* ============ Login: method tabs + Mobile OTP ============ */
+.lg-methods{display:flex;gap:.4rem;background:var(--chip);border:1px solid var(--line-2);border-radius:999px;padding:.28rem;margin-bottom:1.3rem}
+.lg-method{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;background:none;border-radius:999px;padding:.55rem .6rem;font:600 .9rem/1 var(--sans);color:var(--muted);cursor:pointer}
+.lg-method i{width:16px;height:16px}
+.lg-method.on{background:var(--white);color:var(--green-d);box-shadow:var(--shadow-card)}
+.lg-cc{display:inline-flex;align-items:center;padding-right:.55rem;margin-right:.1rem;border-right:1px solid var(--line-2);color:var(--ink-2);font-weight:700;font-size:.92rem}
+.lg-otp{display:flex;gap:.5rem;justify-content:space-between}
+.lg-otp-box{width:100%;aspect-ratio:1/1;max-width:3rem;text-align:center;font-size:1.25rem;font-weight:700;border:1px solid var(--line-2);border-radius:var(--r-sm);color:var(--ink)}
+.lg-otp-box:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.lg-otp-note{font-size:.85rem;color:var(--muted);margin:.8rem 0 0}
+.lg-linkbtn{border:0;background:none;color:var(--green-d);font-weight:700;cursor:pointer;padding:0;font-size:.85rem}
+.lg-linkbtn:hover{text-decoration:underline}
+.lg-authpanel{display:flex;flex-direction:column;gap:1.05rem}
+.lg-authpanel[hidden]{display:none!important}
+#lg-otp-step[hidden]{display:none!important}
+
+/* ============ Login page polish (OTP-only, no-scroll) ============ */
+.ssowrap{padding:1.5rem}
+.sso-left{justify-content:center}
+.sso-right{padding:2.25rem clamp(1.5rem,4vw,2.6rem)}
+.sso-kicker{display:inline-flex;align-items:center;gap:.45rem;align-self:flex-start;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);color:#fff;font-size:.74rem;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;padding:.3rem .7rem;border-radius:999px;margin-bottom:1rem}
+.sso-kicker i{width:14px;height:14px}
+.sso-feats{list-style:none;margin:1.4rem 0 0;padding:0;display:flex;flex-direction:column;gap:.9rem}
+.sso-feats li{display:flex;align-items:center;gap:.7rem;color:rgba(255,255,255,.92);font-size:.9rem;line-height:1.4}
+.sso-feat-ic{flex:none;width:2rem;height:2rem;border-radius:50%;background:rgba(255,255,255,.16);
+  display:inline-flex;align-items:center;justify-content:center}
+.sso-feat-ic i{width:16px;height:16px;color:#dcece0}
+/* tighten form rhythm so the card fits the viewport */
+.sso-right .lg-h1{font-size:1.75rem;margin:0 0 .4rem}
+.sso-right .lgf{margin-bottom:.95rem}
+.sso-right .sso-links{margin-top:1.2rem;padding-top:1rem}
