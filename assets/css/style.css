@@ -2594,9 +2594,10 @@ textarea.up-in{resize:vertical;line-height:1.55}
 #lg-otp-step[hidden]{display:none!important}
 
 /* ============ Login page polish (OTP-only, no-scroll) ============ */
-.ssowrap{padding:1.5rem}
-.sso-left{justify-content:center}
-.sso-right{padding:2.25rem clamp(1.5rem,4vw,2.6rem)}
+.ssowrap{padding:56px 1.5rem}
+.ssocard{min-height:calc(100dvh - 112px)}
+.sso-left{justify-content:flex-start}
+.sso-right{padding:2.75rem clamp(1.5rem,4vw,2.6rem);display:flex;flex-direction:column;justify-content:flex-start}
 .sso-kicker{display:inline-flex;align-items:center;gap:.45rem;align-self:flex-start;background:rgba(255,255,255,.14);
   border:1px solid rgba(255,255,255,.28);color:#fff;font-size:.74rem;font-weight:700;letter-spacing:.06em;
   text-transform:uppercase;padding:.3rem .7rem;border-radius:999px;margin-bottom:1rem}
