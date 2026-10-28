@@ -20,6 +20,7 @@
     <div class="sso-left">
       <h2>Indian Commoner<br>Community Forum</h2>
       <p>Indian Commoner is a forum to which individuals and organisations interested in the current state of common pool resources, from India and other parts of the world, may contribute.</p>
+      <div class="sso-logocard"><img src="assets/img/cense-logo.png" alt="CenSE — Centre for Social Ecology" loading="lazy"></div>
     </div>
 
     <div class="sso-right">
@@ -31,47 +32,77 @@
       </div>
       <p style="color:var(--muted);margin:-.6rem 0 1.5rem;font-size:.92rem">Sign up to join discussions and contribute to the forum.</p>
 
-      <div class="lgf">
-        <label for="rg-user">Username</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="user"></i></span>
-          <input id="rg-user" type="text" placeholder="Choose a username" autocomplete="username">
+      <div id="rg-form-step">
+        <div class="lgf">
+          <label for="rg-user">Username</label>
+          <div class="lg-input">
+            <span class="lg-ic"><i data-lucide="user"></i></span>
+            <input id="rg-user" type="text" placeholder="Choose a username" autocomplete="username">
+          </div>
         </div>
-      </div>
-      <div class="lgf">
-        <label for="rg-email">Email Address</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="mail"></i></span>
-          <input id="rg-email" type="email" placeholder="you@example.com" autocomplete="email">
+        <div class="lgf">
+          <label for="rg-email">Email Address</label>
+          <div class="lg-input">
+            <span class="lg-ic"><i data-lucide="mail"></i></span>
+            <input id="rg-email" type="email" placeholder="you@example.com" autocomplete="email">
+          </div>
         </div>
-      </div>
-      <div class="lgf">
-        <label for="rg-mobile">Mobile number</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="smartphone"></i></span>
-          <span class="lg-cc">+91</span>
-          <input id="rg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
+        <div class="lgf">
+          <label for="rg-mobile">Mobile number</label>
+          <div class="lg-input">
+            <span class="lg-ic"><i data-lucide="smartphone"></i></span>
+            <span class="lg-cc">+91</span>
+            <input id="rg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
+          </div>
+          <p class="lg-hint">We'll send the same one-time code to your mobile and email to verify both.</p>
         </div>
-        <p class="lg-hint">We'll send a one-time password (OTP) to this number to sign you in — no password needed.</p>
+
+        <span class="kicker" style="display:block;margin:1.5rem 0 1rem">Profile Details</span>
+        <div class="lgf">
+          <label for="rg-fname">First Name</label>
+          <div class="lg-input">
+            <span class="lg-ic"><i data-lucide="id-card"></i></span>
+            <input id="rg-fname" type="text" placeholder="Your first name" autocomplete="given-name">
+          </div>
+        </div>
+
+        <label class="captcha">
+          <input type="checkbox">
+          <span class="cb-box"><i data-lucide="check"></i></span>
+          <span class="cb-tx">I'm not a robot</span>
+        </label>
+
+        <button type="button" class="btn btn-primary block lg-btn" id="rg-signup" style="margin-top:1.35rem">Create account</button>
+        <a class="btn btn-outline block lg-btn" href="login.html" style="margin-top:.75rem;border-color:transparent">Log In</a>
       </div>
 
-      <span class="kicker" style="display:block;margin:1.5rem 0 1rem">Profile Details</span>
-      <div class="lgf">
-        <label for="rg-fname">First Name</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="id-card"></i></span>
-          <input id="rg-fname" type="text" placeholder="Your first name" autocomplete="given-name">
+      <div id="rg-otp-step" hidden>
+        <div class="rg-verify-head">
+          <span class="rg-verify-ic"><i data-lucide="shield-check"></i></span>
+          <div>
+            <h2 class="rg-verify-h">Verify your mobile &amp; email</h2>
+            <p class="lg-otp-note" style="margin:.25rem 0 0">We sent the same 6-digit code to both:</p>
+          </div>
         </div>
+        <ul class="rg-verify-to">
+          <li><i data-lucide="smartphone"></i> <b id="rg-otp-mobile"></b></li>
+          <li><i data-lucide="mail"></i> <b id="rg-otp-email"></b></li>
+        </ul>
+        <div class="lgf">
+          <label for="rg-otp-0">Enter OTP</label>
+          <div class="lg-otp" id="rg-otp">
+            <input class="lg-otp-box" id="rg-otp-0" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+          </div>
+          <p class="lg-otp-note">Didn't receive it? <button type="button" class="lg-linkbtn" id="rg-resend">Resend code</button></p>
+        </div>
+        <a class="btn btn-primary block lg-btn" id="rg-verify" href="member-profile.html">Verify &amp; Create Account</a>
+        <button type="button" class="btn btn-outline block lg-btn" id="rg-back" style="margin-top:.75rem;border-color:transparent">Back to edit details</button>
       </div>
-
-      <label class="captcha">
-        <input type="checkbox">
-        <span class="cb-box"><i data-lucide="check"></i></span>
-        <span class="cb-tx">I'm not a robot</span>
-      </label>
-
-      <a class="btn btn-primary block lg-btn" id="rg-signup" href="member-profile.html" style="margin-top:1.35rem">Sign Up</a>
-      <a class="btn btn-outline block lg-btn" href="login.html" style="margin-top:.75rem;border-color:transparent">Login In</a>
     </div>
   </div>
 
@@ -79,8 +110,41 @@
 
 <script>
 (function () {
-  var m = document.getElementById('rg-mobile');
-  if (m) { m.addEventListener('input', function () { m.value = m.value.replace(/\D/g, '').slice(0, 10); }); }
+  var mobile = document.getElementById('rg-mobile');
+  var email = document.getElementById('rg-email');
+  var formStep = document.getElementById('rg-form-step');
+  var otpStep = document.getElementById('rg-otp-step');
+  var signup = document.getElementById('rg-signup');
+  var back = document.getElementById('rg-back');
+  var resend = document.getElementById('rg-resend');
+  var toMobile = document.getElementById('rg-otp-mobile');
+  var toEmail = document.getElementById('rg-otp-email');
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#rg-otp .lg-otp-box'));
+
+  if (mobile) { mobile.addEventListener('input', function () { mobile.value = mobile.value.replace(/\D/g, '').slice(0, 10); }); }
+
+  function startVerify() {
+    if (!mobile || mobile.value.length !== 10) { if (mobile) mobile.focus(); return; }
+    if (!email || !email.value.trim()) { if (email) email.focus(); return; }
+    if (toMobile) toMobile.textContent = '+91 ' + mobile.value;
+    if (toEmail) toEmail.textContent = email.value.trim();
+    if (formStep) formStep.hidden = true;
+    if (otpStep) otpStep.hidden = false;
+    if (boxes[0]) boxes[0].focus();
+  }
+  if (signup) signup.addEventListener('click', startVerify);
+  if (back) back.addEventListener('click', function () { if (otpStep) otpStep.hidden = true; if (formStep) formStep.hidden = false; });
+  if (resend) resend.addEventListener('click', function () { boxes.forEach(function (b) { b.value = ''; }); if (boxes[0]) boxes[0].focus(); });
+
+  boxes.forEach(function (box, i) {
+    box.addEventListener('input', function () {
+      box.value = box.value.replace(/\D/g, '').slice(0, 1);
+      if (box.value && boxes[i + 1]) { boxes[i + 1].focus(); }
+    });
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !box.value && boxes[i - 1]) { boxes[i - 1].focus(); }
+    });
+  });
 })();
 </script>
 <script src="assets/js/site.js"></script>
