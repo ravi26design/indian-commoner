@@ -46,20 +46,13 @@
         </div>
       </div>
       <div class="lgf">
-        <label for="rg-pass">Choose a Password</label>
+        <label for="rg-mobile">Mobile number</label>
         <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="lock"></i></span>
-          <input id="rg-pass" type="password" placeholder="Enter a password" autocomplete="new-password">
-          <button class="lg-eye" type="button" aria-label="Show password"><i data-lucide="eye"></i></button>
+          <span class="lg-ic"><i data-lucide="smartphone"></i></span>
+          <span class="lg-cc">+91</span>
+          <input id="rg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
         </div>
-      </div>
-      <div class="lgf">
-        <label for="rg-pass2">Confirm Password</label>
-        <div class="lg-input">
-          <span class="lg-ic"><i data-lucide="lock"></i></span>
-          <input id="rg-pass2" type="password" placeholder="Re-enter your password" autocomplete="new-password">
-          <button class="lg-eye" type="button" aria-label="Show password"><i data-lucide="eye"></i></button>
-        </div>
+        <p class="lg-hint">We'll send a one-time password (OTP) to this number to sign you in — no password needed.</p>
       </div>
 
       <span class="kicker" style="display:block;margin:1.5rem 0 1rem">Profile Details</span>
@@ -84,6 +77,12 @@
 
 </div>
 
+<script>
+(function () {
+  var m = document.getElementById('rg-mobile');
+  if (m) { m.addEventListener('input', function () { m.value = m.value.replace(/\D/g, '').slice(0, 10); }); }
+})();
+</script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>
