@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webinars — Indian Commoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<nav class="top"><div class="bar">
+  <a class="brand" href="index.html">
+    <span class="bt">Indian Commoner</span>
+  </a>
+  <div class="links">
+    <div class="navgroup">
+      <a class="navlink" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Chat with us</b><small>Ask, share or record in your own language</small></span></a>
+        <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
+        <a href="map.html"><span class="nd-ic"><i data-lucide="map"></i></span><span class="nd-tx"><b>Map exploration</b><small>Find discussions by place</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <a class="navlink active" href="resources-podcasts.html"><i data-lucide="package"></i> Resources <i data-lucide="chevron-down"></i></a>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="resources-podcasts.html"><span class="nd-ic"><i data-lucide="mic"></i></span><span class="nd-tx"><b>Podcasts</b><small>Listen to conversations on commons</small></span></a>
+        <a class="active" href="resources-webinars.html"><span class="nd-ic"><i data-lucide="monitor-play"></i></span><span class="nd-tx"><b>Webinars</b><small>Watch recorded sessions and talks</small></span></a>
+        <a href="resources-newsfeed.html"><span class="nd-ic"><i data-lucide="newspaper"></i></span><span class="nd-tx"><b>Newsfeed</b><small>Latest news on commons in India</small></span></a>
+        <a href="resources-laws.html"><span class="nd-ic"><i data-lucide="scale"></i></span><span class="nd-tx"><b>Laws and Regulations</b><small>Browse laws, acts and policies</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <span class="navlink navlink-static"><i data-lucide="clapperboard"></i> Activities <i data-lucide="chevron-down"></i></span>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="activities-videos-podcasts.html"><span class="nd-ic"><i data-lucide="clapperboard"></i></span><span class="nd-tx"><b>Videos and Podcasts</b><small>Submit videos and podcasts on commons</small></span></a>
+        <a href="activities-workshops.html"><span class="nd-ic"><i data-lucide="users"></i></span><span class="nd-tx"><b>Workshops</b><small>Community workshops and events</small></span></a>
+      </div></div>
+    </div>
+    <div class="navgroup">
+      <a class="navlink" href="members.html"><i data-lucide="users-round"></i> Members</a>
+    </div>
+    <div class="navgroup">
+      <span class="navlink navlink-static"><i data-lucide="info"></i> About <i data-lucide="chevron-down"></i></span>
+      <div class="navdrop"><div class="navdrop-in">
+        <a href="what-are-commons.html"><span class="nd-ic"><i data-lucide="sprout"></i></span><span class="nd-tx"><b>What Are Commons</b><small>Understand what commons means</small></span></a>
+        <a href="who-is-a-commoner.html"><span class="nd-ic"><i data-lucide="users"></i></span><span class="nd-tx"><b>Who Is a Commoner</b><small>Learn who counts as a commoner</small></span></a>
+        <a href="purpose-of-the-indian-commoner.html"><span class="nd-ic"><i data-lucide="feather"></i></span><span class="nd-tx"><b>Purpose of the Indian Commoner</b><small>Why this forum exists</small></span></a>
+        <a href="team.html"><span class="nd-ic"><i data-lucide="badge-check"></i></span><span class="nd-tx"><b>IC Team</b><small>Meet the team behind Indian Commoner</small></span></a>
+      </div></div>
+    </div>
+  </div>
+  <div class="navright">
+    <span class="navdiv"></span>
+    <div class="navsearch" id="navsearch">
+      <button class="nav-ic" data-search aria-label="Search" title="Search"><i data-lucide="search"></i></button>
+      <div class="ns-field">
+        <input id="ns-input" placeholder="Search here..." autocomplete="off">
+        <button class="ns-go" title="Search"><i data-lucide="search"></i></button>
+      </div>
+      <button class="ns-x" title="Close"><i data-lucide="x"></i></button>
+    </div>
+    <span class="navdiv"></span>
+    <div class="langw" id="langw">
+      <button class="langbtn">EN <i data-lucide="chevron-down"></i></button>
+      <div class="lang-menu">
+        <button class="lang-opt on">English</button>
+        <button class="lang-opt">हिन्दी</button>
+        <button class="lang-opt">ಕನ್ನಡ</button>
+        <button class="lang-opt">తెలుగు</button>
+      </div>
+    </div>
+    <a class="signin-btn" href="login.html"><i data-lucide="log-in"></i> Login</a>
+    <button class="navtoggle" aria-label="Menu"><i data-lucide="menu"></i></button>
+  </div>
+</div>
+<div class="mobnav" id="mobnav">
+  <a href="forum.html"><i data-lucide="message-square"></i> Forum</a>
+  <a href="resources-podcasts.html"><i data-lucide="mic"></i> Podcasts</a>
+  <a href="resources-webinars.html"><i data-lucide="monitor-play"></i> Webinars</a>
+  <a href="resources-newsfeed.html"><i data-lucide="newspaper"></i> Newsfeed</a>
+  <a href="resources-laws.html"><i data-lucide="scale"></i> Laws and Regulations</a>
+  <a href="activities-videos-podcasts.html"><i data-lucide="clapperboard"></i> Videos and Podcasts</a>
+  <a href="activities-workshops.html"><i data-lucide="users"></i> Workshops</a>
+  <a href="team.html"><i data-lucide="badge-check"></i> IC Team</a>
+  <a href="members.html"><i data-lucide="users-round"></i> Forum Members</a>
+  <a href="what-are-commons.html"><i data-lucide="sprout"></i> What Are Commons</a>
+  <a href="who-is-a-commoner.html"><i data-lucide="users"></i> Who Is a Commoner</a>
+  <a href="purpose-of-the-indian-commoner.html"><i data-lucide="feather"></i> Purpose of the Indian Commoner</a>
+  <a href="login.html"><i data-lucide="log-in"></i> Login</a>
+</div>
+</nav>
+
+<main>
+
+<div class="pagehead noline" style="background:var(--bg-soft)"><div class="in" style="padding-bottom:1.25rem;align-items:center;justify-content:flex-start">
+  <div>
+    <h1>Webinars</h1>
+  </div>
+  <div class="seg-tabs level-tabs" data-levelgroup style="margin:0">
+      <button type="button" class="seg-tab on" data-level="beginner"><i data-lucide="leaf"></i> Beginner</button>
+      <button type="button" class="seg-tab" data-level="intermediate"><i data-lucide="trending-up"></i> Intermediate</button>
+      <button type="button" class="seg-tab" data-level="advanced"><i data-lucide="award"></i> Advanced</button>
+    </div>
+</div></div>
+
+<section class="section resbg" style="padding-top:1rem"><div class="mx">
+
+  <div class="grid g3">
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=world+commons+week+fes" target="_blank" rel="noopener noreferrer">
+      <h3>World Commons Week: Celebrating Community Stewardship</h3>
+      <div class="tags">
+        <span class="tag">#Governing the commons</span>
+        <span class="tag">#Livelihoods, Subsistence, and valuation of commons</span>
+      </div>
+    </a>
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=promise+of+commons+webinar" target="_blank" rel="noopener noreferrer">
+      <h3>Promise of Commons: Securing Community Tenure over the Commons</h3>
+      <div class="tags">
+        <span class="tag">#Power and commons</span>
+        <span class="tag">#Governing the commons</span>
+      </div>
+    </a>
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=commons+groundwater+governance+webinar" target="_blank" rel="noopener noreferrer">
+      <h3>Reviving Groundwater as a Common Pool Resource</h3>
+      <div class="tags">
+        <span class="tag">#Governing the commons</span>
+        <span class="tag">#Commons as microhabitats</span>
+      </div>
+    </a>
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=forest+rights+act+commons+webinar" target="_blank" rel="noopener noreferrer">
+      <h3>The Forest Rights Act and Community Forest Resource Rights</h3>
+      <div class="tags">
+        <span class="tag">#Power and commons</span>
+        <span class="tag">#Livelihoods, Subsistence, and valuation of commons</span>
+      </div>
+    </a>
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=women+commons+governance+webinar" target="_blank" rel="noopener noreferrer">
+      <h3>Women and the Governance of the Commons</h3>
+      <div class="tags">
+        <span class="tag">#Gender and commons</span>
+        <span class="tag">#Governing the commons</span>
+      </div>
+    </a>
+
+    <a class="card click webinarcard" href="https://www.youtube.com/results?search_query=elinor+ostrom+governing+the+commons+lecture" target="_blank" rel="noopener noreferrer">
+      <h3>Governing the Commons: Revisiting Elinor Ostrom's Design Principles</h3>
+      <div class="tags">
+        <span class="tag">#Governing the commons</span>
+        <span class="tag">#Commons as culture</span>
+      </div>
+    </a>
+
+  </div>
+  </div>
+</div></section>
+
+</main>
+
+<footer class="site">
+  <div class="cols">
+    <div>
+      <p>A forum to which individuals and organisations interested in the current state of common pool resources, from India and other parts of the world, may contribute.</p>
+      <p class="foot-initiative">The Indian Commoner forum is an initiative of <strong>Promise of Commons</strong>, anchored by the Foundation for Ecological Security (FES).</p>
+    </div>
+    <div>
+      <h5>Sister Sites</h5>
+      <ul>
+        <li><a href="https://commonsplatform.in/" target="_blank" rel="noopener noreferrer">Commons Platform</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Site</h5>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="contact-us.html">Contact Us</a></li>
+        <li><a href="terms-of-use.html">Terms of Use</a></li>
+        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Partners</h5>
+      <ul class="fpartners">
+        <li><a href="http://www.censeindia.org/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/img/cense-logo.png" alt="CenSE — Centre for Social Ecology"></a></li>
+        <li><a href="https://fes.org.in/" target="_blank" rel="noopener noreferrer">
+          <img src="assets/img/fes-logo.svg" alt="Foundation for Ecological Security"></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="bar">
+    <span class="legal">CC-BY 4.0 License. Indian Commoner.</span>
+    <div class="social">
+      <a href="https://www.facebook.com/Indian-Commoner-Forum-100238292592467/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+      <a href="https://www.instagram.com/indian_commoner_forum/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+      <a href="https://twitter.com/CommonerForum" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+      <a href="https://www.linkedin.com/company/indian-commoner-forum" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+<script src="assets/js/resources-upload.js"></script>
+</body>
+</html>
