@@ -22,7 +22,7 @@
     <div class="navgroup">
       <a class="navlink active" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
       <div class="navdrop"><div class="navdrop-in">
-        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Start a Conversation</b><small>Ask, share or record in your own language</small></span></a>
+        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Chat with us</b><small>Ask, share or record in your own language</small></span></a>
         <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
         <a href="map.html"><span class="nd-ic"><i data-lucide="map"></i></span><span class="nd-tx"><b>Map exploration</b><small>Find discussions by place</small></span></a>
       </div></div>
@@ -110,7 +110,7 @@
 
 <section class="section tight" style="padding-top:1.25rem"><div class="mx">
   <div class="panel" id="t-missing" hidden style="text-align:center;padding:2.5rem">
-    <p style="color:var(--muted)">This discussion isn&rsquo;t available in this browser. Threads started with Start a Conversation are saved on the device they were posted from.</p>
+    <p style="color:var(--muted)">This discussion isn&rsquo;t available in this browser. Threads started with Chat with us are saved on the device they were posted from.</p>
     <a class="btn btn-primary" style="margin-top:1rem" href="forum.html">Back to the Discussion forum</a>
   </div>
   <div class="rail-layout" id="t-layout">
@@ -271,7 +271,7 @@
       <h5>Discuss</h5>
       <ul>
         <li><a href="forum.html">Discussion forum</a></li>
-        <li><a href="login.html" id="start-convo-link">Start a Conversation</a></li>
+        <li><a href="login.html" id="start-convo-link">Chat with us</a></li>
         <li><a href="map.html">Map exploration</a></li>
       </ul>
     </div>
@@ -337,7 +337,7 @@
   }
 
   // Deep link from a "Reply" CTA elsewhere (e.g. a matched-thread result in
-  // Start a Conversation) — jump straight to the reply composer if signed
+  // Chat with us) — jump straight to the reply composer if signed
   // in, or to the sign-in prompt otherwise, instead of landing at the top.
   if (location.hash === '#reply') {
     var replyTarget = loggedIn ? box : gate;
@@ -355,7 +355,7 @@
   }
 
   // ---- Reply composer attachments (file/photo) + mic dictation — same
-  // real browser APIs as the Start a Conversation composer, scoped here.
+  // real browser APIs as the Chat with us composer, scoped here.
   var attachments = [];
   var nextAttId = 1;
   var attWrap = document.getElementById('reply-attachments');
@@ -431,7 +431,7 @@
   }
 
   // Mic: dictates into the reply textarea via the Web Speech API, same as
-  // the Start a Conversation composer.
+  // the Chat with us composer.
   var micBtn = document.getElementById('reply-mic-btn');
   var replyText = document.getElementById('reply-text');
   var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -478,7 +478,7 @@
   }
 
   // ======================================================================
-  // Community-posted thread: a question posted from Start a Conversation is
+  // Community-posted thread: a question posted from Chat with us is
   // saved in this browser (localStorage); this page renders it as the opening
   // post and lets any signed-in member add comments, which are saved too.
   // There is no server: threads and comments live on the device they were
@@ -560,7 +560,7 @@
   document.getElementById('t-av').textContent = authorName.charAt(0).toUpperCase();
   document.getElementById('t-body').textContent = thr.body || thr.title;
   // The Platform Assistant's information text, saved with the thread when it
-  // was posted from Start a Conversation.
+  // was posted from Chat with us.
   if (thr.answer && thr.answer.length) {
     document.getElementById('t-ai-text').innerHTML = thr.answer.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
     document.getElementById('t-ai').hidden = false;

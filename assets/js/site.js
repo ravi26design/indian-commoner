@@ -286,6 +286,35 @@ document.addEventListener('DOMContentLoaded', function () {
       langw.classList.toggle('open');
     });
     document.addEventListener('click', function () { langw.classList.remove('open'); });
+
+    // Language selection: mark the choice, update the button code, and
+    // remember it across pages. (Content stays English for now — this wires
+    // up the selector UI so the chosen language persists site-wide.)
+    var LANG_CODES = { 'English': 'EN', 'हिन्दी': 'हि', 'ಕನ್ನಡ': 'ಕ', 'తెలుగు': 'తె' };
+    var langOpts = langw.querySelectorAll('.lang-opt');
+    function setLangLabel(code) {
+      // Keep the chevron icon; only swap the leading text node.
+      var node = langBtn.firstChild;
+      if (node && node.nodeType === 3) { node.nodeValue = code + ' '; }
+      else { langBtn.insertBefore(document.createTextNode(code + ' '), langBtn.firstChild); }
+    }
+    function applyLang(name) {
+      langOpts.forEach(function (o) { o.classList.toggle('on', o.textContent.trim() === name); });
+      setLangLabel(LANG_CODES[name] || 'EN');
+      document.documentElement.setAttribute('lang', name === 'हिन्दी' ? 'hi' : name === 'ಕನ್ನಡ' ? 'kn' : name === 'తెలుగు' ? 'te' : 'en');
+    }
+    var savedLang;
+    try { savedLang = localStorage.getItem('ic_lang'); } catch (e) {}
+    if (savedLang && LANG_CODES[savedLang]) { applyLang(savedLang); }
+    langOpts.forEach(function (o) {
+      o.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var name = o.textContent.trim();
+        applyLang(name);
+        try { localStorage.setItem('ic_lang', name); } catch (e2) {}
+        langw.classList.remove('open');
+      });
+    });
   }
 
   document.querySelectorAll('[data-levelgroup]').forEach(function (group) {

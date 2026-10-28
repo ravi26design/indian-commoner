@@ -22,7 +22,7 @@
     <div class="navgroup">
       <a class="navlink" href="forum.html"><i data-lucide="message-square"></i> Discuss <i data-lucide="chevron-down"></i></a>
       <div class="navdrop"><div class="navdrop-in">
-        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Start a Conversation</b><small>Ask, share or record in your own language</small></span></a>
+        <a href="login.html" id="start-convo-link"><span class="nd-ic"><i data-lucide="sparkles"></i></span><span class="nd-tx"><b>Chat with us</b><small>Ask, share or record in your own language</small></span></a>
         <a href="forum.html"><span class="nd-ic"><i data-lucide="message-square"></i></span><span class="nd-tx"><b>Discussion forum</b><small>All threads across the eight themes</small></span></a>
         <a href="map.html"><span class="nd-ic"><i data-lucide="map"></i></span><span class="nd-tx"><b>Map exploration</b><small>Find discussions by place</small></span></a>
       </div></div>
@@ -402,7 +402,7 @@
     window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 
     // Posts = what this user has actually shared in the Discussion forum from this
-    // browser: threads they started (Start a Conversation -> Create a New Thread) and
+    // browser: threads they started (Chat with us -> Create a New Thread) and
     // comments they wrote on them. Nothing is invented.
     var THEME_SHORT = {
       'Governing the Commons': 'Governing', 'Commons as Culture': 'Culture', 'Commons as Micro Habitats': 'Micro Habitats',
@@ -443,7 +443,7 @@
         items.push({ ts: t.ts, html: '<a class="topicrow mp-topic" href="thread.html?id=' + encodeURIComponent(t.ts) + '">' +
           '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
           (t.sub ? '<span class="tag tint-slate">' + escapeHtml(t.sub) + '</span>' : '') +
-          '<span class="tag tint-slate">New \u00b7 via Start a Conversation</span></div>' +
+          '<span class="tag tint-slate">New \u00b7 via Chat with us</span></div>' +
           '<h3>' + escapeHtml(t.title) + '</h3>' +
           (t.answer && t.answer[0] ? '<p class="tr-ai"><span class="tr-ai-l"><i data-lucide="sparkles"></i> Platform Assistant</span> ' + escapeHtml(t.answer[0]) + '</p>' : '') +
           '<div class="tr-meta"><span>by <b>' + escapeHtml(t.author || 'You') + '</b></span><span>\u00b7</span><span>' + postAgo(t.ts) + '</span></div></div>' +
@@ -461,7 +461,7 @@
       list.innerHTML = items.length ? items.map(function (i) { return i.html; }).join('')
         : '<div class="mp-post-empty"><i data-lucide="message-square"></i><b>No forum posts yet</b>' +
           '<span>Threads you start and comments you write in the Discussion forum will show up here.</span>' +
-          '<a class="btn btn-primary sm" href="start-conversation.html">Start a Conversation</a></div>';
+          '<a class="btn btn-primary sm" href="start-conversation.html">Chat with us</a></div>';
     }
 
     // ---- My media: upload, view, download and delete your own photos, videos, audio and files ----
@@ -878,7 +878,7 @@
       <h5>Discuss</h5>
       <ul>
         <li><a href="forum.html">Discussion forum</a></li>
-        <li><a href="login.html" id="start-convo-link">Start a Conversation</a></li>
+        <li><a href="login.html" id="start-convo-link">Chat with us</a></li>
         <li><a href="map.html">Map exploration</a></li>
       </ul>
     </div>
