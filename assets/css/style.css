@@ -2633,3 +2633,72 @@ textarea.up-in{resize:vertical;line-height:1.55}
 .sso-logocard{margin:2.25rem auto 0;align-self:center;background:#fff;border-radius:var(--r);
   padding:1.6rem 1.9rem;max-width:17rem;width:100%;box-shadow:0 18px 40px -18px rgba(0,0,0,.5)}
 .sso-logocard img{width:100%;height:auto;display:block}
+
+/* =====================================================================
+   WARM & SOFT — site-wide visual style layer (colours unchanged)
+   Friendly rounded type, rounded cards, soft warm shadows, more breathing
+   room, a cream page, gently floating panels and illustration accents.
+   This block only overrides earlier rules; delete it to return to the
+   previous look.
+   ===================================================================== */
+:root{
+  --sans:'Nunito Sans','Noto Sans Devanagari','Noto Sans Kannada','Noto Sans Telugu','Helvetica Neue',Arial,system-ui,sans-serif;
+  --serif:'Nunito','Noto Sans Devanagari','Noto Sans Kannada','Noto Sans Telugu','Helvetica Neue',Arial,system-ui,sans-serif;
+  --r:1.25rem; --r-sm:.85rem; --r-lg:1.75rem;
+  --shadow-card:0 2px 6px rgba(60,72,40,.05),0 18px 40px -24px rgba(60,72,40,.30);
+  --shadow-lift:0 4px 10px rgba(60,72,40,.06),0 28px 54px -26px rgba(60,72,40,.38);
+  --shadow-float:0 18px 44px -16px rgba(60,72,40,.34);
+}
+body{background:var(--cream);line-height:1.7}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:800;letter-spacing:-.01em}
+h1{font-family:var(--serif);font-weight:800;letter-spacing:-.025em}
+.brand .bt,footer.site .fbrand .bt{font-family:var(--serif)}
+.section{padding:104px 0}
+.section.tight{padding:68px 0}
+
+/* header and page heads: a softer lift instead of a hard rule */
+nav.top{border-bottom:0;box-shadow:0 10px 34px -22px rgba(60,72,40,.40)}
+.pagehead{position:relative;overflow:hidden;background:linear-gradient(to bottom,#eff2e6,var(--cream));border-bottom:0}
+.pagehead .in{position:relative;z-index:1}
+.pagehead::after{content:'';position:absolute;top:0;right:0;bottom:0;width:min(46%,42rem);pointer-events:none;
+  background:url(../img/banners/card/banner-05.jpg) right center/cover no-repeat;opacity:.5;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 55%);mask-image:linear-gradient(to right,transparent,#000 55%)}
+@media(max-width:700px){.pagehead::after{width:100%;opacity:.14;-webkit-mask-image:none;mask-image:none}}
+
+/* buttons and fields */
+.btn{border-radius:999px;font-weight:800}
+.ns-field input,.field input,.field select,.field textarea{border-radius:var(--r-sm)}
+
+/* cards, panels and boxes: rounded and gently raised */
+.panel,.card,.imgframe,.ph.flat,.stat,.namecard,.kcol,.kcard,.sidecard,.membercard,.lawcard,.convo-card,.callout,.rolebanner,
+.gatebox,.thread-card,.forum-filter,.forum-list-panel .topicrow,.forum-empty,.sigmap,.lscape,.gateway,.chapshot,.imgcard,.app-tile,
+.msg-result,.msg-replyquote,.reply-context,.reply-translation,.tc-result,.tc-map,.lpin-card{border-radius:var(--r)}
+.modal,.modal-card,.appsw-menu{border-radius:var(--r-lg)}
+.cm-box textarea,.composer-bar textarea,.tc-search input{border-radius:var(--r-sm)}
+.att-chip.photo-preview img{border-radius:.55rem}
+.card{padding:1.6rem}
+.imgcard,.vcard,.typecard,.membercard,.sigmap,.gateway,.lscape,.chapshot,.ph.flat,.imgframe{overflow:hidden}
+.card.click:hover,.membercard:hover{box-shadow:var(--shadow-lift)}
+
+/* the three commons panels float as rounded cards with a little air between them */
+.commonsband{gap:1.25rem;max-width:90rem;margin:0 auto;padding:2.75rem 2rem}
+.cb-panel{border-left:0;border-radius:var(--r-lg)}
+.cb-panel:first-child{border-left:0}
+@media(max-width:860px){.commonsband{padding:2rem 1.15rem;gap:1rem}.cb-panel{border-top:0}}
+
+/* hero photos on the About pages sit inside the page as rounded images */
+.ehero-img{width:calc(100% - 4rem);max-width:86rem;margin:0 auto;border-radius:var(--r-lg)}
+@media(max-width:700px){.ehero-img{width:calc(100% - 2rem)}}
+.ehero-after{box-shadow:none;background:transparent}
+.ehero-after>.section:first-child{padding-top:3rem}
+
+/* home: portrait mosaic and the state map float as rounded blocks inside the page */
+.pgrid{gap:.8rem;background:transparent;max-width:90rem;margin:0 auto;padding:0 2rem}
+.pg-cell{border-radius:var(--r)}
+@media(max-width:900px){.pgrid{grid-template-columns:repeat(3,minmax(0,1fr));padding:0 1.15rem;gap:.6rem}}
+.section.statecloud{padding:2.75rem 2rem 4rem!important;max-width:90rem;margin:0 auto}
+.statecloud .pinmap{border-radius:var(--r-lg)!important;box-shadow:var(--shadow-card)}
+@media(max-width:700px){.section.statecloud{padding:2rem 1.15rem 3rem!important}}
+
+/* sign-in / register card */
+.ssocard{border-radius:var(--r-lg);overflow:hidden}
