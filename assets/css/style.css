@@ -1049,6 +1049,8 @@ main{min-height:60vh;animation:fade .3s ease}
 .ehero-window{position:relative;z-index:0;height:100vh;height:100dvh;pointer-events:none}
 @media(max-width:700px){.ehero-window{height:68vh;height:68dvh}}
 /* content rides over the photograph */
+.ehero-img{position:relative;z-index:1;margin:0;height:clamp(18rem,42vw,34rem);overflow:hidden;background:#e8e6dc}
+.ehero-img img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 62%}
 .ehero-after{position:relative;z-index:1;background:var(--white);box-shadow:0 -18px 40px -22px rgba(20,30,50,.35)}
 @media(max-width:900px){
   .ehero .in{grid-template-columns:1fr;gap:1.5rem;padding:2.5rem 2rem 2rem}
