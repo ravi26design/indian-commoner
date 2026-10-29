@@ -2709,3 +2709,56 @@ nav.top{border-bottom:0;box-shadow:0 10px 34px -22px rgba(60,72,40,.40)}
 .navdrop-in>* .nd-ic{background:var(--ic-bg,var(--green-soft));color:var(--ic-fg,var(--green-d))}
 .navdrop-in a:hover .nd-ic{background:var(--ic-solid,var(--green));color:#fff}
 .navdrop-in .nd-static .nd-ic{background:var(--bg-soft);color:var(--muted-2)}
+
+/* ---- responsive hardening ---- */
+/* grid/flex children may shrink below their content, and pills may wrap, so nothing forces the page wider than the screen */
+.grid>*,.layout>*,.layout-wide>*{min-width:0}
+.tags{flex-wrap:wrap}
+.tag,.tr-meta>.tag{white-space:normal;max-width:100%;overflow-wrap:anywhere}
+.tr-meta{min-width:0}
+img,video,iframe,svg{max-width:100%}
+
+/* forum filter: collapsible bar on tablets and phones */
+.fp-badge{min-width:1.3rem;height:1.3rem;padding:0 .35rem;border-radius:999px;background:var(--green);color:#fff;font-size:.72rem;font-weight:800;display:inline-grid;place-items:center}
+.fp-badge[hidden]{display:none}
+.fp-chev{display:none;width:1.1rem;height:1.1rem;transition:transform .2s}
+@media(max-width:980px){
+  .filterpanel .fp-head{cursor:pointer;margin-bottom:0;min-height:2.75rem;-webkit-tap-highlight-color:transparent}
+  .filterpanel .fp-chev{display:inline-block;color:var(--muted)}
+  .filterpanel:not(.fp-collapsed) .fp-head{margin-bottom:.9rem}
+  .filterpanel:not(.fp-collapsed) .fp-chev{transform:rotate(180deg)}
+  .filterpanel.fp-collapsed .fp-cat{display:none}
+}
+
+/* thread rows on phones: the reply/voice counts move under the text instead of squeezing the title */
+@media(max-width:700px){
+  .topicrow{flex-wrap:wrap}
+  .topicrow .tr-tx{flex:1 1 calc(100% - 3.6rem)}
+  .topicrow .tr-stats{display:flex;flex:1 0 100%;gap:1.1rem;padding:.1rem 0 0 3.5rem}
+  .topicrow .tr-stat{display:flex;gap:.3rem;align-items:baseline;text-align:left}
+  .topicrow .tr-stat b{display:inline;font-size:.88rem}
+  .topicrow .tr-stat span{display:inline;text-transform:none;letter-spacing:0;font-size:.8rem}
+}
+
+/* thread / post cards: tighter padding on phones */
+@media(max-width:560px){
+  .postcard{padding:1.15rem}
+  .postcard:has(.post-body){min-height:0}
+  .post-ai{padding:.8rem .9rem}
+}
+
+/* map: swipeable strip on narrow screens */
+.pinmap.pannable{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.pinmap-spacer{position:absolute;top:0;width:1px;height:1px}
+.pinmap-hint{margin:.6rem 0 0;text-align:center;font-size:.78rem;font-weight:700;color:var(--muted)}
+.pinmap-hint[hidden]{display:none}
+
+/* phone menu: scrolls on short screens (e.g. landscape) instead of running off the bottom */
+#mobnav{max-height:calc(100vh - 4.5rem);max-height:calc(100dvh - 4.5rem);overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* chat on phones: related-thread and new-thread cards use the full width instead of leaving the avatar gutter empty */
+@media(max-width:560px){
+  .msg-row .msg-av-spacer{display:none}
+  .msg-related-body,.msg-thread-body{flex:1;min-width:0}
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}

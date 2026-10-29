@@ -549,6 +549,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (forumCount) forumCount.textContent = sorted.length + (sorted.length === 1 ? ' discussion' : ' discussions');
       if (forumReset) forumReset.hidden = !hasActiveFilters();
+      var fpCount = document.getElementById('fp-count');
+      if (fpCount) {
+        var nActive = (pillValue(themeGroup) !== 'all' ? 1 : 0) + (pillValue(stateGroup) !== 'all' ? 1 : 0) + (activityValue() !== 'any' ? 1 : 0);
+        fpCount.textContent = nActive || '';
+        fpCount.hidden = !nActive;
+      }
       if (forumEmpty) forumEmpty.hidden = sorted.length !== 0;
     }
 
@@ -612,6 +618,34 @@ document.addEventListener('DOMContentLoaded', function () {
         return b.getAttribute('data-v') === urlTheme;
       });
       if (themeMatch) setPill(themeGroup, urlTheme);
+    }
+
+    // Tablets and phones: the filter panel is a collapsible bar so threads are not pushed far down the page.
+    var fPanel = document.querySelector('.filterpanel'), fHead = fPanel && fPanel.querySelector('.fp-head');
+    if (fPanel && fHead) {
+      var mq = window.matchMedia('(max-width:980px)');
+      fHead.setAttribute('role', 'button'); fHead.setAttribute('tabindex', '0');
+      var fCount = document.createElement('span');
+      fCount.className = 'fp-badge'; fCount.id = 'fp-count'; fCount.hidden = true;
+      fHead.insertBefore(fCount, fHead.querySelector('#forum-reset'));
+      var chev = document.createElement('i'); chev.setAttribute('data-lucide', 'chevron-down'); chev.className = 'fp-chev';
+      fHead.appendChild(chev);
+      function fpSync() {
+        if (mq.matches) { if (!fPanel.hasAttribute('data-fp-init')) { fPanel.setAttribute('data-fp-init', '1'); fPanel.classList.add('fp-collapsed'); } }
+        else { fPanel.classList.remove('fp-collapsed'); fPanel.removeAttribute('data-fp-init'); }
+        fHead.setAttribute('aria-expanded', fPanel.classList.contains('fp-collapsed') ? 'false' : 'true');
+      }
+      function fpToggle(e) {
+        if (!mq.matches || (e.target.closest && e.target.closest('#forum-reset'))) return;
+        fPanel.classList.toggle('fp-collapsed');
+        fHead.setAttribute('aria-expanded', fPanel.classList.contains('fp-collapsed') ? 'false' : 'true');
+      }
+      fHead.addEventListener('click', fpToggle);
+      fHead.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fpToggle(e); } });
+      (mq.addEventListener ? mq.addEventListener('change', fpSync) : mq.addListener(fpSync));
+      fpSync();
+      if (window.lucide) lucide.createIcons();
+      applyForumFilters();
     }
 
     applyForumFilters();

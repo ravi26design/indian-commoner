@@ -238,14 +238,34 @@
       pins.push(pin);
     });
 
+    // Pins keep their true spacing. On a screen narrower than the cluster, the map becomes a
+    // sideways-scrolling strip (swipe to pan) so labels never pile up or get clipped.
+    var xs = pins.map(function (p) { return parseFloat(p.dataset.dx); });
+    var ys = pins.map(function (p) { return parseFloat(p.dataset.dy); });
+    var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+    var minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+    var midX = (minX + maxX) / 2, midY = (minY + maxY) / 2;
+    var spacer = document.createElement('span'); spacer.className = 'pinmap-spacer'; el.appendChild(spacer);
+    var hint = document.createElement('p'); hint.className = 'pinmap-hint'; hint.textContent = 'Swipe sideways to explore the map'; hint.hidden = true; el.parentNode.insertBefore(hint, el.nextSibling);
+    var firstLayout = true;
+
     function layout() {
-      var rect = el.getBoundingClientRect();
+      var rect = el.clientWidth ? { width: el.clientWidth, height: el.clientHeight } : el.getBoundingClientRect();
+      var padX = 70, padY = 46;
+      var needW = (maxX - minX) + 2 * padX;
+      var W = Math.max(rect.width, needW);
+      var kY = Math.min(1, (rect.height - 2 * padY) / Math.max(1, maxY - minY));
+      var shiftX = midX, shiftY = kY < 1 ? midY : 0;   // keep the pin cluster centred in the map
       pins.forEach(function (pin) {
-        var dx = parseFloat(pin.dataset.dx);
-        var dy = parseFloat(pin.dataset.dy);
-        pin.style.left = (rect.width / 2 + dx) + 'px';
-        pin.style.top = (rect.height / 2 + dy) + 'px';
+        var dx = parseFloat(pin.dataset.dx), dy = parseFloat(pin.dataset.dy);
+        pin.style.left = (W / 2 + (dx - shiftX)) + 'px';
+        pin.style.top = (rect.height / 2 + (dy - shiftY) * kY) + 'px';
       });
+      spacer.style.left = (W - 1) + 'px';
+      el.classList.toggle('pannable', W > rect.width + 1);
+      hint.hidden = !(W > rect.width + 1);
+      if (firstLayout && W > rect.width) { el.scrollLeft = (W - rect.width) / 2; }
+      firstLayout = false;
     }
 
     layout();
