@@ -2899,3 +2899,5 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .convo-empty .ce-ic svg{width:1.5rem;height:1.5rem}
 .convo-empty h2{font-size:clamp(1.4rem,3vw,1.9rem);margin:.4rem 0 0}
 .convo-empty p{max-width:30rem;color:var(--muted);line-height:1.65;margin:0}
+
+.convo-empty .ce-ic{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.06)}
