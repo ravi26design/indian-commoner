@@ -2698,3 +2698,14 @@ nav.top{border-bottom:0;box-shadow:0 10px 34px -22px rgba(60,72,40,.40)}
 
 /* sign-in / register card */
 .ssocard{border-radius:var(--r-lg);overflow:hidden}
+
+/* nav dropdowns: each item's icon tile gets its own soft colour from the site palette */
+.navdrop-in>*:nth-child(6n+1){--ic-bg:#eaf3e4;--ic-fg:#3d6333;--ic-solid:#4f7d41}
+.navdrop-in>*:nth-child(6n+2){--ic-bg:#f4efd2;--ic-fg:#716718;--ic-solid:#a89c50}
+.navdrop-in>*:nth-child(6n+3){--ic-bg:#e2f0eb;--ic-fg:#357060;--ic-solid:#5f9c8a}
+.navdrop-in>*:nth-child(6n+4){--ic-bg:#f6e6dc;--ic-fg:#8a4f33;--ic-solid:#a0674a}
+.navdrop-in>*:nth-child(6n+5){--ic-bg:#e1eef1;--ic-fg:#2c6070;--ic-solid:#3f7a8c}
+.navdrop-in>*:nth-child(6n+6){--ic-bg:#e8edd6;--ic-fg:#566638;--ic-solid:#7d8f52}
+.navdrop-in>* .nd-ic{background:var(--ic-bg,var(--green-soft));color:var(--ic-fg,var(--green-d))}
+.navdrop-in a:hover .nd-ic{background:var(--ic-solid,var(--green));color:#fff}
+.navdrop-in .nd-static .nd-ic{background:var(--bg-soft);color:var(--muted-2)}
