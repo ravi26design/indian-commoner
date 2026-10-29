@@ -2891,3 +2891,11 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .pg-cell:hover .pg-cap,.pg-cell:focus-visible .pg-cap{transform:translateY(0)}
 @media(max-width:560px){.pg-cap{inset:auto 0 0 0}}
 @media(hover:none){.pg-cap{transform:none}}
+
+/* start-conversation: centred welcome message, hidden after the first message */
+.convo-empty{min-height:calc(100vh - 21rem);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.6rem;padding:1rem}
+.convo-empty[hidden]{display:none}
+.convo-empty .ce-ic{width:3.4rem;height:3.4rem;border-radius:50%;display:grid;place-items:center;background:var(--green-soft);color:var(--green-d)}
+.convo-empty .ce-ic svg{width:1.5rem;height:1.5rem}
+.convo-empty h2{font-size:clamp(1.4rem,3vw,1.9rem);margin:.4rem 0 0}
+.convo-empty p{max-width:30rem;color:var(--muted);line-height:1.65;margin:0}

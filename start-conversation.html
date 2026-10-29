@@ -93,11 +93,17 @@
   <div class="convo-layout" style="grid-template-columns:1fr">
     <div>
 
+      <div class="convo-empty" id="convo-empty">
+        <span class="ce-ic"><i data-lucide="sparkles"></i></span>
+        <h2>What's on your mind?</h2>
+        <p>Ask a question, share what you saw in the field, or describe a problem your village is facing. Write, speak or attach photos, in your own language.</p>
+      </div>
       <div class="convo-thread" id="convo-thread"></div>
 
       <div class="composer fixed-bottom">
         <div class="composer-top">
-          <div class="selw" style="max-width:9.5rem">
+          <!-- language picker kept in the DOM (the page reads/sets it for auto-detected languages) but not shown -->
+          <div class="selw" style="max-width:9.5rem;display:none">
             <select aria-label="Language">
               <option>English</option>
               <option>हिन्दी</option>
@@ -106,7 +112,6 @@
             </select>
             <i data-lucide="chevron-down" class="cv"></i>
           </div>
-          <span class="ai-badge"><i data-lucide="sparkles"></i> AI-Assisted</span>
           <span class="savenote">Drafts save automatically</span>
         </div>
         <div class="reply-context" id="reply-context" hidden>
@@ -466,6 +471,11 @@
   }
 
   var thread = document.getElementById('convo-thread');
+  // The centred welcome message goes away as soon as the first message is sent
+  // and comes back if the thread is ever emptied again.
+  var emptyEl = document.getElementById('convo-empty');
+  function syncEmpty() { if (emptyEl) emptyEl.hidden = thread.children.length > 0; }
+  if (emptyEl) { new MutationObserver(syncEmpty).observe(thread, { childList: true }); syncEmpty(); }
   var textarea = document.getElementById('convo-text');
   var langSelect = document.querySelector('.composer-top select');
   var sendBtn = document.getElementById('convo-send');
