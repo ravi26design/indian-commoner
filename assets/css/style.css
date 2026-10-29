@@ -2905,3 +2905,9 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* chat composer: one white surface (the input bar no longer has its own tinted background) */
 .composer-bar{background:#fff;border:1px solid var(--line-2)}
 .composer-bar:focus-within{border-color:var(--green)}
+
+/* chat composer: no backing card, just the input pill floating above the page */
+.composer.fixed-bottom{background:transparent;border:0;box-shadow:none;padding:0 0 1rem}
+.composer.fixed-bottom .composer-bar{box-shadow:0 6px 24px rgba(8,30,28,.12)}
+.composer.fixed-bottom .composer-attachments,.composer.fixed-bottom .composer-status,.composer.fixed-bottom .reply-context{background:#fff;border-radius:1rem;padding:.5rem .75rem;margin-top:.5rem}
+.composer.fixed-bottom .composer-attachments:empty,.composer.fixed-bottom .composer-status[hidden],.composer.fixed-bottom .reply-context[hidden]{display:none}
