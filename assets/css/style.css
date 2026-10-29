@@ -2835,3 +2835,34 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .meetband .btn-primary:hover{background:#e6f3f1;color:var(--green-d)}
 .meetband{background:var(--green)}
 .meetband h2 em{color:#c9f4ee}
+
+
+/* home map: interactive Leaflet map; click a state bubble to zoom in on its pins */
+.ic-map-wrap{position:relative}
+.ic-leaflet{width:100%;height:40rem;background:#dfe9e7;z-index:0}
+@media(max-width:700px){.ic-leaflet{height:30rem}}
+.ic-bub-wrap,.ic-pin-wrap{background:none;border:0}
+.ic-bub{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer}
+.ic-bub:hover{z-index:2}
+.ic-bub .pinmap-label{pointer-events:none}
+.ic-pin{position:absolute;transform:translate(-50%,-100%);display:block;width:18px;height:18px;border-radius:50% 50% 50% 0;rotate:-45deg;background:var(--green);border:2px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.4);transform-origin:center}
+.ic-pin::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
+.ic-pin.demo{background:var(--green)}
+.ic-pin.real{background:#c0392b;width:22px;height:22px}
+.ic-map-card{position:absolute;top:1rem;right:1rem;z-index:900;width:min(19rem,calc(100% - 2rem));background:#fff;padding:1rem 1.15rem 1.1rem;box-shadow:0 8px 28px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:.35rem;border-radius:var(--r)}
+.ic-map-card[hidden]{display:none}
+.ic-map-card b{font-size:1.1rem;font-family:var(--serif)}
+.ic-map-card span{font-size:.9rem;font-weight:700;color:var(--green-d)}
+.ic-map-card p{margin:.15rem 0 .5rem;font-size:.76rem;line-height:1.45;color:var(--muted)}
+.ic-map-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.leaflet-container{font-family:var(--sans)}
+
+@media(max-width:700px){.ic-map-card{top:auto;bottom:.75rem;right:.75rem;left:.75rem;width:auto;padding:.8rem 1rem}.ic-map-card p{display:none}.ic-leaflet{height:32rem}}
+@media(max-width:700px){.ic-bub .pinmap-label{display:none}}
+
+/* footer: all portal links in columns */
+footer.site .cols{grid-template-columns:repeat(5,minmax(0,1fr)) minmax(0,.9fr);gap:2rem 1.75rem}
+footer.site .cols li{cursor:default}
+@media(max-width:1100px){footer.site .cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){footer.site .cols{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){footer.site .cols{grid-template-columns:1fr 1fr;gap:1.5rem 1rem}}
