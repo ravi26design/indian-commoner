@@ -2827,3 +2827,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* home map: full width, directly under the panels, with no extra white space above or below */
 .section.statecloud{padding:0!important;max-width:none;margin:0}
 .statecloud .pinmap{border-radius:0!important;box-shadow:none;width:100%}
+
+/* "Meet Commoners" band: plain solid colour (no dot pattern); light text and button so they read on the dark teal */
+.meetband::before{display:none}
+.meetband h2 em{color:#8fe3d7}
+.meetband .btn-primary{background:#fff;color:var(--green-d);border-color:#fff;box-shadow:none}
+.meetband .btn-primary:hover{background:#e6f3f1;color:var(--green-d)}
