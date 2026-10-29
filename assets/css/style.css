@@ -2800,3 +2800,26 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(max-width:700px){.brand .bt{font-size:1.15rem}}
 
 @media(max-width:360px){.brand .bt{font-size:.95rem}}
+
+
+/* three panels: edge to edge, white dividers, camel motif, centred uppercase titles, underlined link (as on indiancommoner.org) */
+.commonsband{gap:0;max-width:none;margin:0;padding:0}
+.cb-panel{border-radius:0;border-left:2px solid #fff;min-height:23rem;padding:3rem 2.25rem 2.5rem;text-align:center;align-items:stretch}
+.cb-panel:first-child{border-left:0}
+.cb-img{filter:none;object-position:center}
+.cb-panel:hover .cb-img{transform:none}
+.cb-panel::before{background:rgba(0,0,0,.06);transition:background .3s ease}
+.cb-panel:hover::before{background:rgba(0,0,0,0)}
+.cb-panel::after{display:none}
+.cb-in{align-items:center;text-align:center;gap:1.35rem;height:100%}
+.cb-ic{width:auto;height:auto;background:none;border:0;border-radius:0;display:flex;align-items:center;justify-content:center;gap:.8rem;color:#fff}
+.cb-ic::before,.cb-ic::after{content:'';display:block;width:4rem;height:1px;background:rgba(255,255,255,.85)}
+.cb-panel:hover .cb-ic{background:none}
+.cb-ic img{display:block;width:3rem;height:auto}
+.cb-panel h3{font-size:1.45rem;font-weight:500;letter-spacing:0;text-transform:uppercase;margin:.4rem 0 0}
+.cb-panel p{max-width:30rem;font-size:1.02rem;line-height:1.7;color:#fff;-webkit-line-clamp:4;line-clamp:4}
+.cb-more{margin-top:auto;color:#fff;font-size:1rem;font-weight:400;text-decoration:underline;text-underline-offset:4px}
+.cb-more i,.cb-more svg.lucide{display:none}
+.cb-panel:hover .cb-more{color:#fff}
+@media(max-width:860px){.cb-panel{border-left:0;border-top:2px solid #fff;min-height:21rem}.cb-panel:first-child{border-top:0}}
+@media(max-width:860px){.cb-panel p{-webkit-line-clamp:7;line-clamp:7}}
