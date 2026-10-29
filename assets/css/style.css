@@ -2911,3 +2911,7 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .composer.fixed-bottom .composer-bar{box-shadow:0 6px 24px rgba(8,30,28,.12)}
 .composer.fixed-bottom .composer-attachments,.composer.fixed-bottom .composer-status,.composer.fixed-bottom .reply-context{background:#fff;border-radius:1rem;padding:.5rem .75rem;margin-top:.5rem}
 .composer.fixed-bottom .composer-attachments:empty,.composer.fixed-bottom .composer-status[hidden],.composer.fixed-bottom .reply-context[hidden]{display:none}
+
+/* chat: narrower, centred column for the input and the conversation */
+.composer.fixed-bottom{max-width:50rem}
+.convo-layout>div{max-width:50rem;margin-left:auto;margin-right:auto;width:100%}
