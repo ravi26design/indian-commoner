@@ -2884,3 +2884,10 @@ footer.site .cols{grid-template-columns:repeat(5,minmax(0,1fr));gap:2rem}
 footer.site .fpartners{gap:1.25rem}
 footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 @media(max-width:700px){footer.site .fpartners img{height:2.6rem}}
+
+/* portrait caption: slides up as a bottom sheet pinned to the bottom edge of the image */
+.pg-cap{inset:auto 0 0 0;padding:1rem 1.1rem 1.1rem;background:rgba(0,0,0,.66);
+  transform:translateY(100%);transition:transform .28s ease,opacity .2s ease}
+.pg-cell:hover .pg-cap,.pg-cell:focus-visible .pg-cap{transform:translateY(0)}
+@media(max-width:560px){.pg-cap{inset:auto 0 0 0}}
+@media(hover:none){.pg-cap{transform:none}}
