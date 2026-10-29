@@ -2866,3 +2866,8 @@ footer.site .cols li{cursor:default}
 @media(max-width:1100px){footer.site .cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){footer.site .cols{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){footer.site .cols{grid-template-columns:1fr 1fr;gap:1.5rem 1rem}}
+
+/* video cards: full-bleed thumbnail, text aligned with the Podcasts cards */
+.card.vcard{padding:0}
+.card.vcard .v-body{padding:1.15rem 1.6rem 1.5rem}
+.card.vcard .v-body h3{margin:0}
