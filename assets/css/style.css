@@ -2876,3 +2876,6 @@ footer.site .cols li{cursor:default}
 footer.site .cols{grid-template-columns:repeat(5,minmax(0,1fr));gap:2rem}
 @media(max-width:1100px){footer.site .cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){footer.site .cols{grid-template-columns:1fr 1fr}}
+
+/* CTAs: one radius everywhere (the .sm size was still using the old small radius) */
+.btn,.btn.sm,.btn.lg-btn,.btn.block,.signin-btn,.up-btn{border-radius:999px}
