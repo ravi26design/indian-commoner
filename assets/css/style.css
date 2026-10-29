@@ -2833,3 +2833,5 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .meetband h2 em{color:#8fe3d7}
 .meetband .btn-primary{background:#fff;color:var(--green-d);border-color:#fff;box-shadow:none}
 .meetband .btn-primary:hover{background:#e6f3f1;color:var(--green-d)}
+.meetband{background:var(--green)}
+.meetband h2 em{color:#c9f4ee}
