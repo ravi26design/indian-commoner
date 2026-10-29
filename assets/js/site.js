@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Discussion forum: Theme/Language/State pill groups + the Activity radio
+  // Discussion forum: Theme/State pill groups + the Activity radio
   // group + free-text search narrow the thread list; the Recent/Most
   // replies/Unanswered segment re-sorts it. Rows carry their real reply
   // count in data-replies (unset -> 0, i.e. no replies yet) rather than a
@@ -464,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumCount = document.getElementById('forum-count');
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
     var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
-    var langGroup = document.querySelector('.seg-tabs[data-pillgroup="lang"]');
     var stateGroup = document.querySelector('.seg-tabs[data-pillgroup="state"]');
     var activityRadios = document.querySelectorAll('.filterpanel input[name="fx-activity"]');
     var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel input[name="fx-activity"]');
@@ -508,14 +507,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function hasActiveFilters() {
       if (pillValue(themeGroup) !== 'all') return true;
-      if (pillValue(langGroup) !== 'all') return true;
       if (pillValue(stateGroup) !== 'all') return true;
       if (activityValue() !== 'any') return true;
       if (forumSearch && forumSearch.value.trim()) return true;
-      var translated = document.getElementById('fx-translated');
-      if (translated && !translated.checked) return true;
       var boxChecked = Array.from(document.querySelectorAll('.filterpanel input[type="checkbox"]')).some(function (c) {
-        return c.id !== 'fx-translated' && c.checked;
+        return c.checked;
       });
       if (boxChecked) return true;
       return false;
@@ -523,21 +519,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function applyForumFilters() {
       var theme = pillValue(themeGroup);
-      var lang = pillValue(langGroup);
       var state = pillValue(stateGroup);
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
       var activityLimit = ACTIVITY_LIMIT_DAYS[activityValue()];
-      var includeTranslated = document.getElementById('fx-translated');
-      // Every real thread here only has an English original. With "include
-      // translated threads" on (the default), a language pill still matches
-      // everything — the platform serves a translation of each thread in any
-      // language. Turning that off narrows strictly to real-language
-      // originals, which is honestly just the English ones.
-      var langMatchesAll = lang === 'all' || (includeTranslated && includeTranslated.checked);
 
       var visible = forumRows.filter(function (row) {
         if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
-        if (!langMatchesAll && row.getAttribute('data-lang') !== lang) return false;
         if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
         if (activityLimit) {
@@ -565,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (forumEmpty) forumEmpty.hidden = sorted.length !== 0;
     }
 
-    [themeGroup, langGroup, stateGroup].forEach(function (group) {
+    [themeGroup, stateGroup].forEach(function (group) {
       if (!group) return;
       group.querySelectorAll('.seg-tab').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -591,11 +578,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (forumReset) {
       forumReset.addEventListener('click', function () {
         setPill(themeGroup, 'all');
-        setPill(langGroup, 'all');
         setPill(stateGroup, 'all');
         activityRadios.forEach(function (r) { r.checked = r.value === 'any'; });
         document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
-          c.checked = c.id === 'fx-translated';
+          c.checked = false;
         });
         if (forumSearch) forumSearch.value = '';
         if (forumSortSeg) {
