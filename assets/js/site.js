@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // from the author name so the same person always gets the same colour
   // wherever their avatar appears across the site.
   var AVATAR_TINTS = [
-    'linear-gradient(135deg,#4f7d41,#6c9c5c)',
+    'linear-gradient(135deg,#01796f,#2a9d8f)',
     'linear-gradient(135deg,#8f8440,#a89c50)',
-    'linear-gradient(135deg,#3d6333,#5a8a4b)',
+    'linear-gradient(135deg,#015c54,#1f8b80)',
     'linear-gradient(135deg,#6f6620,#8f8440)',
     'linear-gradient(135deg,#4f8570,#6ba58f)',
     'linear-gradient(135deg,#7d6f4a,#a08d6b)'
