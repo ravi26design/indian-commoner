@@ -2823,3 +2823,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .cb-panel:hover .cb-more{color:#fff}
 @media(max-width:860px){.cb-panel{border-left:0;border-top:2px solid #fff;min-height:21rem}.cb-panel:first-child{border-top:0}}
 @media(max-width:860px){.cb-panel p{-webkit-line-clamp:7;line-clamp:7}}
+
+/* home map: full width, directly under the panels, with no extra white space above or below */
+.section.statecloud{padding:0!important;max-width:none;margin:0}
+.statecloud .pinmap{border-radius:0!important;box-shadow:none;width:100%}
