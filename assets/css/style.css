@@ -2637,7 +2637,7 @@ textarea.up-in{resize:vertical;line-height:1.55}
 /* =====================================================================
    WARM & SOFT — site-wide visual style layer (colours unchanged)
    Friendly rounded type, rounded cards, soft warm shadows, more breathing
-   room, a cream page, gently floating panels and illustration accents.
+   room, a cream page and gently floating panels.
    This block only overrides earlier rules; delete it to return to the
    previous look.
    ===================================================================== */
@@ -2658,12 +2658,8 @@ h1{font-family:var(--serif);font-weight:800;letter-spacing:-.025em}
 
 /* header and page heads: a softer lift instead of a hard rule */
 nav.top{border-bottom:0;box-shadow:0 10px 34px -22px rgba(60,72,40,.40)}
-.pagehead{position:relative;overflow:hidden;background:linear-gradient(to bottom,#eff2e6,var(--cream));border-bottom:0}
-.pagehead .in{position:relative;z-index:1}
-.pagehead::after{content:'';position:absolute;top:0;right:0;bottom:0;width:min(46%,42rem);pointer-events:none;
-  background:url(../img/banners/card/banner-05.jpg) right center/cover no-repeat;opacity:.5;
-  -webkit-mask-image:linear-gradient(to right,transparent,#000 55%);mask-image:linear-gradient(to right,transparent,#000 55%)}
-@media(max-width:700px){.pagehead::after{width:100%;opacity:.14;-webkit-mask-image:none;mask-image:none}}
+.pagehead{background:linear-gradient(to bottom,#eff2e6,var(--cream));border-bottom:0}
+
 
 /* buttons and fields */
 .btn{border-radius:999px;font-weight:800}
