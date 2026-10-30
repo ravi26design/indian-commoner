@@ -40,7 +40,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var who = document.createElement('div');
     who.className = 'tr-who';
     who.innerHTML = '<b></b>';
-    who.firstChild.textContent = nameEl.textContent;
+    var full = nameEl.textContent.trim();
+    who.setAttribute('data-name', full);                // keeps the avatar colour tied to the real name
+    // Username style: "Priya Sharma" -> "@priya_sharma" ("Anonymous" stays as it is).
+    var handle = full.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    who.firstChild.textContent = (full === 'Anonymous' || !handle) ? full : '@' + handle;
+    who.title = full;
     tx.insertBefore(who, tx.firstChild);
     var byEl = nameEl.parentNode;                       // <span>by <b>Name</b></span>
     var sep = byEl.nextElementSibling;                  // the "·" that followed it
@@ -486,10 +491,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
 
     forumRows.forEach(function (row) {
+      var whoEl = row.querySelector('.tr-who');
       var nameEl = row.querySelector('.tr-who b, .tr-meta b');
       var av = row.querySelector('.pw-av');
       if (!nameEl || !av) return;
-      tintAvatar(av, nameEl.textContent);
+      tintAvatar(av, whoEl && whoEl.getAttribute('data-name') || nameEl.textContent);
     });
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');

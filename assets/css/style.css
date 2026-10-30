@@ -2992,3 +2992,5 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
   .topicrow .tr-stat span{text-transform:uppercase;letter-spacing:.05em;font-size:.7rem}
   .topicrow .tr-stat b{font-size:.9rem}
 }
+
+.topicrow .tr-who b{font-weight:700;letter-spacing:.005em}
