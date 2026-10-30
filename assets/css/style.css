@@ -2920,3 +2920,6 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .cb-ic img{width:5rem}
 .cb-ic::before,.cb-ic::after{width:5rem}
 @media(max-width:560px){.cb-ic img{width:4rem}.cb-ic::before,.cb-ic::after{width:3rem}}
+
+/* the camel image already carries its own short lines; no extra lines beside it */
+.cb-ic::before,.cb-ic::after{display:none}
