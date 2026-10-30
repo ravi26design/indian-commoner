@@ -794,22 +794,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.lucide) lucide.createIcons();
   });
 
-  // ---- Notification bell (signed-in members): notifications from the themes they subscribe to ----
+  // ---- Notification bell (signed-in members): opens a right-hand drawer listing every notification ----
   (function () {
     var acct = document.querySelector('.acctgroup');
     if (!acct || !window.icNotifications) return;
     var grp = document.createElement('div');
     grp.className = 'navgroup notifgroup';
-    grp.innerHTML =
-      '<button type="button" class="nav-ic notif-btn" aria-label="Notifications" title="Notifications"><i data-lucide="bell"></i><span class="notif-n" hidden>0</span></button>' +
-      '<div class="navdrop dd-right notif-drop"><div class="navdrop-in notif-in">' +
-        '<div class="notif-head"><b>Notifications</b><button type="button" class="clearbtn notif-readall">Mark all as read</button></div>' +
-        '<div class="notif-list"></div>' +
-        '<a class="notif-foot" href="notifications.html"><i data-lucide="list"></i> See all notifications</a>' +
-        '<a class="notif-foot notif-foot2" href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage theme subscriptions</a>' +
-      '</div></div>';
+    grp.innerHTML = '<button type="button" class="nav-ic notif-btn" aria-label="Notifications" aria-haspopup="dialog" title="Notifications"><i data-lucide="bell"></i><span class="notif-n" hidden>0</span></button>';
     acct.parentNode.insertBefore(grp, acct);
-    var badge = grp.querySelector('.notif-n'), list = grp.querySelector('.notif-list');
+    var btn = grp.querySelector('.notif-btn'), badge = grp.querySelector('.notif-n');
+
+    var scrim = document.createElement('div'); scrim.className = 'notif-scrim';
+    var drawer = document.createElement('aside'); drawer.className = 'notif-drawer'; drawer.setAttribute('role', 'dialog'); drawer.setAttribute('aria-label', 'Notifications'); drawer.setAttribute('aria-hidden', 'true');
+    drawer.innerHTML =
+      '<div class="nd-head"><div><b>Notifications</b><span id="nd-sub"></span></div><button type="button" class="nd-x" aria-label="Close"><i data-lucide="x"></i></button></div>' +
+      '<div class="nd-tabs"><button type="button" class="on" data-f="all">All <em id="nd-n-all">0</em></button><button type="button" data-f="unread">Unread <em id="nd-n-unread">0</em></button>' +
+        '<button type="button" class="nd-readall" id="nd-readall">Mark all as read</button></div>' +
+      '<div class="nd-list" id="nd-list"></div>' +
+      '<div class="nd-foot"><a href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage subscriptions</a><a href="notifications.html"><i data-lucide="external-link"></i> Open full page</a></div>';
+    document.body.appendChild(scrim); document.body.appendChild(drawer);
+    var list = drawer.querySelector('#nd-list'), filter = 'all';
+
     function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function ago(ts) {
       var m = Math.max(0, Math.round((Date.now() - ts) / 60000));
@@ -817,17 +822,33 @@ document.addEventListener('DOMContentLoaded', function () {
       return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
     }
     function paint() {
-      var all = window.icNotifications(), n = window.icUnreadCount();
+      var all = window.icNotifications(), unread = all.filter(function (n) { return !n.read; }), n = unread.length;
       badge.hidden = !n; badge.textContent = n > 9 ? '9+' : n;
-      list.innerHTML = all.length ? all.slice(0, 8).map(function (x) {
+      drawer.querySelector('#nd-n-all').textContent = all.length; drawer.querySelector('#nd-n-unread').textContent = n;
+      drawer.querySelector('#nd-sub').textContent = n ? n + ' unread' : 'You are all caught up';
+      drawer.querySelector('#nd-readall').disabled = !n;
+      var shown = filter === 'unread' ? unread : all;
+      list.innerHTML = shown.length ? shown.map(function (x) {
         return '<a class="notif-item' + (x.read ? '' : ' unread') + '" href="' + esc(x.href) + '" data-id="' + esc(x.id) + '">' +
           '<span class="notif-dot"></span><span class="notif-tx"><b>' + esc(x.title) + '</b>' +
           '<small>New discussion in ' + esc(x.theme) + (x.sample ? ' (sample)' : '') + ' · ' + ago(x.ts) + '</small></span></a>';
-      }).join('') : '<p class="notif-empty">No notifications yet. Subscribe to a theme and new discussions in it will show up here.</p>';
+      }).join('') : '<p class="notif-empty">' + (all.length ? 'Nothing unread.' : 'No notifications yet. Subscribe to a theme and new discussions in it will show up here.') + '</p>';
       if (window.lucide) lucide.createIcons();
     }
+    var lastFocus = null;
+    function open() { lastFocus = document.activeElement; paint(); scrim.classList.add('open'); drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); drawer.querySelector('.nd-x').focus(); }
+    function close() { scrim.classList.remove('open'); drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+    btn.addEventListener('click', function () { drawer.classList.contains('open') ? close() : open(); });
+    scrim.addEventListener('click', close);
+    drawer.querySelector('.nd-x').addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer.classList.contains('open')) close(); });
     list.addEventListener('click', function (e) { var a = e.target.closest('.notif-item'); if (a) window.icMarkRead(a.getAttribute('data-id')); });
-    grp.querySelector('.notif-readall').addEventListener('click', function () { window.icMarkRead(); paint(); });
+    drawer.querySelector('#nd-readall').addEventListener('click', function () { window.icMarkRead(); paint(); });
+    drawer.querySelector('.nd-tabs').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-f]'); if (!b) return;
+      drawer.querySelectorAll('.nd-tabs button[data-f]').forEach(function (x) { x.classList.toggle('on', x === b); });
+      filter = b.getAttribute('data-f'); paint();
+    });
     window.addEventListener('ic-notes', paint);
     window.addEventListener('storage', paint);
     paint();
