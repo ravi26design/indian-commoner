@@ -2926,3 +2926,7 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 /* illustrated (two-tone) icons in the menu dropdowns */
 .navdrop-in .nd-svg{width:1.7rem;height:1.7rem;display:block}
+
+/* home panels: camel illustration larger still (the source image is 110px wide, so this is about its native size) */
+.cb-ic img{width:7rem}
+@media(max-width:560px){.cb-ic img{width:5.5rem}}
