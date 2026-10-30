@@ -793,4 +793,42 @@ document.addEventListener('DOMContentLoaded', function () {
     b.innerHTML = '<i data-lucide="check"></i> Sent'; b.disabled = true;
     if (window.lucide) lucide.createIcons();
   });
+
+  // ---- Notification bell (signed-in members): notifications from the themes they subscribe to ----
+  (function () {
+    var acct = document.querySelector('.acctgroup');
+    if (!acct || !window.icNotifications) return;
+    var grp = document.createElement('div');
+    grp.className = 'navgroup notifgroup';
+    grp.innerHTML =
+      '<button type="button" class="nav-ic notif-btn" aria-label="Notifications" title="Notifications"><i data-lucide="bell"></i><span class="notif-n" hidden>0</span></button>' +
+      '<div class="navdrop dd-right notif-drop"><div class="navdrop-in notif-in">' +
+        '<div class="notif-head"><b>Notifications</b><button type="button" class="clearbtn notif-readall">Mark all as read</button></div>' +
+        '<div class="notif-list"></div>' +
+        '<a class="notif-foot" href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage theme subscriptions</a>' +
+      '</div></div>';
+    acct.parentNode.insertBefore(grp, acct);
+    var badge = grp.querySelector('.notif-n'), list = grp.querySelector('.notif-list');
+    function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function ago(ts) {
+      var m = Math.max(0, Math.round((Date.now() - ts) / 60000));
+      if (m < 1) return 'just now'; if (m < 60) return m + ' min ago'; if (m < 1440) return Math.floor(m / 60) + ' h ago';
+      return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    function paint() {
+      var all = window.icNotifications(), n = window.icUnreadCount();
+      badge.hidden = !n; badge.textContent = n > 9 ? '9+' : n;
+      list.innerHTML = all.length ? all.slice(0, 8).map(function (x) {
+        return '<a class="notif-item' + (x.read ? '' : ' unread') + '" href="' + esc(x.href) + '" data-id="' + esc(x.id) + '">' +
+          '<span class="notif-dot"></span><span class="notif-tx"><b>' + esc(x.title) + '</b>' +
+          '<small>New discussion in ' + esc(x.theme) + (x.sample ? ' (sample)' : '') + ' · ' + ago(x.ts) + '</small></span></a>';
+      }).join('') : '<p class="notif-empty">No notifications yet. Subscribe to a theme and new discussions in it will show up here.</p>';
+      if (window.lucide) lucide.createIcons();
+    }
+    list.addEventListener('click', function (e) { var a = e.target.closest('.notif-item'); if (a) window.icMarkRead(a.getAttribute('data-id')); });
+    grp.querySelector('.notif-readall').addEventListener('click', function () { window.icMarkRead(); paint(); });
+    window.addEventListener('ic-notes', paint);
+    window.addEventListener('storage', paint);
+    paint();
+  })();
 });

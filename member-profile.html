@@ -110,6 +110,7 @@
           <button class="mp-tab" data-tab="friends"><i data-lucide="users"></i> Friends <span class="mp-badge">0</span></button>
           <button class="mp-tab" data-tab="posts"><i data-lucide="message-square"></i> Posts</button>
           <button class="mp-tab" data-tab="media"><i data-lucide="image"></i> Media <span class="mp-badge">0</span></button>
+          <button class="mp-tab" data-tab="subs"><i data-lucide="bell-ring"></i> Subscriptions <span class="mp-badge" id="subs-badge">0</span></button>
           <button class="mp-tab" data-tab="settings"><i data-lucide="settings"></i> Account Settings</button>
         </div>
         <div class="mp-tabsrow-actions">
@@ -143,6 +144,19 @@
               <button class="switch" aria-label="Toggle platform updates"></button>
             </div>
           </div>
+        </div>
+        <div id="mp-subs" class="mp-pane" hidden>
+          <div class="subs-head">
+            <div><h3><i data-lucide="bell-ring"></i> Theme subscriptions</h3>
+            <p>Subscribe to a theme and you will get a notification whenever a new discussion is posted in it. Your notifications appear under the bell in the header.</p></div>
+            <div class="subs-bulk"><button type="button" class="clearbtn" id="subs-all">Subscribe to all</button><button type="button" class="clearbtn" id="subs-none">Unsubscribe from all</button></div>
+          </div>
+          <div class="subs-grid" id="subs-grid"></div>
+          <div class="subs-foot">
+            <button type="button" class="btn btn-outline sm" id="subs-sample"><i data-lucide="bell-plus"></i> Send me a sample notification</button>
+            <span id="subs-note" aria-live="polite"></span>
+          </div>
+          <p class="subs-fine">Subscriptions and notifications are saved on this device only (this prototype has no server), so you will see a notification when a discussion in a subscribed theme is added here.</p>
         </div>
         <div id="mp-settings" class="mp-pane" hidden>
           <span class="set-saved" id="set-saved" role="status" aria-live="polite"></span>
@@ -940,6 +954,7 @@
   </div>
 </footer>
 
+<script src="assets/js/forum-threads.js"></script>
 <script src="assets/js/site.js"></script>
 <script>
 // Profile photo: stored on this device only (resized to a small square), shown in the header, on this page and next to your threads and replies.
@@ -969,5 +984,48 @@
   });
 })();
 </script>
+<script>
+// Theme subscriptions: switch a theme on to be notified about new discussions in it.
+(function () {
+  var THEMES = [['Governing the Commons', 'Governing the Commons'], ['Commons as Culture', 'Commons as Culture'], ['Commons as Micro Habitats', 'Commons as Micro Habitats'],
+    ['Livelihoods, Subsistence & Valuation of Commons', 'Livelihoods, Subsistence and Valuation of Commons'], ['Gender and Commons', 'Gender and Commons'],
+    ['Power and Commons', 'Power and Commons'], ['Conversion of Commons', 'Conversion of Commons'], ['Others', 'Others']];
+  var grid = document.getElementById('subs-grid'), badge = document.getElementById('subs-badge'), note = document.getElementById('subs-note');
+  if (!grid) return;
+  function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function count(theme) { return (window.IC_THREADS || []).filter(function (t) { return t.m === theme; }).length; }
+  function paint() {
+    var subs = icSubs().themes;
+    badge.textContent = subs.length;
+    grid.innerHTML = THEMES.map(function (t) {
+      var on = subs.indexOf(t[0]) !== -1, n = count(t[0]);
+      return '<div class="subs-card' + (on ? ' on' : '') + '"><div class="subs-tx"><b>' + esc(t[1]) + '</b><span>' + n + ' discussion' + (n === 1 ? '' : 's') +
+        (on ? ' · <em>Subscribed</em>' : '') + '</span></div>' +
+        '<button type="button" class="switch' + (on ? ' on' : '') + '" data-theme="' + esc(t[0]) + '" role="switch" aria-checked="' + on + '" aria-label="Subscribe to ' + esc(t[1]) + '"></button></div>';
+    }).join('');
+    document.getElementById('subs-sample').disabled = !subs.length;
+  }
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.switch'); if (!b) return;
+    // Decide from the saved state, not the button's class: the page's generic switch handler may already have flipped it.
+    var th = b.getAttribute('data-theme');
+    icSetSub(th, !icIsSubscribed(th));
+    paint(); window.dispatchEvent(new Event('ic-notes'));
+  });
+  document.getElementById('subs-all').addEventListener('click', function () { THEMES.forEach(function (t) { icSetSub(t[0], true); }); paint(); });
+  document.getElementById('subs-none').addEventListener('click', function () { THEMES.forEach(function (t) { icSetSub(t[0], false); }); paint(); });
+  // A sample: the newest existing discussion in one of the subscribed themes, delivered as a notification.
+  document.getElementById('subs-sample').addEventListener('click', function () {
+    var subs = icSubs().themes, pool = (window.IC_THREADS || []).filter(function (t) { return subs.indexOf(t.m) !== -1; });
+    var made = false;
+    for (var i = 0; i < pool.length && !made; i++) made = icNotifyThread({ title: pool[i].t, theme: pool[i].m, href: pool[i].h }, { sample: true });
+    note.textContent = made ? 'Sample sent: check the bell in the header.' : 'You already have a sample for every discussion in your subscribed themes.';
+    window.dispatchEvent(new Event('ic-notes'));
+  });
+  paint();
+  if (location.hash === '#subs') { var tab = document.querySelector('.mp-tab[data-tab="subs"]'); if (tab) tab.click(); }
+})();
+</script>
+
 </body>
 </html>

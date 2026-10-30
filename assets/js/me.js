@@ -45,6 +45,34 @@
     return true;
   };
 
+
+  // ---- Theme subscriptions and notifications (kept on this device) ----
+  var SUBS_KEY = 'ic_theme_subs', NOTE_KEY = 'ic_notifications';
+  function readJSON(k, d) { try { return JSON.parse(localStorage.getItem(k) || ''); } catch (e) { return d; } }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  window.icSubs = function () { var s = readJSON(SUBS_KEY, null); return s && s.themes ? s : { themes: [], at: {} }; };
+  window.icIsSubscribed = function (theme) { return window.icSubs().themes.indexOf(theme) !== -1; };
+  window.icSetSub = function (theme, on) {
+    var s = window.icSubs(), i = s.themes.indexOf(theme);
+    if (on && i === -1) { s.themes.push(theme); s.at[theme] = Date.now(); }
+    if (!on && i !== -1) { s.themes.splice(i, 1); delete s.at[theme]; }
+    writeJSON(SUBS_KEY, s);
+  };
+  window.icNotifications = function () { var n = readJSON(NOTE_KEY, []); return Array.isArray(n) ? n : []; };
+  window.icUnreadCount = function () { return window.icNotifications().filter(function (n) { return !n.read; }).length; };
+  window.icMarkRead = function (id) {
+    var all = window.icNotifications(); all.forEach(function (n) { if (id === undefined || n.id === id) n.read = true; }); writeJSON(NOTE_KEY, all);
+  };
+  // Call when a thread is posted: if the member subscribes to its theme they get a notification (newest first, no duplicates).
+  window.icNotifyThread = function (th, opts) {
+    if (!th || !th.theme || !window.icIsSubscribed(th.theme)) return false;
+    var all = window.icNotifications(), id = (th.href || '') + '|' + th.title;
+    if (all.some(function (n) { return n.key === id; })) return false;
+    all.unshift({ id: Date.now() + Math.random().toString(36).slice(2, 6), key: id, title: th.title, theme: th.theme, href: th.href || 'forum.html', ts: Date.now(), read: false, sample: !!(opts && opts.sample) });
+    writeJSON(NOTE_KEY, all.slice(0, 50));
+    return true;
+  };
+
   window.icMe = ME;
   window.icPhoto = photo;
   window.icSetPhoto = function (dataUrl) {

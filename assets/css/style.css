@@ -3048,3 +3048,57 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .mp-media-empty-card .mp-empty-up{margin-top:.6rem}
 .mp-media-pane.drag .mp-media-empty-card{border-color:var(--green);background:var(--green-soft)}
 .mp-media-empty-card svg.mp-empty-art{width:11.5rem;height:auto;color:inherit}
+
+/* Subscriptions tab */
+.subs-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.1rem}
+.subs-head h3{display:flex;align-items:center;gap:.5rem;margin:0 0 .3rem}
+.subs-head h3 svg,.subs-head h3 i{width:1.2rem;height:1.2rem;color:var(--green-d)}
+.subs-head p{margin:0;max-width:40rem;color:var(--muted);font-size:.9rem;line-height:1.6}
+.subs-bulk{display:flex;gap:.9rem;flex-wrap:wrap}
+.subs-bulk .clearbtn{color:var(--green-d);font-weight:700;font-size:.84rem}
+.subs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}
+@media(max-width:760px){.subs-grid{grid-template-columns:1fr}}
+.subs-card{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.15rem;border:1px solid var(--line-2);border-radius:var(--r);background:#fff;transition:border-color .15s,background .15s}
+.subs-card.on{border-color:var(--green-line);background:var(--green-soft)}
+.subs-tx{min-width:0}
+.subs-tx b{display:block;font-size:.95rem;line-height:1.35}
+.subs-tx span{display:block;font-size:.8rem;color:var(--muted);margin-top:.2rem}
+.subs-tx em{font-style:normal;font-weight:800;color:var(--green-d)}
+.subs-card .switch.on{background:var(--green-d)}
+.subs-foot{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem}
+.subs-foot #subs-note{font-size:.84rem;font-weight:700;color:var(--green-d)}
+.subs-fine{margin:.9rem 0 0;font-size:.78rem;color:var(--muted-2);line-height:1.55}
+
+/* Notification bell */
+.notifgroup{display:flex;align-items:center}
+.notif-btn{position:relative;width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer}
+.notif-btn:hover{background:var(--bg-soft)}
+.notif-btn svg,.notif-btn i{width:1.25rem;height:1.25rem}
+.notif-n{position:absolute;top:.1rem;right:.05rem;min-width:1.05rem;height:1.05rem;padding:0 .25rem;border-radius:999px;background:#c0392b;color:#fff;font-size:.62rem;font-weight:800;display:grid;place-items:center;border:2px solid #fff;box-sizing:content-box}
+.notif-n[hidden]{display:none}
+.notif-in{width:22rem;max-width:calc(100vw - 2rem);padding:.4rem 0 0!important}
+.notif-head{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem .5rem}
+.notif-head b{font-size:.95rem}
+.notif-head .clearbtn{color:var(--green-d);font-weight:700;font-size:.78rem}
+.notif-list{max-height:20rem;overflow:auto;border-top:1px solid var(--line)}
+.notif-item{display:flex;gap:.7rem;align-items:flex-start;padding:.75rem 1rem;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.notif-item:hover{background:var(--bg-soft)}
+.notif-item.unread{background:var(--green-soft)}
+.notif-dot{flex:none;width:.55rem;height:.55rem;border-radius:50%;margin-top:.45rem;background:transparent}
+.notif-item.unread .notif-dot{background:var(--green)}
+.notif-tx b{display:block;font-size:.86rem;line-height:1.35}
+.notif-tx small{display:block;font-size:.74rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
+.notif-empty{margin:0;padding:1.2rem 1rem;font-size:.84rem;color:var(--muted);line-height:1.55}
+.notif-foot{display:flex;align-items:center;gap:.45rem;justify-content:center;padding:.75rem 1rem;font-size:.84rem;font-weight:700;color:var(--green-d);text-decoration:none}
+.notif-foot svg,.notif-foot i{width:1rem;height:1rem}
+@media(max-width:980px){.notifgroup{display:none}}
+
+/* subscribing does not change the card background */
+.subs-card.on{border-color:var(--line-2);background:#fff}
+
+/* bell dropdown: text wraps inside the panel */
+.notif-in,.notif-in *{white-space:normal}
+.notif-in{width:22rem;min-width:0}
+.notif-item{min-width:0}
+.notif-tx{min-width:0;flex:1;overflow-wrap:anywhere}
+.notif-head .clearbtn,.notif-foot{white-space:nowrap}
