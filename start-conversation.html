@@ -1141,11 +1141,12 @@
             '</span></div>';
         }).join('') + '</div>'
       : '';
-    var replyHtml = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
+    // The reply is typed out word by word (after a short "typing" indicator); the action
+    // buttons and any related threads/resources appear once it has finished.
     row.innerHTML = '<span class="msg-av ai"><i data-lucide="sparkles"></i></span>' +
       '<div class="msg-body"><div class="msg-meta">Platform Assistant</div>' +
-      '<div class="msg-text">' + replyHtml + '</div>' +
-      '<div class="msg-actions">' +
+      '<div class="msg-text"><span class="typing-dots" aria-label="Typing"><i></i><i></i><i></i></span></div>' +
+      '<div class="msg-actions" hidden>' +
       '<button type="button" class="msg-act" data-act="reply"><i data-lucide="corner-up-left"></i> Reply</button>' +
       '<button type="button" class="msg-act" data-act="helpful"><i data-lucide="check"></i> Helpful</button>' +
       '<button type="button" class="msg-act" data-act="listen"><i data-lucide="volume-2"></i> Listen</button>' +
@@ -1186,11 +1187,11 @@
       if (window.lucide) lucide.createIcons();
     });
     // Below the reply bubble: related threads/resources as their own card.
+    var relatedRow = null;
     if (resultsHtml || resourceResultsHtml) {
-      var relatedRow = document.createElement('div');
+      relatedRow = document.createElement('div');
       relatedRow.className = 'msg-row ai msg-related-row';
       relatedRow.innerHTML = '<span class="msg-av-spacer"></span><div class="msg-related-body">' + resultsHtml + resourceResultsHtml + '</div>';
-      thread.appendChild(relatedRow);
     }
 
     var replyBtn = row.querySelector('[data-act="reply"]');
@@ -1214,6 +1215,42 @@
       window.speechSynthesis.speak(new SpeechSynthesisUtterance(row.querySelector('.msg-text').textContent));
     });
     if (window.lucide) lucide.createIcons();
+
+    var msgText = row.querySelector('.msg-text');
+    var actionsEl = row.querySelector('.msg-actions');
+    var instant = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function keepInView() { row.scrollIntoView({ behavior: 'auto', block: 'end' }); }
+    function finishTyping() {
+      var caret = msgText.querySelector('.typing-caret');
+      if (caret) caret.classList.remove('typing-caret');
+      actionsEl.hidden = false;
+      if (relatedRow) row.insertAdjacentElement('afterend', relatedRow);
+      if (window.lucide) lucide.createIcons();
+      keepInView();
+      if (opts && typeof opts.onDone === 'function') opts.onDone();
+    }
+    function typeParagraph(i) {
+      if (i >= reply.length) { finishTyping(); return; }
+      var p = document.createElement('p');
+      msgText.appendChild(p);
+      var words = reply[i].split(' '), n = 0;
+      p.classList.add('typing-caret');
+      (function tick() {
+        n = Math.min(words.length, n + 1);
+        p.textContent = words.slice(0, n).join(' ');
+        keepInView();
+        if (n < words.length) setTimeout(tick, 30 + Math.random() * 30);
+        else { p.classList.remove('typing-caret'); setTimeout(function () { typeParagraph(i + 1); }, 220); }
+      })();
+    }
+    setTimeout(function () {
+      var dots = msgText.querySelector('.typing-dots');
+      if (dots) dots.remove();
+      if (instant) {
+        msgText.innerHTML = reply.map(function (p) { return '<p>' + escapeHtml(p) + '</p>'; }).join('');
+        finishTyping();
+      } else typeParagraph(0);
+    }, instant ? 0 : 700);
   }
 
   function renderClassifyCard() {
@@ -1531,11 +1568,11 @@
       addUserMessage(text, lang, attachments, replyingTo);
       attachments = [];
       renderComposerAttachments();
-      addAssistantMessage(text, { followUp: !!replyingTo });
-      if (!firstSendDone) {
-        firstSendDone = true;
-        renderPublishCard(text, lang);
-      }
+      var isFirst = !firstSendDone;
+      firstSendDone = true;
+      addAssistantMessage(text, { followUp: !!replyingTo, onDone: function () {
+        if (isFirst) renderPublishCard(text, lang);
+      } });
       textarea.value = '';
       autoGrowTextarea();
       updateLiveClassification();
