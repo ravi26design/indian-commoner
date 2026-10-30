@@ -2976,3 +2976,19 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* thread lists: poster name right beside the avatar */
 .topicrow .tr-who{display:flex;align-items:center;min-height:2.6rem;margin-bottom:.15rem;font-size:.92rem}
 .topicrow .tr-who b{font-weight:800;color:var(--ink)}
+
+/* thread rows: counts in one row, "REPLIES 0 | VOICE 1" */
+.topicrow .tr-stats{gap:0;align-items:center;white-space:nowrap}
+.topicrow .tr-stat{display:inline-flex;flex-direction:row-reverse;align-items:baseline;gap:.4rem;text-align:left;padding:0 .9rem}
+.topicrow .tr-stat:first-child{padding-left:0}
+.topicrow .tr-stat:last-child{padding-right:0}
+.topicrow .tr-stat + .tr-stat{border-left:1px solid var(--line-2)}
+.topicrow .tr-stat b{display:inline;font-size:1rem}
+.topicrow .tr-stat span{display:inline;font-size:.72rem;letter-spacing:.05em}
+@media(max-width:700px){
+  .topicrow .tr-stats{gap:0;padding:.1rem 0 0 3.5rem}
+  .topicrow .tr-stat{flex-direction:row-reverse;gap:.35rem;padding:0 .8rem}
+  .topicrow .tr-stat:first-child{padding-left:0}
+  .topicrow .tr-stat span{text-transform:uppercase;letter-spacing:.05em;font-size:.7rem}
+  .topicrow .tr-stat b{font-size:.9rem}
+}

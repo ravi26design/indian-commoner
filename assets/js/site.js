@@ -20,6 +20,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.icAvatarTint = avatarTint;
 
+  // Exact post date and time for every thread that has one (data-ts), e.g. "30 Oct 2026, 10:42 PM".
+  document.querySelectorAll('.topicrow[data-ts]').forEach(function (row) {
+    var spans = row.querySelectorAll('.tr-meta > span');
+    var last = spans[spans.length - 1];
+    if (!last || last.classList.contains('tr-loc') || last.classList.contains('tag')) return;
+    last.title = last.textContent.trim();          // the old "2 weeks ago" stays as a tooltip
+    last.classList.add('tr-when');
+    last.innerHTML = '<i data-lucide="clock" style="width:.75rem;height:.75rem;vertical-align:-1px"></i> ' + window.icDateTime(row.getAttribute('data-ts'));
+  });
+  if (window.lucide) lucide.createIcons();
+
   // Thread lists: the poster's name sits right beside their avatar / profile photo (above the tags and title),
   // instead of a "by <name>" at the end of the row.
   document.querySelectorAll('.topicrow').forEach(function (row) {
@@ -543,6 +554,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // "5 min ago", "3 h ago", "4 days ago", "2 weeks ago", "1 month ago",
     // or a dated "5 Oct 2026"). null when the label can't be read.
     function rowAgeDays(row) {
+      var tsAttr = +row.getAttribute('data-ts');
+      if (tsAttr) return Math.max(0, (Date.now() - tsAttr) / 86400000);
       var spans = row.querySelectorAll('.tr-meta > span');
       var label = spans.length ? spans[spans.length - 1].textContent.trim().toLowerCase() : '';
       if (label === 'just now') return 0;

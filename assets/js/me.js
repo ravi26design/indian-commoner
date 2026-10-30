@@ -7,6 +7,14 @@
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function photo() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
 
+  // Exact post date and time, e.g. "30 Oct 2026, 10:42 PM".
+  window.icDateTime = function (ts) {
+    var d = new Date(+ts);
+    if (isNaN(d)) return '';
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' +
+      d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).toUpperCase();
+  };
+
   window.icMe = ME;
   window.icPhoto = photo;
   window.icSetPhoto = function (dataUrl) {

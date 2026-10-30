@@ -537,7 +537,7 @@
   }
   document.title = thr.title + ' — Indian Commoner';
   document.getElementById('t-crumb').textContent = thr.title.length > 48 ? thr.title.slice(0, 48).trim() + '…' : thr.title;
-  document.getElementById('t-role').textContent = 'Topic author \u00b7 posted ' + ago(thr.ts);
+  document.getElementById('t-role').textContent = 'Topic author \u00b7 posted ' + icDateTime(thr.ts) + ' (' + ago(thr.ts) + ')';
   document.getElementById('t-author2').textContent = icDisplayName(authorName);
   icFillAvatar(document.getElementById('t-av'), authorName);
   document.getElementById('t-body').textContent = thr.body || thr.title;
