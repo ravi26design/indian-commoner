@@ -2994,3 +2994,21 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 }
 
 .topicrow .tr-who b{font-weight:700;letter-spacing:.005em}
+
+/* Share sheet */
+.share-modal .modal-card{max-width:30rem}
+.share-title{margin:.35rem 0 1rem;color:var(--muted);font-size:.9rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem .6rem;margin-bottom:1.25rem}
+.share-t{display:flex;flex-direction:column;align-items:center;gap:.45rem;font-size:.8rem;font-weight:700;color:var(--ink);text-decoration:none;padding:.4rem 0;border-radius:.9rem}
+.share-t:hover{background:var(--bg-soft)}
+.share-ic{width:3.1rem;height:3.1rem;border-radius:50%;display:grid;place-items:center;color:#fff}
+.share-ic svg,.share-ic i{width:1.35rem;height:1.35rem}
+.share-copy{display:flex;gap:.5rem;align-items:center;border:1px solid var(--line-2);border-radius:999px;padding:.3rem .3rem .3rem 1rem;background:#fff}
+.share-copy input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:.84rem;color:var(--muted)}
+.share-native{margin-top:.8rem}
+.share-note{min-height:1.2rem;margin:.6rem 0 0;font-size:.82rem;color:var(--green-d);font-weight:700;text-align:center}
+.share-btn{color:var(--green-d)}
+
+/* post footer: Likes and Replies icons the same size */
+.post-foot .tag i,.post-foot .tag svg,.post-foot .tag.like-btn svg{width:1.05rem;height:1.05rem;flex:none;stroke-width:2}
+.post-foot .tag{display:inline-flex;align-items:center;gap:.4rem}

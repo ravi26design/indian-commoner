@@ -729,4 +729,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
     applyForumFilters();
   }
+
+  // ---- Share: every thread page gets a Share button that opens a sheet with the share targets and a copy-link field ----
+  (function () {
+    var foot = document.querySelector('.post-foot');
+    if (!foot) return;
+    var right = foot.querySelector('.row:last-child') || foot;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'clearbtn share-btn';
+    btn.innerHTML = '<i data-lucide="share-2" style="width:.85rem;height:.85rem;vertical-align:-2px;margin-right:.25rem"></i>Share';
+    right.insertBefore(btn, right.firstChild);
+
+    var TARGETS = [
+      ['WhatsApp', 'message-circle', '#25D366', function (u, t) { return 'https://wa.me/?text=' + encodeURIComponent(t + ' ' + u); }],
+      ['Facebook', 'facebook', '#1877F2', function (u) { return 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u); }],
+      ['X', 'twitter', '#111111', function (u, t) { return 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(t) + '&url=' + encodeURIComponent(u); }],
+      ['LinkedIn', 'linkedin', '#0A66C2', function (u) { return 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(u); }],
+      ['Telegram', 'send', '#229ED9', function (u, t) { return 'https://t.me/share/url?url=' + encodeURIComponent(u) + '&text=' + encodeURIComponent(t); }],
+      ['Email', 'mail', '#6b6f68', function (u, t) { return 'mailto:?subject=' + encodeURIComponent(t) + '&body=' + encodeURIComponent(t + '\n' + u); }]
+    ];
+    var modal = document.createElement('div');
+    modal.className = 'modal-back share-modal'; modal.id = 'shareModal';
+    modal.innerHTML =
+      '<div class="modal-card">' +
+        '<button class="modal-x" data-close-share aria-label="Close"><i data-lucide="x"></i></button>' +
+        '<h3>Share this discussion</h3>' +
+        '<p class="share-title" id="share-title"></p>' +
+        '<div class="share-grid" id="share-grid"></div>' +
+        '<div class="share-copy"><input type="text" id="share-url" readonly aria-label="Link to this discussion">' +
+        '<button type="button" class="btn btn-primary sm" id="share-copy"><i data-lucide="link"></i> Copy link</button></div>' +
+        '<p class="share-note" id="share-note" aria-live="polite"></p>' +
+      '</div>';
+    document.body.appendChild(modal);
+    var grid = modal.querySelector('#share-grid'), urlEl = modal.querySelector('#share-url'), note = modal.querySelector('#share-note');
+
+    function current() { return { url: location.href, title: document.title.replace(/\s+[—-]\s+Indian Commoner$/, '') }; }
+    function close() { modal.classList.remove('open'); }
+    function open() {
+      var c = current();
+      modal.querySelector('#share-title').textContent = c.title;
+      urlEl.value = c.url; note.textContent = '';
+      grid.innerHTML = TARGETS.map(function (t) {
+        return '<a class="share-t" href="' + t[3](c.url, c.title).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener noreferrer">' +
+          '<span class="share-ic" style="background:' + t[2] + '"><i data-lucide="' + t[1] + '"></i></span><span>' + t[0] + '</span></a>';
+      }).join('');
+      if (window.lucide) lucide.createIcons();
+      modal.classList.add('open');
+    }
+    btn.addEventListener('click', open);
+    modal.addEventListener('click', function (e) { if (e.target === modal || e.target.closest('[data-close-share]')) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    modal.querySelector('#share-copy').addEventListener('click', function () {
+      function ok() { note.textContent = 'Link copied.'; }
+      function fallback() { urlEl.select(); try { document.execCommand('copy'); ok(); } catch (e) { note.textContent = 'Press Ctrl/Cmd+C to copy the link.'; } }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(urlEl.value).then(ok, fallback); else fallback();
+    });
+    urlEl.addEventListener('focus', function () { urlEl.select(); });
+    if (window.lucide) lucide.createIcons();
+  })();
 });
