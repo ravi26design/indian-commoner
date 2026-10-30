@@ -805,7 +805,8 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="navdrop dd-right notif-drop"><div class="navdrop-in notif-in">' +
         '<div class="notif-head"><b>Notifications</b><button type="button" class="clearbtn notif-readall">Mark all as read</button></div>' +
         '<div class="notif-list"></div>' +
-        '<a class="notif-foot" href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage theme subscriptions</a>' +
+        '<a class="notif-foot" href="notifications.html"><i data-lucide="list"></i> See all notifications</a>' +
+        '<a class="notif-foot notif-foot2" href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage theme subscriptions</a>' +
       '</div></div>';
     acct.parentNode.insertBefore(grp, acct);
     var badge = grp.querySelector('.notif-n'), list = grp.querySelector('.notif-list');

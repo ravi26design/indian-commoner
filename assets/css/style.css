@@ -3102,3 +3102,44 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .notif-item{min-width:0}
 .notif-tx{min-width:0;flex:1;overflow-wrap:anywhere}
 .notif-head .clearbtn,.notif-foot{white-space:nowrap}
+
+/* Notifications page */
+.np-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.np-actions .btn i,.np-actions .btn svg{width:.9rem;height:.9rem}
+.np-tabs .seg-tab em{font-style:normal;font-size:.72rem;font-weight:800;margin-left:.35rem;padding:.05rem .45rem;border-radius:999px;background:var(--green-soft);color:var(--green-d)}
+.np-tabs .seg-tab.on em{background:rgba(255,255,255,.22);color:#fff}
+.np-list{display:flex;flex-direction:column;gap:.8rem}
+.np-item{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.25rem;background:#fff;border:1px solid var(--line-2);border-radius:var(--r);box-shadow:var(--shadow-card);position:relative}
+.np-item.unread{border-left:4px solid var(--green)}
+.np-ic{flex:none;width:2.6rem;height:2.6rem;border-radius:50%;display:grid;place-items:center;background:var(--green-soft);color:var(--green-d)}
+.np-ic svg,.np-ic i{width:1.15rem;height:1.15rem}
+.np-body{flex:1;min-width:0}
+.np-meta{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-bottom:.35rem}
+.np-meta .tag{font-size:.72rem;padding:.15rem .55rem;font-weight:700}
+.np-when{font-size:.78rem;color:var(--muted-2)}
+.np-item h3{font-size:1rem;line-height:1.4;margin:0 0 .25rem}
+.np-item h3 a{color:var(--ink);text-decoration:none}
+.np-item h3 a:hover{color:var(--green-d)}
+.np-item p{margin:0;font-size:.84rem;color:var(--muted)}
+.np-ops{display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;flex:none}
+.np-ops .clearbtn{font-size:.78rem;color:var(--green-d);font-weight:700}
+.np-ops .clearbtn.danger{color:#b3261e}
+.np-ops .clearbtn svg,.np-ops .clearbtn i{width:1rem;height:1rem}
+@media(max-width:640px){.np-item{flex-wrap:wrap}.np-ops{flex-direction:row;width:100%;align-items:center;justify-content:flex-start;gap:.8rem}}
+.np-empty{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center;padding:2.6rem 1rem;background:#fff;border:2px dashed var(--green-line);border-radius:var(--r)}
+.np-empty b{font-size:1.1rem}
+.np-empty>span{color:var(--muted);font-size:.9rem}
+.np-art{width:11rem;height:auto;display:block}
+.np-side h3{display:flex;align-items:center;gap:.5rem;font-size:1rem}
+.np-side h3 svg,.np-side h3 i{width:1.1rem;height:1.1rem;color:var(--green-d)}
+.np-side p{font-size:.86rem;color:var(--muted);margin:.4rem 0 .7rem}
+.np-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.np-signedout{text-align:center;padding:3rem 1rem;background:#fff;border:1px solid var(--line-2);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.np-signedout[hidden]{display:none}
+.notif-foot2{border-top:1px solid var(--line);padding-top:.7rem}
+
+/* profile: edit is an icon beside the name; sign out lives in the account menu and Account Settings */
+.mp-namerow{display:flex;align-items:center;gap:.7rem}
+.mp-edit-ic{flex:none;width:2.3rem;height:2.3rem;border-radius:50%;border:1px solid var(--line-2);background:#fff;color:var(--green-d);display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.mp-edit-ic:hover{background:var(--green);border-color:var(--green);color:#fff}
+.mp-edit-ic svg,.mp-edit-ic i{width:1.05rem;height:1.05rem}

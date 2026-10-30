@@ -63,6 +63,9 @@
   window.icMarkRead = function (id) {
     var all = window.icNotifications(); all.forEach(function (n) { if (id === undefined || n.id === id) n.read = true; }); writeJSON(NOTE_KEY, all);
   };
+  window.icMarkUnread = function (id) { var all = window.icNotifications(); all.forEach(function (n) { if (n.id === id) n.read = false; }); writeJSON(NOTE_KEY, all); };
+  window.icDeleteNotification = function (id) { writeJSON(NOTE_KEY, window.icNotifications().filter(function (n) { return n.id !== id; })); };
+  window.icClearNotifications = function () { writeJSON(NOTE_KEY, []); };
   // Call when a thread is posted: if the member subscribes to its theme they get a notification (newest first, no duplicates).
   window.icNotifyThread = function (th, opts) {
     if (!th || !th.theme || !window.icIsSubscribed(th.theme)) return false;
