@@ -3030,3 +3030,21 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 /* Friends tab: just the cards, no outer panel */
 #mp-friends.mp-pane{background:none;border:0;box-shadow:none;padding:0}
+
+/* Media tab: only the active pane shows (an .empty pane was overriding [hidden]), pill tabs with counts, illustrated empty states */
+.mp-media-pane.empty[hidden]{display:none}
+.mp-media-tabs{gap:.5rem;border-bottom:0;padding-bottom:0;margin-bottom:1.1rem}
+.mp-mt{border:1px solid var(--line-2);border-radius:999px;padding:.55rem .95rem;font:700 .84rem/1 var(--sans);background:#fff;color:var(--ink-2);gap:.45rem;transition:background .15s,color .15s,border-color .15s}
+.mp-mt:hover{border-color:var(--green-line);background:var(--green-soft)}
+.mp-mt.on{background:var(--green);border-color:var(--green);color:#fff}
+.mp-mt i,.mp-mt svg{width:1.05rem;height:1.05rem}
+.mp-mt-n{font-style:normal;font-size:.72rem;font-weight:800;min-width:1.35rem;height:1.35rem;padding:0 .4rem;border-radius:999px;display:inline-grid;place-items:center;background:var(--green-soft);color:var(--green-d)}
+.mp-mt.on .mp-mt-n{background:rgba(255,255,255,.22);color:#fff}
+.mp-media-bar{padding-bottom:.9rem;border-bottom:1px solid var(--line)}
+.mp-media-empty-card{padding:2.2rem 1rem 2.4rem;gap:.55rem;border:2px dashed var(--green-line);background:linear-gradient(180deg,#fbfcf8,var(--green-soft))}
+.mp-media-empty-card b{font-size:1.1rem}
+.mp-media-empty-card>span{max-width:26rem;font-size:.9rem;line-height:1.55;color:var(--muted)}
+.mp-empty-art{width:11.5rem;height:auto;display:block;margin-bottom:.35rem}
+.mp-media-empty-card .mp-empty-up{margin-top:.6rem}
+.mp-media-pane.drag .mp-media-empty-card{border-color:var(--green);background:var(--green-soft)}
+.mp-media-empty-card svg.mp-empty-art{width:11.5rem;height:auto;color:inherit}
