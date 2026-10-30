@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!name) return;
     av.textContent = name.charAt(0).toUpperCase();
     tintAvatar(av, name);
+    if (window.icApplyMemberPhoto && av.classList.contains('mc-avatar')) window.icApplyMemberPhoto(av, name);
   });
   // The member's own profile avatar shows their uploaded photo when they have one.
   var ownAv = document.getElementById('mp-initial');
@@ -495,7 +496,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var nameEl = row.querySelector('.tr-who b, .tr-meta b');
       var av = row.querySelector('.pw-av');
       if (!nameEl || !av) return;
-      tintAvatar(av, whoEl && whoEl.getAttribute('data-name') || nameEl.textContent);
+      var nm = whoEl && whoEl.getAttribute('data-name') || nameEl.textContent;
+      tintAvatar(av, nm);
+      if (window.icApplyMemberPhoto && nm !== 'Priya Sharma' && !av.querySelector('img')) window.icApplyMemberPhoto(av, nm);
     });
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');

@@ -15,6 +15,31 @@
       d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).toUpperCase();
   };
 
+  // Real member photos by display name. Drop an image into assets/img/avatars/ and add a line here, e.g.
+  //   'Indu': 'assets/img/avatars/indu.jpg'
+  // and that member's avatar shows the photo in thread lists and the Members directory. (Empty until real photos are supplied.)
+  var MEMBER_PHOTOS = {
+  };
+  var photoIndex = null;
+  function memberPhoto(name) {
+    if (!photoIndex) {
+      photoIndex = {};
+      var extra = {};
+      try { extra = JSON.parse(localStorage.getItem('ic_member_photos') || '{}'); } catch (e) {}
+      [MEMBER_PHOTOS, extra].forEach(function (src) { Object.keys(src).forEach(function (k) { photoIndex[k.trim().toLowerCase()] = src[k]; }); });
+    }
+    return photoIndex[String(name || '').trim().toLowerCase()] || '';
+  }
+  window.icMemberPhoto = memberPhoto;
+  // Show a member's photo in an avatar element when one is available (otherwise leave the initial as it is).
+  window.icApplyMemberPhoto = function (el, name) {
+    var p = memberPhoto(name);
+    if (!el || !p) return false;
+    el.classList.add('has-photo'); el.textContent = '';
+    var i = document.createElement('img'); i.src = p; i.alt = ''; el.appendChild(i);
+    return true;
+  };
+
   window.icMe = ME;
   window.icPhoto = photo;
   window.icSetPhoto = function (dataUrl) {
