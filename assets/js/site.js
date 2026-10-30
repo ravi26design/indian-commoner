@@ -536,27 +536,41 @@ document.addEventListener('DOMContentLoaded', function () {
     function countBy(fn) { var m = {}; forumRows.forEach(function (r) { var k = fn(r); if (k) m[k] = (m[k] || 0) + 1; }); return m; }
     var themeCounts = countBy(function (r) { return r.getAttribute('data-theme'); });
     var stateCounts = countBy(function (r) { return r.getAttribute('data-state'); });
-    document.querySelectorAll('.filterpanel input[data-fg="theme"]').forEach(function (c) { c.parentNode.querySelector('span').textContent = '(' + (themeCounts[c.value] || 0) + ')'; });
-    // States listed by number of threads, the top five shown and the rest behind "+ N more", as on the Laws page.
+    var THEME_LIST = [['Governing the Commons', 'Governing the Commons'], ['Commons as Culture', 'Commons as Culture'],
+      ['Commons as Micro Habitats', 'Commons as Micro Habitats'], ['Livelihoods, Subsistence & Valuation of Commons', 'Livelihoods, Subsistence and Valuation of Commons'],
+      ['Gender and Commons', 'Gender and Commons'], ['Power and Commons', 'Power and Commons'], ['Conversion of Commons', 'Conversion of Commons'], ['Others', 'Others']];
+
+    // One option row: checkbox, name and count together (so a long name that wraps keeps its count right after it).
+    function optionLabel(group, value, text, count, checked) {
+      var l = document.createElement('label'); l.className = 'fp-check';
+      var inp = document.createElement('input'); inp.type = 'checkbox'; inp.value = value; inp.setAttribute('data-fg', group); inp.checked = !!checked;
+      var t = document.createElement('i'); t.className = 'fp-t'; t.appendChild(document.createTextNode(text + ' '));
+      var n = document.createElement('span'); n.textContent = '(' + count + ')'; t.appendChild(n);
+      l.appendChild(inp); l.appendChild(t);
+      return l;
+    }
+    // Every section shows five options, the rest sit behind "+ N more" (as on the Laws page).
+    function fillList(box, labels) {
+      box.innerHTML = '';
+      labels.slice(0, 5).forEach(function (l) { box.appendChild(l); });
+      if (labels.length <= 5) return;
+      var rest = labels.slice(5), more = document.createElement('div'); more.className = 'fp-more-group';
+      rest.forEach(function (l) { more.appendChild(l); });
+      var open = rest.some(function (l) { return l.querySelector('input').checked; });
+      more.hidden = !open;
+      var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fp-more';
+      btn.setAttribute('data-label', '+ ' + rest.length + ' more');
+      btn.textContent = open ? 'Show less' : btn.getAttribute('data-label');
+      btn.addEventListener('click', function () { var o = more.hidden; more.hidden = !o; btn.textContent = o ? 'Show less' : btn.getAttribute('data-label'); });
+      box.appendChild(more); box.appendChild(btn);
+    }
+    var themeBox = document.getElementById('fp-theme-list');
+    if (themeBox) fillList(themeBox, THEME_LIST.map(function (t) { return optionLabel('theme', t[0], t[1], themeCounts[t[0]] || 0); }));
+    // States listed by number of threads.
     var stateBox = document.getElementById('fp-state-list');
     if (stateBox) {
       var names = Object.keys(stateCounts).sort(function (a, b) { return stateCounts[b] - stateCounts[a] || a.localeCompare(b); });
-      function stateLabel(n) {
-        var l = document.createElement('label'); l.className = 'fp-check';
-        l.innerHTML = '<input type="checkbox" data-fg="state"> <i></i><span></span>';
-        var inp = l.querySelector('input'); inp.value = n;
-        l.removeChild(l.querySelector('i')); l.insertBefore(document.createTextNode(' ' + n + ' '), l.querySelector('span'));
-        l.querySelector('span').textContent = '(' + stateCounts[n] + ')';
-        return l;
-      }
-      names.slice(0, 5).forEach(function (n) { stateBox.appendChild(stateLabel(n)); });
-      if (names.length > 5) {
-        var more = document.createElement('div'); more.className = 'fp-more-group'; more.hidden = true;
-        names.slice(5).forEach(function (n) { more.appendChild(stateLabel(n)); });
-        var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fp-more'; btn.textContent = '+ ' + (names.length - 5) + ' more'; btn.dataset.label = btn.textContent;
-        btn.addEventListener('click', function () { var open = more.hidden; more.hidden = !open; btn.textContent = open ? 'Show less' : btn.dataset.label; });
-        stateBox.appendChild(more); stateBox.appendChild(btn);
-      }
+      fillList(stateBox, names.map(function (n) { return optionLabel('state', n, n, stateCounts[n]); }));
     }
 
     // Sub-theme section: only appears once a theme with sub-themes is ticked, and lists just those themes' sub-themes.
@@ -566,15 +580,11 @@ document.addEventListener('DOMContentLoaded', function () {
       var subs = [];
       sel('theme').forEach(function (t) { (THEME_SUBS[t] || []).forEach(function (n) { if (subs.indexOf(n) === -1) subs.push(n); }); });
       subCat.hidden = !subs.length;
-      subList.innerHTML = '';
-      subs.forEach(function (n) {
+      if (!subs.length) { subList.innerHTML = ''; return; }
+      fillList(subList, subs.map(function (n) {
         var cnt = forumRows.filter(function (r) { return rowSubs(r).indexOf(n.toLowerCase()) !== -1; }).length;
-        var l = document.createElement('label'); l.className = 'fp-check';
-        var inp = document.createElement('input'); inp.type = 'checkbox'; inp.value = n; inp.setAttribute('data-fg', 'sub'); inp.checked = keep.indexOf(n) !== -1;
-        var sp = document.createElement('span'); sp.textContent = '(' + cnt + ')';
-        l.appendChild(inp); l.appendChild(document.createTextNode(' ' + n + ' ')); l.appendChild(sp);
-        subList.appendChild(l);
-      });
+        return optionLabel('sub', n, n, cnt, keep.indexOf(n) !== -1);
+      }));
     }
 
     // Age in days of a row, read from its displayed time label ("just now",

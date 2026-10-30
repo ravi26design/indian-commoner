@@ -3017,3 +3017,6 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .ic-leaflet.tall{height:calc(100vh - 15rem);min-height:32rem}
 
 .ic-pin-tip{max-width:16rem;white-space:normal;font-family:var(--sans);line-height:1.35}
+
+.fp-check .fp-t{font-style:normal;flex:1;min-width:0;line-height:1.45}
+.fp-check .fp-t span{margin-left:.2rem}
