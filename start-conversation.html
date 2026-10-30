@@ -923,7 +923,12 @@
       renderChain();
       persistThread(th);
       // Everything is filled in: confirm, with a way on to the forum.
-      if (done) { done.hidden = false; }
+      if (done) {
+        // The button opens this thread's own detail page in the forum.
+        var go = done.querySelector('a.btn');
+        if (go && th.recTs) go.href = 'thread.html?id=' + encodeURIComponent(th.recTs);
+        done.hidden = false;
+      }
       if (window.lucide) lucide.createIcons();
       if (done) done.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       saved.querySelector('[data-act="change-loc"]').addEventListener('click', function () {
