@@ -3012,3 +3012,6 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* post footer: Likes and Replies icons the same size */
 .post-foot .tag i,.post-foot .tag svg,.post-foot .tag.like-btn svg{width:1.05rem;height:1.05rem;flex:none;stroke-width:2}
 .post-foot .tag{display:inline-flex;align-items:center;gap:.4rem}
+
+/* Map Exploration: the map fills most of the screen */
+.ic-leaflet.tall{height:calc(100vh - 15rem);min-height:32rem}
