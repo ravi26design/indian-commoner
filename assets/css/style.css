@@ -2930,3 +2930,7 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* home panels: camel illustration larger still (the source image is 110px wide, so this is about its native size) */
 .cb-ic img{width:7rem}
 @media(max-width:560px){.cb-ic img{width:5.5rem}}
+
+/* village-life illustrated icons: slightly larger tile so the figures read */
+.navdrop-in .nd-ic{width:2.9rem;height:2.9rem}
+.navdrop-in .nd-svg{width:2.3rem;height:2.3rem}
