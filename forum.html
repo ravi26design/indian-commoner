@@ -103,48 +103,26 @@
     <aside class="filterpanel forum-filter" id="themes">
       <div class="fp-head"><i data-lucide="sliders-horizontal"></i><b>Filter</b><button type="button" class="clearbtn" id="forum-reset" hidden>Reset</button></div>
 
-      <div class="fp-cat">
+      <div class="fp-cat" data-cat="theme">
         <div class="fp-cat-head"><b>Theme</b></div>
-        <div class="seg-tabs" data-pillgroup="theme" style="margin-bottom:0">
-          <button type="button" class="seg-tab on" data-v="all">All</button>
-          <button type="button" class="seg-tab" data-v="Governing the Commons">Governing the Commons</button>
-          <button type="button" class="seg-tab" data-v="Commons as Culture">Commons as Culture</button>
-          <button type="button" class="seg-tab" data-v="Commons as Micro Habitats">Commons as Micro Habitats</button>
-          <button type="button" class="seg-tab" data-v="Livelihoods, Subsistence &amp; Valuation of Commons">Livelihoods, Subsistence and Valuation of Commons</button>
-          <button type="button" class="seg-tab" data-v="Gender and Commons">Gender and Commons</button>
-          <button type="button" class="seg-tab" data-v="Power and Commons">Power and Commons</button>
-          <button type="button" class="seg-tab" data-v="Conversion of Commons">Conversion of Commons</button>
-          <button type="button" class="seg-tab" data-v="Others">Others</button>
-        </div>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Governing the Commons"> Governing the Commons <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Commons as Culture"> Commons as Culture <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Commons as Micro Habitats"> Commons as Micro Habitats <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Livelihoods, Subsistence &amp; Valuation of Commons"> Livelihoods, Subsistence and Valuation of Commons <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Gender and Commons"> Gender and Commons <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Power and Commons"> Power and Commons <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Conversion of Commons"> Conversion of Commons <span>(0)</span></label>
+        <label class="fp-check"><input type="checkbox" data-fg="theme" value="Others"> Others <span>(0)</span></label>
       </div>
 
-      <div class="fp-cat" id="fp-sub-cat" hidden>
+      <div class="fp-cat" id="fp-sub-cat" data-cat="sub" hidden>
         <div class="fp-cat-head"><b>Sub-theme</b></div>
-        <div class="seg-tabs" data-pillgroup="sub" style="margin-bottom:0"></div>
+        <div id="fp-sub-list"></div>
       </div>
 
       <div class="fp-cat" data-cat="state">
         <div class="fp-cat-head"><b>State or district</b></div>
-        <div class="seg-tabs" data-pillgroup="state" style="margin-bottom:0">
-          <button type="button" class="seg-tab on" data-v="all">All of India</button>
-          <button type="button" class="seg-tab" data-v="Andhra Pradesh">Andhra Pradesh</button>
-          <button type="button" class="seg-tab" data-v="Arunachal Pradesh">Arunachal Pradesh</button>
-          <button type="button" class="seg-tab" data-v="Assam">Assam</button>
-          <button type="button" class="seg-tab" data-v="Chhattisgarh">Chhattisgarh</button>
-          <button type="button" class="seg-tab" data-v="Gujarat">Gujarat</button>
-          <button type="button" class="seg-tab" data-v="Jharkhand">Jharkhand</button>
-          <button type="button" class="seg-tab" data-v="Karnataka">Karnataka</button>
-          <button type="button" class="seg-tab" data-v="Kerala">Kerala</button>
-          <button type="button" class="seg-tab" data-v="Madhya Pradesh">Madhya Pradesh</button>
-          <button type="button" class="seg-tab" data-v="Maharashtra">Maharashtra</button>
-          <button type="button" class="seg-tab" data-v="Meghalaya">Meghalaya</button>
-          <button type="button" class="seg-tab" data-v="Nagaland">Nagaland</button>
-          <button type="button" class="seg-tab" data-v="Odisha">Odisha</button>
-          <button type="button" class="seg-tab" data-v="Punjab">Punjab</button>
-          <button type="button" class="seg-tab" data-v="Rajasthan">Rajasthan</button>
-          <button type="button" class="seg-tab" data-v="Uttar Pradesh">Uttar Pradesh</button>
-          <button type="button" class="seg-tab" data-v="Uttarakhand">Uttarakhand</button>
-        </div>
+        <div id="fp-state-list"></div>
       </div>
 
       <div class="fp-cat" style="border-bottom:0">

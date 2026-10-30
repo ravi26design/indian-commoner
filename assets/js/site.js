@@ -503,10 +503,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumSearch = document.getElementById('forum-q');
     var forumCount = document.getElementById('forum-count');
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
-    var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
-    var stateGroup = document.querySelector('.seg-tabs[data-pillgroup="state"]');
-    var subGroup = document.querySelector('.seg-tabs[data-pillgroup="sub"]');
-    var subCat = document.getElementById('fp-sub-cat');
+    var fPanelEl = document.querySelector('.filterpanel');
+    var subCat = document.getElementById('fp-sub-cat'), subList = document.getElementById('fp-sub-list');
     // The real "Sub-thematic areas" listed on each theme's page (same list the Chat with us flow uses).
     var THEME_SUBS = {
       'Governing the Commons': ['Laws and Enactments', 'Policies', 'Tenure Arrangements', 'Institutional Arrangements'],
@@ -517,46 +515,66 @@ document.addEventListener('DOMContentLoaded', function () {
       'Power and Commons': ['Differences Within Communities', 'Social Movements']
     };
     var activityRadios = document.querySelectorAll('.filterpanel input[name="fx-activity"]');
-    var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel input[name="fx-activity"]');
     var forumReset = document.getElementById('forum-reset');
     var forumEmpty = document.getElementById('forum-empty');
     var forumSort = 'recent';
 
-    function pillValue(group) {
-      if (!group) return 'all';
-      var on = group.querySelector('.seg-tab.on');
-      return on ? on.getAttribute('data-v') : 'all';
+    // Filters work like the Laws and Regulations page: checkbox lists (several choices in a group = "any of them",
+    // different groups = "all of them"), each with a count.
+    function sel(group) {
+      return Array.prototype.map.call(document.querySelectorAll('.filterpanel input[data-fg="' + group + '"]:checked'), function (c) { return c.value; });
     }
-
-    function setPill(group, value) {
-      if (!group) return;
-      group.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === value); });
-    }
-
-    // Sub-theme section: only appears once a theme with sub-themes is chosen, and lists just that theme's.
-    function renderSubThemes() {
-      if (!subGroup || !subCat) return;
-      var subs = THEME_SUBS[pillValue(themeGroup)] || [];
-      subCat.hidden = !subs.length;
-      subGroup.innerHTML = '';
-      if (!subs.length) return;
-      [['all', 'All']].concat(subs.map(function (n) { return [n, n]; })).forEach(function (p, i) {
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'seg-tab' + (i === 0 ? ' on' : '');
-        b.setAttribute('data-v', p[0]); b.textContent = p[1];
-        b.addEventListener('click', function () { setPill(subGroup, p[0]); applyForumFilters(); });
-        subGroup.appendChild(b);
-      });
-    }
-    function rowHasSub(row, sub) {
-      return Array.prototype.some.call(row.querySelectorAll('.tr-tags .tag'), function (t) {
-        return t.textContent.trim().toLowerCase() === sub.toLowerCase();
-      });
-    }
-
     function activityValue() {
       var on = document.querySelector('.filterpanel input[name="fx-activity"]:checked');
       return on ? on.value : 'any';
+    }
+    function rowSubs(row) {
+      return Array.prototype.map.call(row.querySelectorAll('.tr-tags .tag'), function (t) { return t.textContent.trim().toLowerCase(); });
+    }
+
+    // Counts next to each option, taken from the threads on the page.
+    function countBy(fn) { var m = {}; forumRows.forEach(function (r) { var k = fn(r); if (k) m[k] = (m[k] || 0) + 1; }); return m; }
+    var themeCounts = countBy(function (r) { return r.getAttribute('data-theme'); });
+    var stateCounts = countBy(function (r) { return r.getAttribute('data-state'); });
+    document.querySelectorAll('.filterpanel input[data-fg="theme"]').forEach(function (c) { c.parentNode.querySelector('span').textContent = '(' + (themeCounts[c.value] || 0) + ')'; });
+    // States listed by number of threads, the top five shown and the rest behind "+ N more", as on the Laws page.
+    var stateBox = document.getElementById('fp-state-list');
+    if (stateBox) {
+      var names = Object.keys(stateCounts).sort(function (a, b) { return stateCounts[b] - stateCounts[a] || a.localeCompare(b); });
+      function stateLabel(n) {
+        var l = document.createElement('label'); l.className = 'fp-check';
+        l.innerHTML = '<input type="checkbox" data-fg="state"> <i></i><span></span>';
+        var inp = l.querySelector('input'); inp.value = n;
+        l.removeChild(l.querySelector('i')); l.insertBefore(document.createTextNode(' ' + n + ' '), l.querySelector('span'));
+        l.querySelector('span').textContent = '(' + stateCounts[n] + ')';
+        return l;
+      }
+      names.slice(0, 5).forEach(function (n) { stateBox.appendChild(stateLabel(n)); });
+      if (names.length > 5) {
+        var more = document.createElement('div'); more.className = 'fp-more-group'; more.hidden = true;
+        names.slice(5).forEach(function (n) { more.appendChild(stateLabel(n)); });
+        var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fp-more'; btn.textContent = '+ ' + (names.length - 5) + ' more'; btn.dataset.label = btn.textContent;
+        btn.addEventListener('click', function () { var open = more.hidden; more.hidden = !open; btn.textContent = open ? 'Show less' : btn.dataset.label; });
+        stateBox.appendChild(more); stateBox.appendChild(btn);
+      }
+    }
+
+    // Sub-theme section: only appears once a theme with sub-themes is ticked, and lists just those themes' sub-themes.
+    function renderSubThemes() {
+      if (!subCat || !subList) return;
+      var keep = sel('sub');
+      var subs = [];
+      sel('theme').forEach(function (t) { (THEME_SUBS[t] || []).forEach(function (n) { if (subs.indexOf(n) === -1) subs.push(n); }); });
+      subCat.hidden = !subs.length;
+      subList.innerHTML = '';
+      subs.forEach(function (n) {
+        var cnt = forumRows.filter(function (r) { return rowSubs(r).indexOf(n.toLowerCase()) !== -1; }).length;
+        var l = document.createElement('label'); l.className = 'fp-check';
+        var inp = document.createElement('input'); inp.type = 'checkbox'; inp.value = n; inp.setAttribute('data-fg', 'sub'); inp.checked = keep.indexOf(n) !== -1;
+        var sp = document.createElement('span'); sp.textContent = '(' + cnt + ')';
+        l.appendChild(inp); l.appendChild(document.createTextNode(' ' + n + ' ')); l.appendChild(sp);
+        subList.appendChild(l);
+      });
     }
 
     // Age in days of a row, read from its displayed time label ("just now",
@@ -579,30 +597,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     var ACTIVITY_LIMIT_DAYS = { '1d': 1, '7d': 7, '30d': 30, '365d': 365 };
 
+    function activeCount() {
+      return sel('theme').length + sel('sub').length + sel('state').length + (activityValue() !== 'any' ? 1 : 0);
+    }
     function hasActiveFilters() {
-      if (pillValue(themeGroup) !== 'all') return true;
-      if (pillValue(subGroup) !== 'all') return true;
-      if (pillValue(stateGroup) !== 'all') return true;
-      if (activityValue() !== 'any') return true;
-      if (forumSearch && forumSearch.value.trim()) return true;
-      var boxChecked = Array.from(document.querySelectorAll('.filterpanel input[type="checkbox"]')).some(function (c) {
-        return c.checked;
-      });
-      if (boxChecked) return true;
-      return false;
+      return activeCount() > 0 || !!(forumSearch && forumSearch.value.trim());
     }
 
     function applyForumFilters() {
-      var theme = pillValue(themeGroup);
-      var state = pillValue(stateGroup);
-      var sub = pillValue(subGroup);
+      var themes = sel('theme'), subs = sel('sub'), states = sel('state');
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
       var activityLimit = ACTIVITY_LIMIT_DAYS[activityValue()];
 
       var visible = forumRows.filter(function (row) {
-        if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
-        if (sub !== 'all' && !rowHasSub(row, sub)) return false;
-        if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
+        if (themes.length && themes.indexOf(row.getAttribute('data-theme')) === -1) return false;
+        if (subs.length) {
+          var rs = rowSubs(row);
+          if (!subs.some(function (x) { return rs.indexOf(x.toLowerCase()) !== -1; })) return false;
+        }
+        if (states.length && states.indexOf(row.getAttribute('data-state')) === -1) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
         if (activityLimit) {
           var age = rowAgeDays(row);
@@ -627,25 +640,14 @@ document.addEventListener('DOMContentLoaded', function () {
       if (forumCount) forumCount.textContent = sorted.length + (sorted.length === 1 ? ' discussion' : ' discussions');
       if (forumReset) forumReset.hidden = !hasActiveFilters();
       var fpCount = document.getElementById('fp-count');
-      if (fpCount) {
-        var nActive = (pillValue(themeGroup) !== 'all' ? 1 : 0) + (pillValue(subGroup) !== 'all' ? 1 : 0) + (pillValue(stateGroup) !== 'all' ? 1 : 0) + (activityValue() !== 'any' ? 1 : 0);
-        fpCount.textContent = nActive || '';
-        fpCount.hidden = !nActive;
-      }
+      if (fpCount) { var nActive = activeCount(); fpCount.textContent = nActive || ''; fpCount.hidden = !nActive; }
       if (forumEmpty) forumEmpty.hidden = sorted.length !== 0;
     }
 
-    [themeGroup, stateGroup].forEach(function (group) {
-      if (!group) return;
-      group.querySelectorAll('.seg-tab').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          setPill(group, btn.getAttribute('data-v'));
-          if (group === themeGroup) renderSubThemes();
-          applyForumFilters();
-        });
-      });
+    if (fPanelEl) fPanelEl.addEventListener('change', function (e) {
+      if (e.target && e.target.getAttribute && e.target.getAttribute('data-fg') === 'theme') renderSubThemes();
+      applyForumFilters();
     });
-    otherFilterInputs.forEach(function (el) { el.addEventListener('change', applyForumFilters); });
     if (forumSearch) forumSearch.addEventListener('input', applyForumFilters);
 
     if (forumSortSeg) {
@@ -661,13 +663,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (forumReset) {
       forumReset.addEventListener('click', function () {
-        setPill(themeGroup, 'all');
-        renderSubThemes();
-        setPill(stateGroup, 'all');
+        document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) { c.checked = false; });
         activityRadios.forEach(function (r) { r.checked = r.value === 'any'; });
-        document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
-          c.checked = false;
-        });
+        renderSubThemes();
         if (forumSearch) forumSearch.value = '';
         if (forumSortSeg) {
           forumSortSeg.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.remove('on'); });
@@ -679,25 +677,14 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // A pin on the Map Exploration page links here as forum.html?state=<name>,
-    // so the matching State pill is pre-selected on arrival.
-    var urlState = new URLSearchParams(location.search).get('state');
-    if (urlState && stateGroup) {
-      var stateMatch = Array.from(stateGroup.querySelectorAll('.seg-tab')).some(function (b) {
-        return b.getAttribute('data-v') === urlState;
-      });
-      if (stateMatch) setPill(stateGroup, urlState);
-    }
-
-    // A card on the Themes & sub-themes page links here as
-    // forum.html?theme=<name>, so the matching Theme pill is pre-selected.
-    var urlTheme = new URLSearchParams(location.search).get('theme');
-    if (urlTheme && themeGroup) {
-      var themeMatch = Array.from(themeGroup.querySelectorAll('.seg-tab')).some(function (b) {
-        return b.getAttribute('data-v') === urlTheme;
-      });
-      if (themeMatch) { setPill(themeGroup, urlTheme); renderSubThemes(); }
-    }
+    // A pin on the Map Exploration page links here as forum.html?state=<name>, and a card on the
+    // Themes & sub-themes page as forum.html?theme=<name>: tick the matching option on arrival.
+    var qs = new URLSearchParams(location.search);
+    [['state', qs.get('state')], ['theme', qs.get('theme')]].forEach(function (p) {
+      if (!p[1]) return;
+      document.querySelectorAll('.filterpanel input[data-fg="' + p[0] + '"]').forEach(function (c) { if (c.value === p[1]) c.checked = true; });
+    });
+    renderSubThemes();
 
     // Tablets and phones: the filter panel is a collapsible bar so threads are not pushed far down the page.
     var fPanel = document.querySelector('.filterpanel'), fHead = fPanel && fPanel.querySelector('.fp-head');
