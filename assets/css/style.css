@@ -2923,3 +2923,6 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 /* the camel image already carries its own short lines; no extra lines beside it */
 .cb-ic::before,.cb-ic::after{display:none}
+
+/* illustrated (two-tone) icons in the menu dropdowns */
+.navdrop-in .nd-svg{width:1.7rem;height:1.7rem;display:block}
