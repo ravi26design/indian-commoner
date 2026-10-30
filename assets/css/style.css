@@ -2959,3 +2959,6 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* chat column 120px wider (800px -> 920px) */
 .composer.fixed-bottom{max-width:57.5rem}
 .convo-layout>div{max-width:57.5rem}
+
+/* forum empty state: village illustration */
+.forum-empty .empty-ill{display:block;width:13.5rem;max-width:80%;height:auto;margin:0 auto}
