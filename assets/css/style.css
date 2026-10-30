@@ -2944,3 +2944,11 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 @keyframes icCaret{50%{opacity:0}}
 .msg-actions[hidden]{display:none}
 @media(prefers-reduced-motion:reduce){.typing-dots i,.typing-caret::after{animation:none}}
+
+/* new-thread flow: confirmation once the location is saved */
+.tc-done{margin-top:1rem;padding:1rem 1.1rem;border-radius:1rem;background:var(--green-soft);border:1px solid var(--green-line);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.tc-done[hidden]{display:none}
+.tc-done-msg{display:flex;gap:.75rem;align-items:flex-start;min-width:0;flex:1 1 16rem}
+.tc-done-msg>svg,.tc-done-msg>i{flex:none;width:1.5rem;height:1.5rem;color:var(--green-d)}
+.tc-done-msg b{display:block;color:var(--green-d);font-size:.98rem}
+.tc-done-msg span{display:block;font-size:.85rem;line-height:1.5;color:var(--muted);margin-top:.15rem}

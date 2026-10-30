@@ -808,7 +808,7 @@
       return '<option value="' + escapeHtml(t) + '"' + (t === th.theme ? ' selected' : '') + '>' + escapeHtml(t) + '</option>';
     }).join('');
     return '<div class="thread-card">' +
-      '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created<a class="tc-view" href="forum.html">View in forum →</a></div>' +
+      '<div class="tc-head"><i data-lucide="folder-plus"></i> New thread created</div>' +
       '<div class="tc-theme"><span class="tc-k">Theme</span><div class="tc-row-main"><span class="tc-theme-name"></span>' +
         '<label class="tc-change">Change <select class="tc-theme-sel" aria-label="Change theme">' + opts + '</select></label></div></div>' +
       '<div class="tc-theme tc-sub-row"><span class="tc-k">Sub-theme</span><div class="tc-row-main"><span class="tc-theme-name tc-sub-name"></span>' +
@@ -841,6 +841,11 @@
       '</div>' +
       '<div class="tc-saved" hidden></div>' +
       '<div class="tc-chain"></div>' +
+      '<div class="tc-done" hidden>' +
+        '<div class="tc-done-msg"><i data-lucide="circle-check"></i><div><b>Your thread is created</b>' +
+        '<span>It is saved with its theme, language and location, and appears at the top of the Discussion Forum.</span></div></div>' +
+        '<a class="btn btn-primary" href="forum.html">Go to Discussion Forum <i data-lucide="arrow-right"></i></a>' +
+      '</div>' +
     '</div>';
   }
 
@@ -848,7 +853,7 @@
     var $ = function (s) { return card.querySelector(s); };
     var themeName = $('.tc-theme-name'), themeSel = $('.tc-theme-sel'), note = $('.tc-note');
     var locBlock = $('.tc-loc'), askWrap = $('.tc-ask-wrap'), optional = $('.tc-optional');
-    var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved');
+    var panel = $('.tc-panel'), status = $('.tc-status'), saved = $('.tc-saved'), done = $('.tc-done');
     var subRow = $('.tc-sub-row'), subName = $('.tc-sub-name'), subSel = $('.tc-sub-sel'), chain = $('.tc-chain');
     var langName = $('.tc-lang-name'), langSel = $('.tc-lang-sel'), langAuto = $('.tc-auto');
 
@@ -922,9 +927,13 @@
       setStatus('');
       renderChain();
       persistThread(th);
+      // Everything is filled in: confirm, with a way on to the forum.
+      if (done) { done.hidden = false; }
       if (window.lucide) lucide.createIcons();
+      if (done) done.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       saved.querySelector('[data-act="change-loc"]').addEventListener('click', function () {
         th.location = null;
+        if (done) done.hidden = true;
         saved.hidden = true;
         locBlock.hidden = false;
         showAsk();
