@@ -98,7 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!name) return;
     av.textContent = name.charAt(0).toUpperCase();
     tintAvatar(av, name);
-    if (window.icApplyMemberPhoto && av.classList.contains('mc-avatar')) window.icApplyMemberPhoto(av, name);
+    // A member's photo (the signed-in member's own upload, or one mapped by name) replaces the initial.
+    if (window.icApplyMemberPhoto && (av.classList.contains('mc-avatar') || (av.classList.contains('mp-avatar') && av.id !== 'mp-initial'))) window.icApplyMemberPhoto(av, name);
   });
   // The member's own profile avatar shows their uploaded photo when they have one.
   var ownAv = document.getElementById('mp-initial');

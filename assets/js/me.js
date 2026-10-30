@@ -21,7 +21,12 @@
   var MEMBER_PHOTOS = {
   };
   var photoIndex = null;
+  // The signed-in member's account appears in the Members directory as "Admin" (their profile says "Admin User")
+  // and as "Priya Sharma" elsewhere; whatever photo they uploaded in Edit Profile shows for both.
+  var OWN_NAMES = ['priya sharma', 'admin'];
   function memberPhoto(name) {
+    var key = String(name || '').trim().toLowerCase();
+    if (OWN_NAMES.indexOf(key) !== -1 && photo()) return photo();
     if (!photoIndex) {
       photoIndex = {};
       var extra = {};
