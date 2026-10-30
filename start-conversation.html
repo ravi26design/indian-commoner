@@ -1542,6 +1542,12 @@
       clearReplyContext();
       textarea.focus();
     });
+    // Enter sends; Shift+Enter adds a new line (and Enter is left alone while an input method is composing text)
+    textarea.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' || e.shiftKey || e.isComposing || e.keyCode === 229) return;
+      e.preventDefault();
+      sendBtn.click();
+    });
   }
 })();
 </script>
