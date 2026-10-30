@@ -3187,3 +3187,7 @@ body.nd-lock{overflow:hidden}
 /* profile tab counts: dark badge */
 .mp-badge{background:var(--green-d);color:#fff;font-weight:800;min-width:1.4rem;text-align:center}
 .mp-badge{display:inline-flex;align-items:center;justify-content:center;height:1.6rem;min-width:1.7rem;padding:0 .55rem;line-height:1}
+
+/* About page banner image: full width, edge to edge */
+.ehero-img{width:100%;max-width:none;margin:0;border-radius:0}
+@media(max-width:700px){.ehero-img{width:100%}}
