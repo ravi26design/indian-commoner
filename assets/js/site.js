@@ -465,6 +465,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumSortSeg = document.querySelector('.seg-tabs[data-fseg]');
     var themeGroup = document.querySelector('.seg-tabs[data-pillgroup="theme"]');
     var stateGroup = document.querySelector('.seg-tabs[data-pillgroup="state"]');
+    var subGroup = document.querySelector('.seg-tabs[data-pillgroup="sub"]');
+    var subCat = document.getElementById('fp-sub-cat');
+    // The real "Sub-thematic areas" listed on each theme's page (same list the Chat with us flow uses).
+    var THEME_SUBS = {
+      'Governing the Commons': ['Laws and Enactments', 'Policies', 'Tenure Arrangements', 'Institutional Arrangements'],
+      'Commons as Culture': ['Traditional Constructions', 'Sacred Sites and Cultural Landscapes', 'Traditional Knowledge, Customs and Practices'],
+      'Commons as Micro Habitats': ['Biodiversity', 'Invasive Species', 'Fire Ecology', 'Regulatory Functions', 'Restoration Ecology'],
+      'Livelihoods, Subsistence & Valuation of Commons': ['Cash Income', 'Valuation of Commons', 'Reciprocity and Embodied Exchange', 'Security and Subsistence'],
+      'Gender and Commons': ['Differential Access, Dependence and Impacts', 'Gender-Specific Knowledge Systems'],
+      'Power and Commons': ['Differences Within Communities', 'Social Movements']
+    };
     var activityRadios = document.querySelectorAll('.filterpanel input[name="fx-activity"]');
     var otherFilterInputs = document.querySelectorAll('.filterpanel input[type="checkbox"], .filterpanel input[name="fx-activity"]');
     var forumReset = document.getElementById('forum-reset');
@@ -480,6 +491,27 @@ document.addEventListener('DOMContentLoaded', function () {
     function setPill(group, value) {
       if (!group) return;
       group.querySelectorAll('.seg-tab').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === value); });
+    }
+
+    // Sub-theme section: only appears once a theme with sub-themes is chosen, and lists just that theme's.
+    function renderSubThemes() {
+      if (!subGroup || !subCat) return;
+      var subs = THEME_SUBS[pillValue(themeGroup)] || [];
+      subCat.hidden = !subs.length;
+      subGroup.innerHTML = '';
+      if (!subs.length) return;
+      [['all', 'All']].concat(subs.map(function (n) { return [n, n]; })).forEach(function (p, i) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'seg-tab' + (i === 0 ? ' on' : '');
+        b.setAttribute('data-v', p[0]); b.textContent = p[1];
+        b.addEventListener('click', function () { setPill(subGroup, p[0]); applyForumFilters(); });
+        subGroup.appendChild(b);
+      });
+    }
+    function rowHasSub(row, sub) {
+      return Array.prototype.some.call(row.querySelectorAll('.tr-tags .tag'), function (t) {
+        return t.textContent.trim().toLowerCase() === sub.toLowerCase();
+      });
     }
 
     function activityValue() {
@@ -507,6 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function hasActiveFilters() {
       if (pillValue(themeGroup) !== 'all') return true;
+      if (pillValue(subGroup) !== 'all') return true;
       if (pillValue(stateGroup) !== 'all') return true;
       if (activityValue() !== 'any') return true;
       if (forumSearch && forumSearch.value.trim()) return true;
@@ -520,11 +553,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyForumFilters() {
       var theme = pillValue(themeGroup);
       var state = pillValue(stateGroup);
+      var sub = pillValue(subGroup);
       var q = (forumSearch && forumSearch.value ? forumSearch.value : '').trim().toLowerCase();
       var activityLimit = ACTIVITY_LIMIT_DAYS[activityValue()];
 
       var visible = forumRows.filter(function (row) {
         if (theme !== 'all' && row.getAttribute('data-theme') !== theme) return false;
+        if (sub !== 'all' && !rowHasSub(row, sub)) return false;
         if (state !== 'all' && row.getAttribute('data-state') !== state) return false;
         if (q && row.querySelector('h3').textContent.toLowerCase().indexOf(q) === -1) return false;
         if (activityLimit) {
@@ -551,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (forumReset) forumReset.hidden = !hasActiveFilters();
       var fpCount = document.getElementById('fp-count');
       if (fpCount) {
-        var nActive = (pillValue(themeGroup) !== 'all' ? 1 : 0) + (pillValue(stateGroup) !== 'all' ? 1 : 0) + (activityValue() !== 'any' ? 1 : 0);
+        var nActive = (pillValue(themeGroup) !== 'all' ? 1 : 0) + (pillValue(subGroup) !== 'all' ? 1 : 0) + (pillValue(stateGroup) !== 'all' ? 1 : 0) + (activityValue() !== 'any' ? 1 : 0);
         fpCount.textContent = nActive || '';
         fpCount.hidden = !nActive;
       }
@@ -563,6 +598,7 @@ document.addEventListener('DOMContentLoaded', function () {
       group.querySelectorAll('.seg-tab').forEach(function (btn) {
         btn.addEventListener('click', function () {
           setPill(group, btn.getAttribute('data-v'));
+          if (group === themeGroup) renderSubThemes();
           applyForumFilters();
         });
       });
@@ -584,6 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (forumReset) {
       forumReset.addEventListener('click', function () {
         setPill(themeGroup, 'all');
+        renderSubThemes();
         setPill(stateGroup, 'all');
         activityRadios.forEach(function (r) { r.checked = r.value === 'any'; });
         document.querySelectorAll('.filterpanel input[type="checkbox"]').forEach(function (c) {
@@ -617,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var themeMatch = Array.from(themeGroup.querySelectorAll('.seg-tab')).some(function (b) {
         return b.getAttribute('data-v') === urlTheme;
       });
-      if (themeMatch) setPill(themeGroup, urlTheme);
+      if (themeMatch) { setPill(themeGroup, urlTheme); renderSubThemes(); }
     }
 
     // Tablets and phones: the filter panel is a collapsible bar so threads are not pushed far down the page.
