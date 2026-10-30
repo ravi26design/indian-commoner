@@ -2952,3 +2952,10 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .tc-done-msg>svg,.tc-done-msg>i{flex:none;width:1.5rem;height:1.5rem;color:var(--green-d)}
 .tc-done-msg b{display:block;color:var(--green-d);font-size:.98rem}
 .tc-done-msg span{display:block;font-size:.85rem;line-height:1.5;color:var(--muted);margin-top:.15rem}
+
+.tc-done-row[hidden]{display:none}
+.tc-done-row .tc-done{margin-top:0}
+
+/* chat column 120px wider (800px -> 920px) */
+.composer.fixed-bottom{max-width:57.5rem}
+.convo-layout>div{max-width:57.5rem}
