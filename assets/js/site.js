@@ -397,6 +397,113 @@ document.addEventListener('DOMContentLoaded', function () {
     searchClose.addEventListener('click', function () { navsearch.classList.remove('open'); });
   }
 
+  // ---- Search suggestions: as the member types, suggest matching pages, themes, states and discussions ----
+  (function () {
+    var input = document.getElementById('ns-input'), field = navsearch && navsearch.querySelector('.ns-field');
+    if (!input || !field) return;
+    var box = document.createElement('div'); box.className = 'ns-suggest'; box.setAttribute('role', 'listbox'); box.hidden = true;
+    field.appendChild(box);
+    input.setAttribute('autocomplete', 'off'); input.setAttribute('role', 'combobox'); input.setAttribute('aria-expanded', 'false');
+
+    var PAGES = [
+      ['Home', 'index.html', 'home'], ['Discussion forum', 'forum.html', 'message-square'], ['Chat with us', 'start-conversation.html', 'sparkles'],
+      ['Map exploration', 'map.html', 'map'], ['Members', 'members.html', 'users-round'], ['Podcasts', 'resources-podcasts.html', 'mic'],
+      ['Webinars', 'resources-webinars.html', 'monitor-play'], ['Videos', 'resources-videos.html', 'clapperboard'], ['Newsfeed', 'resources-newsfeed.html', 'newspaper'],
+      ['Laws and Regulations', 'resources-laws.html', 'scale'], ['Purpose of IC', 'purpose-of-the-indian-commoner.html', 'feather'], ['IC Team', 'team.html', 'badge-check'],
+      ['What Are Commons', 'what-are-commons.html', 'sprout'], ['Who Is a Commoner', 'who-is-a-commoner.html', 'users'], ['Contact Us', 'contact-us.html', 'mail'],
+      ['Terms of Use', 'terms-of-use.html', 'file-text'], ['Privacy Policy', 'privacy-policy.html', 'shield']
+    ];
+    var THEMES = ['Governing the Commons', 'Commons as Culture', 'Commons as Micro Habitats', 'Livelihoods, Subsistence & Valuation of Commons', 'Gender and Commons', 'Power and Commons', 'Conversion of Commons', 'Others'];
+    var STATES = ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Chhattisgarh', 'Gujarat', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Meghalaya', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Uttar Pradesh', 'Uttarakhand'];
+    var threads = null, loading = false;
+    function loadThreads(cb) {
+      if (window.IC_THREADS) { threads = window.IC_THREADS; return cb && cb(); }
+      if (loading) return;
+      loading = true;
+      var sc = document.createElement('script'); sc.src = 'assets/js/forum-threads.js';
+      sc.onload = function () { threads = window.IC_THREADS || []; if (cb) cb(); };
+      sc.onerror = function () { threads = []; };
+      document.head.appendChild(sc);
+    }
+    function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function norm(t) { return String(t).toLowerCase(); }
+    function score(text, tokens) {
+      var t = norm(text), sc = 0;
+      for (var i = 0; i < tokens.length; i++) {
+        var p = t.indexOf(tokens[i]); if (p === -1) return -1;
+        sc += p === 0 ? 3 : (t.charAt(p - 1) === ' ' ? 2 : 1);
+      }
+      return sc;
+    }
+    function hl(text, tokens) {
+      var out = esc(text);
+      tokens.forEach(function (tok) {
+        if (!tok) return;
+        var re = new RegExp('(' + tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+        out = out.replace(/(<[^>]*>)|([^<]+)/g, function (m, tag, txt) { return tag ? tag : txt.replace(re, '<mark>$1</mark>'); });
+      });
+      return out;
+    }
+    var items = [], active = -1;
+    function build(q) {
+      var tokens = norm(q).trim().split(/\s+/).filter(Boolean);
+      var groups = [];
+      function pick(list, label, icon, max) {
+        var r = list.map(function (x) { return { s: score(x.t, tokens), x: x }; }).filter(function (a) { return a.s >= 0; })
+          .sort(function (a, b) { return b.s - a.s; }).slice(0, max).map(function (a) { return a.x; });
+        if (r.length) groups.push({ label: label, icon: icon, items: r });
+      }
+      pick(PAGES.map(function (p) { return { t: p[0], h: p[1], i: p[2] }; }), 'Pages', 'file', 3);
+      pick(THEMES.map(function (t) { return { t: t, h: 'forum.html?theme=' + encodeURIComponent(t), i: 'tag' }; }), 'Themes', 'tag', 3);
+      pick(STATES.map(function (t) { return { t: t, h: 'forum.html?state=' + encodeURIComponent(t), i: 'map-pin' }; }), 'States', 'map-pin', 3);
+      var th = (threads || []).map(function (t) { return { t: t.t, h: t.h, i: 'message-square', sub: t.s }; });
+      try { JSON.parse(localStorage.getItem('ic_pending_threads') || '[]').forEach(function (t) { th.unshift({ t: t.title, h: 'thread.html?id=' + t.ts, i: 'message-square', sub: 'Your thread' }); }); } catch (e) {}
+      pick(th, 'Discussions', 'message-square', 5);
+      return { groups: groups, tokens: tokens };
+    }
+    function render() {
+      var q = input.value;
+      if (!q.trim()) { box.hidden = true; input.setAttribute('aria-expanded', 'false'); items = []; return; }
+      var res = build(q), html = '';
+      items = [];
+      res.groups.forEach(function (g) {
+        html += '<div class="ns-grp">' + g.label + '</div>';
+        g.items.forEach(function (it) {
+          items.push(it.h);
+          html += '<a class="ns-item" role="option" href="' + esc(it.h) + '" data-i="' + (items.length - 1) + '"><i data-lucide="' + it.i + '"></i><span class="ns-t">' + hl(it.t, res.tokens) + '</span>' + (it.sub ? '<small>' + esc(it.sub) + '</small>' : '') + '</a>';
+        });
+      });
+      var all = 'forum.html?q=' + encodeURIComponent(q.trim());
+      items.push(all);
+      html += '<a class="ns-item ns-all" role="option" href="' + esc(all) + '" data-i="' + (items.length - 1) + '"><i data-lucide="search"></i><span class="ns-t">Search discussions for “' + esc(q.trim()) + '”</span></a>';
+      if (!res.groups.length) html = '<div class="ns-none">No direct matches for “' + esc(q.trim()) + '”</div>' + html;
+      box.innerHTML = html; box.hidden = false; active = -1;
+      input.setAttribute('aria-expanded', 'true');
+      if (window.lucide) lucide.createIcons();
+    }
+    function setActive(n) {
+      var els = box.querySelectorAll('.ns-item'); if (!els.length) return;
+      active = (n + els.length) % els.length;
+      els.forEach(function (e, i) { e.classList.toggle('on', i === active); });
+      els[active].scrollIntoView({ block: 'nearest' });
+    }
+    input.addEventListener('focus', function () { loadThreads(render); });
+    input.addEventListener('input', function () { loadThreads(render); render(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (active >= 0 && items[active]) location.href = items[active];
+        else if (input.value.trim()) location.href = 'forum.html?q=' + encodeURIComponent(input.value.trim());
+      } else if (e.key === 'Escape') { box.hidden = true; }
+    });
+    var go = navsearch.querySelector('.ns-go');
+    if (go) go.addEventListener('click', function () { if (input.value.trim()) location.href = 'forum.html?q=' + encodeURIComponent(input.value.trim()); });
+    document.addEventListener('click', function (e) { if (!field.contains(e.target)) box.hidden = true; });
+    if (searchClose) searchClose.addEventListener('click', function () { box.hidden = true; input.value = ''; });
+  })();
+
   // Preference toggles (Preferences panel, etc.)
   document.querySelectorAll('.switch').forEach(function (sw) {
     sw.addEventListener('click', function () { sw.classList.toggle('on'); });
@@ -691,6 +798,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // A pin on the Map Exploration page links here as forum.html?state=<name>, and a card on the
     // Themes & sub-themes page as forum.html?theme=<name>: tick the matching option on arrival.
     var qs = new URLSearchParams(location.search);
+    if (qs.get('q') && forumSearch) forumSearch.value = qs.get('q');
     [['state', qs.get('state')], ['theme', qs.get('theme')]].forEach(function (p) {
       if (!p[1]) return;
       document.querySelectorAll('.filterpanel input[data-fg="' + p[0] + '"]').forEach(function (c) { if (c.value === p[1]) c.checked = true; });

@@ -3170,3 +3170,16 @@ body.nd-lock{overflow:hidden}
 .nd-foot a{display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;font-weight:700;color:var(--green-d);text-decoration:none}
 .nd-foot svg,.nd-foot i{width:1rem;height:1rem}
 @media(max-width:560px){.notif-drawer{border-radius:0}}
+
+/* header search suggestions */
+.ns-suggest{position:absolute;top:calc(100% + .5rem);left:0;right:0;min-width:min(26rem,92vw);background:#fff;border:1px solid var(--line-2);border-radius:1rem;box-shadow:0 18px 44px rgba(10,30,28,.2);padding:.4rem;z-index:80;max-height:min(30rem,70vh);overflow:auto}
+.ns-suggest[hidden]{display:none}
+.ns-grp{padding:.55rem .75rem .25rem;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+.ns-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .75rem;border-radius:.7rem;text-decoration:none;color:var(--ink);font-size:.9rem;line-height:1.35}
+.ns-item i,.ns-item svg{width:1rem;height:1rem;flex:none;color:var(--green-d)}
+.ns-item .ns-t{flex:1;min-width:0}
+.ns-item small{flex:none;font-size:.72rem;color:var(--muted-2);max-width:9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ns-item:hover,.ns-item.on{background:var(--green-soft)}
+.ns-item mark{background:#fbeaa8;color:inherit;border-radius:.2rem;padding:0 .08rem}
+.ns-all{margin-top:.25rem;border-top:1px solid var(--line);border-radius:0 0 .7rem .7rem;font-weight:700;color:var(--green-d)}
+.ns-none{padding:.7rem .75rem;font-size:.85rem;color:var(--muted)}
