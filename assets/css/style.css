@@ -3015,3 +3015,5 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 /* Map Exploration: the map fills most of the screen */
 .ic-leaflet.tall{height:calc(100vh - 15rem);min-height:32rem}
+
+.ic-pin-tip{max-width:16rem;white-space:normal;font-family:var(--sans);line-height:1.35}

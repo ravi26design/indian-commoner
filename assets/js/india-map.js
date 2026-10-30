@@ -97,11 +97,15 @@
       var towns = (TOWNS[s.name] || []).slice(0, s.count);
       demoPins.clearLayers();
       var pts = [];
-      towns.forEach(function (t) {
+      // Each pin is one of this state's discussions: clicking it opens that thread's page.
+      var stateThreads = (window.IC_THREADS || []).filter(function (x) { return x.s === s.name; });
+      towns.forEach(function (t, i) {
         var ll = [t[1], t[2]]; pts.push(ll);
-        L.marker(ll, { icon: pinIcon('demo'), title: 'Illustrative location: ' + t[0] + ', ' + s.name, keyboard: true })
-          .bindTooltip(esc(t[0]) + ' <small>(illustrative)</small>', { direction: 'top', offset: [0, -10] })
-          .on('click', function () { location.href = 'forum.html?state=' + encodeURIComponent(s.name); })
+        var th = stateThreads[i];
+        var href = th ? th.h : 'forum.html?state=' + encodeURIComponent(s.name);
+        L.marker(ll, { icon: pinIcon('demo'), title: (th ? th.t : 'Discussions in ' + s.name) + ' — ' + t[0], keyboard: true })
+          .bindTooltip('<b>' + esc(th ? th.t : 'Discussions in ' + s.name) + '</b><br><small>' + esc(t[0]) + ' (illustrative location)</small>', { direction: 'top', offset: [0, -10], className: 'ic-pin-tip' })
+          .on('click', function () { location.href = href; })
           .addTo(demoPins);
       });
       map.removeLayer(bubbles);
