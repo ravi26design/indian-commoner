@@ -2915,3 +2915,8 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 /* chat: narrower, centred column for the input and the conversation */
 .composer.fixed-bottom{max-width:50rem}
 .convo-layout>div{max-width:50rem;margin-left:auto;margin-right:auto;width:100%}
+
+/* home panels: larger camel icon */
+.cb-ic img{width:5rem}
+.cb-ic::before,.cb-ic::after{width:5rem}
+@media(max-width:560px){.cb-ic img{width:4rem}.cb-ic::before,.cb-ic::after{width:3rem}}
