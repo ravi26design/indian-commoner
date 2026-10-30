@@ -2962,3 +2962,13 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 /* forum empty state: village illustration */
 .forum-empty .empty-ill{display:block;width:13.5rem;max-width:80%;height:auto;margin:0 auto}
+
+/* member profile photo shown in avatars */
+.pw-av.has-photo{padding:0;overflow:hidden;background:#e6e6e0!important}
+.pw-av img,.acctav img,.mp-avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+.acctav.has-photo{padding:0;overflow:hidden}
+.mp-avatar.has-photo{padding:0;overflow:hidden}
+.ep-photo{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.ep-photo .mp-ph{width:4.2rem;height:4.2rem;border-radius:50%;overflow:hidden;background:#b9bdae;color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.3rem;flex:none}
+.ep-photo .mp-ph img{width:100%;height:100%;object-fit:cover}
+.ep-photo small{display:block;color:var(--muted);font-size:.78rem;margin-top:.3rem}

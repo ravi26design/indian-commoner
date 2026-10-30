@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/me.js"></script>
 </head>
 <body style="background:#f1f2ea">
 
@@ -144,7 +145,7 @@
       </div>
 
       <div class="cm-box reply-composer" id="reply-box" style="margin-top:1.5rem" hidden>
-        <span class="pw-av" style="background:var(--blue)">PS</span>
+        <span class="pw-av" id="t-me-av" style="background:var(--blue)">PS</span>
         <div class="cm-grow">
           <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.6rem">
             <div class="selw" style="max-width:11rem">
@@ -510,6 +511,7 @@
   }
 
   var authorName = thr.author || 'You';
+  icFillAvatar(document.getElementById('t-me-av'), 'You');
 
   // Only the thread's own author can delete it — and every thread on this
   // page is one this browser's user created. On your own post, "Report" gives
@@ -536,8 +538,8 @@
   document.title = thr.title + ' — Indian Commoner';
   document.getElementById('t-crumb').textContent = thr.title.length > 48 ? thr.title.slice(0, 48).trim() + '…' : thr.title;
   document.getElementById('t-role').textContent = 'Topic author \u00b7 posted ' + ago(thr.ts);
-  document.getElementById('t-author2').textContent = authorName;
-  document.getElementById('t-av').textContent = authorName.charAt(0).toUpperCase();
+  document.getElementById('t-author2').textContent = icDisplayName(authorName);
+  icFillAvatar(document.getElementById('t-av'), authorName);
   document.getElementById('t-body').textContent = thr.body || thr.title;
   // The Platform Assistant's information text, saved with the thread when it
   // was posted from Chat with us.
@@ -605,15 +607,15 @@
     var v = Object.keys(voices);
     repliesTag.lastChild.textContent = ' ' + rs.length + (rs.length === 1 ? ' Reply' : ' Replies');
     avstack.innerHTML = v.slice(0, 5).map(function (n) {
-      return '<span class="pw-av">' + escapeHtml(n.charAt(0).toUpperCase()) + '</span>';
+      return icAvatarHtml(n);
     }).join('');
   }
 
   function replyItemHtml(r) {
     var isAnon = r.author === 'Anonymous';
-    return '<span class="pw-av" style="background:var(--blue)">' + (isAnon ? '?' : escapeHtml(r.author === 'You' ? 'PS' : r.author.charAt(0).toUpperCase())) + '</span>' +
+    return (isAnon ? '<span class="pw-av" style="background:var(--blue)">?</span>' : icAvatarHtml(r.author, 'background:var(--blue)')) +
       '<div class="cm-grow">' +
-      '<div class="cm-h"><b>' + escapeHtml(r.author) + '</b> · ' + escapeHtml(ago(r.ts)) + '</div>' +
+      '<div class="cm-h"><b>' + escapeHtml(icDisplayName(r.author)) + '</b> · ' + escapeHtml(ago(r.ts)) + '</div>' +
       '<div class="cm-t">' + escapeHtml(r.text) + '</div>' +
       '<div class="cm-acts">' +
       '<button type="button" class="clearbtn like-btn reply-like' + (getLikes()['r' + r.ts] ? ' on' : '') + '" data-ts="' + r.ts + '" aria-pressed="' + (getLikes()['r' + r.ts] ? 'true' : 'false') + '" title="Like this reply"><i data-lucide="heart"></i><span>' + (getLikes()['r' + r.ts] ? 1 : 0) + '</span></button>' +

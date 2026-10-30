@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', function () {
     av.textContent = name.charAt(0).toUpperCase();
     tintAvatar(av, name);
   });
+  // The member's own profile avatar shows their uploaded photo when they have one.
+  var ownAv = document.getElementById('mp-initial');
+  if (ownAv && window.icPhoto && window.icPhoto()) window.icFillAvatar(ownAv, 'You');
 
   // Signed-in state persists across pages/reloads until the user explicitly
   // signs out — a plain localStorage flag, since this prototype has no real backend.
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
       a.title = 'My Profile';
       a.classList.add('acctav');
       a.style.cssText += 'width:2.5rem;height:2.5rem;border-radius:50%;padding:0;display:grid;place-items:center;font-weight:800';
-      a.textContent = 'PS';
+      if (window.icFillAvatar) window.icFillAvatar(a, 'You'); else a.textContent = 'PS';
 
       var group = document.createElement('div');
       group.className = 'navgroup acctgroup';

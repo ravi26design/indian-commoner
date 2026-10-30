@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/me.js"></script>
 </head>
 <body style="background:#f1f2ea">
 
@@ -1249,13 +1250,13 @@
     a.setAttribute('data-replies', String(rs.length));
     a.setAttribute('data-lang', t.langCode || 'en');
     a.innerHTML =
-      '<span class="pw-av">' + esc((t.author || 'Y').charAt(0).toUpperCase()) + '</span>' +
+      icAvatarHtml(t.author || 'You') +
       '<div class="tr-tx"><div class="tr-tags"><span class="tag ' + tag[0] + '">' + tag[1] + '</span>' +
       (t.sub ? '<span class="tag tint-slate">' + esc(t.sub) + '</span>' : '') +
       '<span class="tag tint-slate">New · via Chat with us</span></div>' +
       '<h3>' + esc(t.title) + '</h3>' +
       (t.answer && t.answer[0] ? '<p class="tr-ai"><span class="tr-ai-l"><i data-lucide="sparkles"></i> Platform Assistant</span> ' + esc(t.answer[0]) + '</p>' : '') +
-      '<div class="tr-meta"><span>by <b>' + esc(t.author || 'You') + '</b></span>' + loc + '<span>·</span><span>' + agoLabel(t.ts) + '</span></div></div>' +
+      '<div class="tr-meta"><span>by <b>' + esc(icDisplayName(t.author || 'You')) + '</b></span>' + loc + '<span>·</span><span>' + agoLabel(t.ts) + '</span></div></div>' +
       '<div class="tr-stats"><div class="tr-stat"><b>' + rs.length + '</b><span>' + (rs.length === 1 ? 'Reply' : 'Replies') + '</span></div><div class="tr-stat"><b>' + voiceN + '</b><span>' + (voiceN === 1 ? 'Voice' : 'Voices') + '</span></div></div>';
     list.insertBefore(a, list.firstChild);
   });

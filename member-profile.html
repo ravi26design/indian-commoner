@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+<script src="assets/js/me.js"></script>
 </head>
 <body style="background:var(--bg-soft)">
 
@@ -237,6 +238,15 @@
       <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
     </div>
     <div class="fm-body">
+      <div class="ep-photo">
+        <span class="mp-ph" id="ep-ph">PS</span>
+        <div>
+          <button type="button" class="btn btn-outline sm" id="ep-photo-btn"><i data-lucide="camera"></i> Change photo</button>
+          <button type="button" class="btn btn-ghost sm" id="ep-photo-rm" hidden>Remove</button>
+          <small>Shown next to your name on threads and replies.</small>
+        </div>
+        <input type="file" id="ep-photo-file" accept="image/*" hidden>
+      </div>
       <div class="grid g2">
         <div class="field"><label for="ep-name">Full name</label><input id="ep-name" type="text" value="Priya Sharma"></div>
         <div class="field"><label for="ep-email">Email</label><input id="ep-email" type="email" value="priya@fes.org"></div>
@@ -911,5 +921,33 @@
 </footer>
 
 <script src="assets/js/site.js"></script>
+<script>
+// Profile photo: stored on this device only (resized to a small square), shown in the header, on this page and next to your threads and replies.
+(function () {
+  var big = document.getElementById('mp-initial'), small = document.getElementById('ep-ph'),
+      btn = document.getElementById('ep-photo-btn'), rm = document.getElementById('ep-photo-rm'), file = document.getElementById('ep-photo-file');
+  function paint() {
+    [big, small].forEach(function (el) { if (el) icFillAvatar(el, 'You'); });
+    document.querySelectorAll('a.acctav').forEach(function (a) { icFillAvatar(a, 'You'); });
+    if (rm) rm.hidden = !icPhoto();
+  }
+  paint();
+  if (btn) btn.addEventListener('click', function () { file.click(); });
+  if (rm) rm.addEventListener('click', function () { icSetPhoto(''); paint(); });
+  if (file) file.addEventListener('change', function () {
+    var f = file.files && file.files[0];
+    if (!f || !/^image\//.test(f.type)) return;
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function () {
+      var S = 256, c = document.createElement('canvas'); c.width = c.height = S;
+      var side = Math.min(img.width, img.height), sx = (img.width - side) / 2, sy = (img.height - side) / 2;
+      c.getContext('2d').drawImage(img, sx, sy, side, side, 0, 0, S, S);
+      URL.revokeObjectURL(url);
+      icSetPhoto(c.toDataURL('image/jpeg', 0.85)); paint(); file.value = '';
+    };
+    img.src = url;
+  });
+})();
+</script>
 </body>
 </html>
