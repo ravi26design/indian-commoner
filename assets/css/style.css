@@ -2972,3 +2972,7 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 .ep-photo .mp-ph{width:4.2rem;height:4.2rem;border-radius:50%;overflow:hidden;background:#b9bdae;color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.3rem;flex:none}
 .ep-photo .mp-ph img{width:100%;height:100%;object-fit:cover}
 .ep-photo small{display:block;color:var(--muted);font-size:.78rem;margin-top:.3rem}
+
+/* thread lists: poster name right beside the avatar */
+.topicrow .tr-who{display:flex;align-items:center;min-height:2.6rem;margin-bottom:.15rem;font-size:.92rem}
+.topicrow .tr-who b{font-weight:800;color:var(--ink)}

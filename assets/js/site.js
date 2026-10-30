@@ -19,6 +19,23 @@ document.addEventListener('DOMContentLoaded', function () {
     return AVATAR_TINTS[hash % AVATAR_TINTS.length];
   }
   window.icAvatarTint = avatarTint;
+
+  // Thread lists: the poster's name sits right beside their avatar / profile photo (above the tags and title),
+  // instead of a "by <name>" at the end of the row.
+  document.querySelectorAll('.topicrow').forEach(function (row) {
+    var tx = row.querySelector('.tr-tx'), meta = row.querySelector('.tr-meta');
+    var nameEl = meta && meta.querySelector('b');
+    if (!tx || !nameEl || row.querySelector('.tr-who')) return;
+    var who = document.createElement('div');
+    who.className = 'tr-who';
+    who.innerHTML = '<b></b>';
+    who.firstChild.textContent = nameEl.textContent;
+    tx.insertBefore(who, tx.firstChild);
+    var byEl = nameEl.parentNode;                       // <span>by <b>Name</b></span>
+    var sep = byEl.nextElementSibling;                  // the "·" that followed it
+    if (sep && sep.textContent.trim() === '·') sep.remove();
+    byEl.remove();
+  });
   function tintAvatar(av, name) {
     if (!av || !name) return;
     av.style.background = avatarTint(name);
@@ -458,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var forumRows = Array.from(forumList.querySelectorAll('.topicrow'));
 
     forumRows.forEach(function (row) {
-      var nameEl = row.querySelector('.tr-meta b');
+      var nameEl = row.querySelector('.tr-who b, .tr-meta b');
       var av = row.querySelector('.pw-av');
       if (!nameEl || !av) return;
       tintAvatar(av, nameEl.textContent);
