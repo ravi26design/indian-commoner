@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="nd-tabs"><button type="button" class="on" data-f="all">All <em id="nd-n-all">0</em></button><button type="button" data-f="unread">Unread <em id="nd-n-unread">0</em></button>' +
         '<button type="button" class="nd-readall" id="nd-readall">Mark all as read</button></div>' +
       '<div class="nd-list" id="nd-list"></div>' +
-      '<div class="nd-foot"><a href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage subscriptions</a><a href="notifications.html"><i data-lucide="external-link"></i> Open full page</a></div>';
+      '<div class="nd-foot"><a href="member-profile.html#subs"><i data-lucide="bell-ring"></i> Manage subscriptions</a></div>';
     document.body.appendChild(scrim); document.body.appendChild(drawer);
     var list = drawer.querySelector('#nd-list'), filter = 'all';
 
