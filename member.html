@@ -123,7 +123,7 @@
           <div class="mp-field"><span class="mp-field-k">About</span><span class="mp-field-v" id="mp-about">&mdash;</span></div>
         </div>
         <div id="mp-friends" class="mp-pane" hidden>
-          <div class="mp-friend-grid" id="mp-friend-grid"></div>
+          <div class="membergrid" id="mp-friend-grid"></div>
         </div>
         <div id="mp-posts" class="mp-pane" hidden>
           <div class="mp-sec-h">Posts</div>
@@ -258,7 +258,15 @@
       if (aboutEl) aboutEl.textContent = pick(ABOUTS);
     }
 
-    function demoFriends() {
+    function friendCardHtml(fn) {
+        var handle = '@' + fn.toLowerCase().replace(/[^a-z0-9]+/g, '');
+        return '<div class="membercard"><a class="mc-link" href="member.html?name=' + encodeURIComponent(fn) + '">' +
+          '<span class="mc-cover"></span><span class="mc-avatar pw-av"></span>' +
+          '<b class="mc-name">' + escapeHtml(fn) + '</b><span class="mc-handle">' + escapeHtml(handle) + '</span></a>' +
+          '<div class="mc-actions"><a class="btn btn-outline sm" href="member.html?name=' + encodeURIComponent(fn) + '"><i data-lucide="check"></i> Friends</a>' +
+          '<button type="button" class="btn btn-outline sm"><i data-lucide="mail"></i> Message</button></div></div>';
+      }
+      function demoFriends() {
       var pool = ALL_MEMBERS.filter(function (n) { return n !== name; });
       var count = 17 + Math.floor(rng() * 4); // 17-20
       var friends = shuffled(pool).slice(0, Math.min(count, pool.length));
@@ -268,9 +276,7 @@
       if (!grid) return;
       grid.innerHTML = friends.map(function (fn) {
         var initial = fn.trim().charAt(0).toUpperCase();
-        return '<a class="mp-friend-card" href="member.html?name=' + encodeURIComponent(fn) + '">' +
-          '<span class="mp-friend-av" data-avatar-name="' + escapeHtml(fn) + '">' + escapeHtml(initial) + '</span>' +
-          '<span class="mp-friend-name">' + escapeHtml(fn) + '</span></a>';
+        return friendCardHtml(fn);
       }).join('');
     }
 

@@ -202,7 +202,7 @@
           </div>
         </div>
         <div id="mp-friends" class="mp-pane" hidden>
-          <div class="mp-friend-grid" id="mp-friend-grid"></div>
+          <div class="membergrid" id="mp-friend-grid"></div>
         </div>
         <div id="mp-posts" class="mp-pane" hidden>
           <div class="mp-post-list" id="mp-post-list"></div>
@@ -379,7 +379,15 @@
       }
     } catch (e) {}
 
-    function demoFriends() {
+    function friendCardHtml(fn) {
+        var handle = '@' + fn.toLowerCase().replace(/[^a-z0-9]+/g, '');
+        return '<div class="membercard"><a class="mc-link" href="member.html?name=' + encodeURIComponent(fn) + '">' +
+          '<span class="mc-cover"></span><span class="mc-avatar pw-av"></span>' +
+          '<b class="mc-name">' + escapeHtml(fn) + '</b><span class="mc-handle">' + escapeHtml(handle) + '</span></a>' +
+          '<div class="mc-actions"><a class="btn btn-outline sm" href="member.html?name=' + encodeURIComponent(fn) + '"><i data-lucide="check"></i> Friends</a>' +
+          '<button type="button" class="btn btn-outline sm"><i data-lucide="mail"></i> Message</button></div></div>';
+      }
+      function demoFriends() {
       var friends = getFriends();
       var grid = document.getElementById('mp-friend-grid');
       var badge = document.querySelector('.mp-tab[data-tab="friends"] .mp-badge');
@@ -387,9 +395,7 @@
       if (!grid) return;
       grid.innerHTML = friends.length ? friends.map(function (fn) {
         var initial = fn.trim().charAt(0).toUpperCase();
-        return '<a class="mp-friend-card" href="member.html?name=' + encodeURIComponent(fn) + '">' +
-          '<span class="mp-friend-av" data-avatar-name="' + escapeHtml(fn) + '">' + escapeHtml(initial) + '</span>' +
-          '<span class="mp-friend-name">' + escapeHtml(fn) + '</span></a>';
+        return friendCardHtml(fn);
       }).join('') : '<p class="muted" style="grid-column:1/-1">No friends yet — add people from their profile pages.</p>';
     }
     // Coming back from a profile after an unfriend (back button / bfcache).

@@ -785,4 +785,12 @@ document.addEventListener('DOMContentLoaded', function () {
     urlEl.addEventListener('focus', function () { urlEl.select(); });
     if (window.lucide) lucide.createIcons();
   })();
+
+  // Friend cards on profile pages: Message is a prototype-only action, so acknowledge the click like the Members page does.
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('#mp-friend-grid .mc-actions button');
+    if (!b || b.disabled) return;
+    b.innerHTML = '<i data-lucide="check"></i> Sent'; b.disabled = true;
+    if (window.lucide) lucide.createIcons();
+  });
 });
