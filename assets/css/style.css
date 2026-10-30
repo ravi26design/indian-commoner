@@ -3020,3 +3020,7 @@ footer.site .fpartners img{height:3.1rem;width:auto;max-width:100%}
 
 .fp-check .fp-t{font-style:normal;flex:1;min-width:0;line-height:1.45}
 .fp-check .fp-t span{margin-left:.2rem}
+
+/* filter options: checkbox lines up with the first line of the label when the name wraps */
+.filterpanel .fp-check{align-items:flex-start}
+.filterpanel .fp-check input{margin-top:.2rem}
