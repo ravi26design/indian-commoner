@@ -3183,3 +3183,6 @@ body.nd-lock{overflow:hidden}
 .ns-item mark{background:#fbeaa8;color:inherit;border-radius:.2rem;padding:0 .08rem}
 .ns-all{margin-top:.25rem;border-top:1px solid var(--line);border-radius:0 0 .7rem .7rem;font-weight:700;color:var(--green-d)}
 .ns-none{padding:.7rem .75rem;font-size:.85rem;color:var(--muted)}
+
+/* profile tab counts: dark badge */
+.mp-badge{background:var(--green-d);color:#fff;font-weight:800;min-width:1.4rem;text-align:center}
