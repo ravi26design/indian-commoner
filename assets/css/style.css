@@ -3429,6 +3429,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .rg-done p{color:var(--muted);margin:0}
 
 /* Login / register: secondary buttons keep their secondary look on hover */
-.ssocard .btn-outline:hover{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
+.ssocard .btn-outline:hover{background:transparent;color:var(--green-d);border-color:transparent;text-decoration:underline;text-underline-offset:4px}
 .rg-opt{font-weight:600;color:var(--muted);font-size:.8rem}
 .rg-otpbox[hidden]{display:none}
