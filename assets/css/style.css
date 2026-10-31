@@ -3302,3 +3302,6 @@ body.nd-lock{overflow:hidden}
 .sv-credits{margin:1.1rem 0 0;font-size:.66rem;line-height:1.5;color:var(--muted-2);text-align:center}
 .sv-credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2);text-underline-offset:2px}
 .sv-credits a:hover{color:var(--green-d)}
+
+/* survey explanation box: no thick left line, just the soft outline */
+.sv-note{border-left:1px solid var(--green-line)}
