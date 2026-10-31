@@ -3289,3 +3289,5 @@ body.nd-lock{overflow:hidden}
 .sv-top .sv-bk{background:var(--green-soft);color:var(--green-d)}
 .sv-top .sv-bk:hover{background:var(--green);color:#fff}
 .sv-top{gap:.8rem}
+
+.sv-actions.between{justify-content:space-between;align-items:center}

@@ -1009,10 +1009,9 @@ document.addEventListener('DOMContentLoaded', function () {
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans
             ? '<div class="sv-note"><span class="sv-ans ' + ans + '">You said ' + (ans === 'yes' ? 'Yes' : 'No') + '</span>' + esc(q[1]) + '</div>' +
-              '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
+              '<div class="sv-actions end between"><button type="button" class="sv-link" data-a="change"><i data-lucide="rotate-ccw"></i> Change answer</button><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
             : '<div class="sv-choices"><button type="button" class="sv-choice no" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
-          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"><i data-lucide="arrow-left"></i> ' + (step === 0 ? 'Back' : 'Prev') + '</button>' +
-          (ans ? '<button type="button" class="sv-link" data-a="change"><i data-lucide="rotate-ccw"></i> Change answer</button>' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div></div>';
+          '</div></div>';
       }
       if (window.lucide) lucide.createIcons();
       var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
