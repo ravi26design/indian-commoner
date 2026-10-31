@@ -56,12 +56,12 @@
           </div>
         </div>
         <div class="lgf">
-          <label for="rg-email">Email ID</label>
+          <label for="rg-email">Email ID <span class="rg-opt">(optional)</span></label>
           <div class="lg-input">
             <span class="lg-ic"><i data-lucide="mail"></i></span>
             <input id="rg-email" type="email" placeholder="you@example.com" autocomplete="email">
           </div>
-          <p class="lg-hint">We'll send the same one-time code to your mobile and email to verify both.</p>
+          <p class="lg-hint">We'll send a one-time code to your mobile. Add an email only if you also want it verified.</p>
         </div>
         <div class="lgf">
           <label for="rg-user">User Name</label>
@@ -92,8 +92,8 @@
         <div class="rg-verify-head">
           <span class="rg-verify-ic"><i data-lucide="shield-check"></i></span>
           <div>
-            <h2 class="rg-verify-h">Verify your mobile &amp; email</h2>
-            <p class="lg-otp-note" style="margin:.25rem 0 0">We sent a separate 6-digit code to each. Enter both to create your account.</p>
+            <h2 class="rg-verify-h" id="rg-verify-h">Verify your mobile &amp; email</h2>
+            <p class="lg-otp-note" style="margin:.25rem 0 0" id="rg-verify-p">We sent a separate 6-digit code to each. Enter both to create your account.</p>
           </div>
         </div>
         <div class="rg-otpbox" id="rg-g-m">
@@ -106,7 +106,7 @@
           <div class="lg-otp"><input class="lg-otp-box" id="rg-e-0" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 1"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 2"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 3"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 4"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 5"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 6"></div>
           <p class="lg-otp-note">Didn't receive it? <button type="button" class="lg-linkbtn rg-resend">Resend code</button></p>
         </div>
-        <p class="lg-hint err" id="rg-otp-err" hidden>Enter both 6-digit codes to continue.</p>
+        <p class="lg-hint err" id="rg-otp-err" hidden>Enter the 6-digit code to continue.</p>
         <button type="button" class="btn btn-primary block lg-btn" id="rg-verify">Verify &amp; Create Account</button>
         <button type="button" class="btn btn-outline block lg-btn" id="rg-back" style="margin-top:.75rem;border-color:transparent">Back to edit details</button>
       </div>
@@ -135,6 +135,7 @@
     var el = document.getElementById('rg-g-' + k);
     return { el: el, boxes: Array.prototype.slice.call(el.querySelectorAll('.lg-otp-box')), ok: el.querySelector('.rg-otpok'), resend: el.querySelector('.rg-resend') };
   });
+  var active = groups;
   var verifyBtn = document.getElementById('rg-verify');
   var otpErr = document.getElementById('rg-otp-err');
   var doneBox = document.getElementById('rg-done');
@@ -230,7 +231,7 @@
     if (!fname.value.trim()) { bad(fname); return; }
     if (!lname.value.trim()) { bad(lname); return; }
     if (!mobile || mobile.value.length !== 10) { bad(mobile); return; }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { bad(email); return; }
+    if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { bad(email); return; }
     if (!checkUser()) { bad(user); return; }
     if (capIn.value.trim().toUpperCase() !== capCode) {
       newCaptcha();
@@ -238,7 +239,13 @@
       return;
     }
     if (toMobile) toMobile.textContent = '+91 ' + mobile.value;
+    var hasEmail = !!email.value.trim();
     if (toEmail) toEmail.textContent = email.value.trim();
+    groups[1].el.hidden = !hasEmail;
+    active = hasEmail ? groups : [groups[0]];
+    document.getElementById('rg-verify-h').textContent = hasEmail ? 'Verify your mobile & email' : 'Verify your mobile number';
+    document.getElementById('rg-verify-p').textContent = hasEmail ? 'We sent a separate 6-digit code to each. Enter both to create your account.' : 'We sent a 6-digit code to your mobile number. Enter it to create your account.';
+    otpErr.textContent = hasEmail ? 'Enter both 6-digit codes to continue.' : 'Enter the 6-digit code to continue.';
     if (formStep) formStep.hidden = true;
     if (otpStep) otpStep.hidden = false;
     groups.forEach(function (g) { g.boxes.forEach(function (b) { b.value = ''; }); g.ok.hidden = true; g.el.classList.remove('done'); });
@@ -257,7 +264,7 @@
         var done = filled(g);
         g.ok.hidden = !done; g.el.classList.toggle('done', done);
         otpErr.hidden = true;
-        if (done && groups[gi + 1] && !filled(groups[gi + 1])) { groups[gi + 1].boxes[0].focus(); }
+        if (done && active[gi + 1] && !filled(active[gi + 1])) { groups[gi + 1].boxes[0].focus(); }
       });
       box.addEventListener('keydown', function (e) {
         if (e.key === 'Backspace' && !box.value && g.boxes[i - 1]) { g.boxes[i - 1].focus(); }
@@ -265,7 +272,7 @@
     });
   });
   verifyBtn.addEventListener('click', function () {
-    var first = groups.filter(function (g) { return !filled(g); })[0];
+    var first = active.filter(function (g) { return !filled(g); })[0];
     if (first) { otpErr.hidden = false; first.boxes[0].focus(); return; }
     document.getElementById('rg-done-name').textContent = fname.value.trim();
     otpStep.hidden = true; doneBox.hidden = false;
