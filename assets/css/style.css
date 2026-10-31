@@ -3378,3 +3378,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .sv-done-p{margin:0;font-size:1.05rem;color:var(--ink-2)}
 .sv-done-score{margin:.8rem 0 1.6rem;padding:.7rem 1.1rem;background:var(--green-soft);border-radius:.9rem;font-size:.95rem;color:#1b2b28}
 .sv-done-note{margin:1rem 0 0;font-size:.76rem;color:var(--muted-2)}
+
+.sv-photo svg.sv-ill{width:100%;height:100%;display:block}
+.sv-qwrap .sv-photo{background:#e6f3f1}
