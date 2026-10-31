@@ -3191,3 +3191,25 @@ body.nd-lock{overflow:hidden}
 /* About page banner image: full width, edge to edge */
 .ehero-img{width:100%;max-width:none;margin:0;border-radius:0}
 @media(max-width:700px){.ehero-img{width:100%}}
+
+/* "Who Is a Commoner" survey */
+.sv-back{position:fixed;inset:0;background:rgba(10,18,16,.62);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000}
+.sv-back.open{display:flex}
+.sv-card{width:min(40rem,100%);background:#fff;border-radius:.9rem;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.sv-head{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;padding:1.15rem 1.5rem}
+.sv-head b{font-size:1.5rem;font-weight:500;font-family:var(--sans)}
+.sv-x{border:0;background:none;color:#fff;cursor:pointer;display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%}
+.sv-x:hover{background:rgba(255,255,255,.18)}
+.sv-x svg,.sv-x i{width:1.4rem;height:1.4rem}
+.sv-body{padding:1.5rem 1.5rem 1.6rem;min-height:15.5rem;display:flex;flex-direction:column}
+.sv-q{font-size:1.2rem;line-height:1.55;margin:.4rem 0 1.4rem;color:#111}
+.sv-note{background:#e6e6e3;border-left:4px solid #8e8e8a;border-radius:.4rem;padding:.9rem 1.1rem;font-size:.95rem;line-height:1.55;margin-bottom:1.4rem}
+.sv-actions{display:flex;gap:1.1rem}
+.sv-actions.mid{justify-content:center}
+.sv-actions.end{justify-content:flex-end;margin-top:auto;padding-top:2.2rem}
+.sv-btn{border:0;background:var(--green);color:#fff;font:600 1.05rem/1 var(--sans);padding:1.05rem 2.1rem;border-radius:999px;cursor:pointer;transition:background .15s}
+.sv-btn:hover{background:var(--green-d)}
+.sv-nav{display:flex;justify-content:space-between;margin-top:1.4rem}
+.sv-link{border:0;background:none;color:var(--green);font:500 1.15rem/1 var(--sans);cursor:pointer;padding:.3rem 0}
+.sv-link:hover{color:var(--green-d)}
+@media(max-width:520px){.sv-head b{font-size:1.25rem}.sv-q{font-size:1.08rem}.sv-btn{padding:.95rem 1.6rem}}

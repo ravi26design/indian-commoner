@@ -961,4 +961,66 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('storage', paint);
     paint();
   })();
+
+  // ---- "Who Is a Commoner" survey: shown first when a member opens that page from any link ----
+  (function () {
+    var TARGET = 'who-is-a-commoner.html';
+    if (/who-is-a-commoner\.html$/.test(location.pathname)) return;
+    var QUESTIONS = [
+      ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.'],
+      ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.'],
+      ['Have you participated in activities like lake cleaning, planting drives etc.?', 'With increasing concerns over environment, it is no longer sufficient to depend solely on governments or enterprise to address these questions. Thus it becomes important to have vigilant and involved communities for collective action towards strengthening conservation efforts.'],
+      ['Do you like country chicken?', 'Commercial meat industries e.g. poultry is among the least nutritious sources of meat. Commercial poultry is also one of the most polluting forms of animal rearing. In contrast, country chickens are reared and managed around common pool resources.'],
+      ['Have you ever had wild berries, kashayam (kadha)?', 'Home remedies like kashayams and kadhas are often passed on from one generation to the next, and represent commonly held knowledge of the communities. Similarly, things like wild berries and medicinal herbs are mostly found and procured from common spaces like pastures, forests, ponds.'],
+      ['Have you been on a wildlife safari?', 'For most part, wildlife reserves have been carved out from community forests. The entire wildlife tourism industry owes a huge debt to the communities who have managed and protected these spaces.'],
+      ['Do you live in a house built with sand, stones, bricks and wood?', 'All the materials that go into building a house are sourced from common spaces or from common spaces that have now been privatized.']
+    ];
+    var back = document.createElement('div');
+    back.className = 'sv-back'; back.setAttribute('aria-hidden', 'true');
+    back.innerHTML = '<div class="sv-card" role="dialog" aria-modal="true" aria-labelledby="sv-title"><div class="sv-head"><b id="sv-title">Survey</b>' +
+      '<button type="button" class="sv-x" aria-label="Close survey"><i data-lucide="x"></i></button></div><div class="sv-body" id="sv-body"></div></div>';
+    document.body.appendChild(back);
+    var body = back.querySelector('#sv-body'), answers = [], step = -1;   // -1 = intro
+
+    function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function go() { location.href = TARGET; }
+    function save() { try { localStorage.setItem('ic_commoner_survey', JSON.stringify({ answers: answers, yes: answers.filter(function (a) { return a === 'yes'; }).length, at: Date.now() })); } catch (e) {} }
+    function render() {
+      if (step < 0) {
+        body.innerHTML = '<p class="sv-q">Take this quiz to find out how much of a ‘commoner’ you are</p>' +
+          '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey</button></div>';
+      } else {
+        var q = QUESTIONS[step], ans = answers[step], last = step === QUESTIONS.length - 1;
+        body.innerHTML = '<p class="sv-q">' + esc(q[0]) + '</p>' +
+          (ans ? '<div class="sv-note">' + esc(q[1]) + '</div><div class="sv-actions mid"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + '</button></div>'
+               : '<div class="sv-actions mid"><button type="button" class="sv-btn" data-a="no">No</button><button type="button" class="sv-btn" data-a="yes">Yes</button></div>') +
+          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"' + (step === 0 ? ' style="visibility:hidden"' : '') + '>Prev</button>' +
+          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Next') + '</button>') + '</div>';
+      }
+      var f = body.querySelector('.sv-btn'); if (f) f.focus();
+    }
+    function open() { step = -1; answers = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); if (window.lucide) lucide.createIcons(); }
+    function close() { back.classList.remove('open'); back.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); }
+    body.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-a]'); if (!b) return;
+      var a = b.getAttribute('data-a');
+      if (a === 'skip') return go();
+      if (a === 'start') { step = 0; return render(); }
+      if (a === 'yes' || a === 'no') { answers[step] = a; return render(); }
+      if (a === 'prev') { step = Math.max(0, step - 1); return render(); }
+      if (a === 'next') { if (step >= QUESTIONS.length - 1) { save(); return go(); } step++; return render(); }
+    });
+    back.querySelector('.sv-x').addEventListener('click', close);
+    back.addEventListener('click', function (e) { if (e.target === back) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && back.classList.contains('open')) close(); });
+    // any link to the Who Is a Commoner page asks the survey first (a new-tab click keeps its normal behaviour)
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a || a.target === '_blank') return;
+      var href = a.getAttribute('href') || '';
+      if (href.split('#')[0].split('?')[0].replace(/^\.\//, '') !== TARGET) return;
+      e.preventDefault(); open();
+    });
+  })();
 });
