@@ -3237,3 +3237,7 @@ body.nd-lock{overflow:hidden}
 .sv-link:hover{color:var(--ink)}
 .sv-link svg,.sv-link i{width:1rem;height:1rem}
 @media(max-width:560px){.sv-card{border-radius:1.2rem}.sv-hero{height:12rem}.sv-photo{height:9.5rem}.sv-pad{padding:1.25rem 1.2rem 1.35rem}.sv-choices{gap:.7rem}.sv-choice{padding:.9rem 1rem}.sv-btn{padding:.9rem 1.4rem}}
+
+.sv-credit{position:absolute;right:.8rem;bottom:.7rem;z-index:2;max-width:55%;font:600 .66rem/1.2 var(--sans);color:rgba(255,255,255,.92);background:rgba(0,0,0,.45);padding:.3rem .55rem;border-radius:.4rem;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sv-credit:hover{background:rgba(0,0,0,.7);color:#fff}
+@media(max-width:560px){.sv-credit{max-width:62%;font-size:.6rem}}

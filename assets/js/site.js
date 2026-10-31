@@ -965,16 +965,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // ---- Commoner survey: opened by the "Take a test! Are you a commoner?" card; Skip or Submit continues to Who Is a Commoner ----
   (function () {
     var TARGET = 'who-is-a-commoner.html';
-    // [question, explanation, photo]. The photos are the site's own pictures, used as illustrations for each question.
+    // [question, explanation, photo]. Each photo is a free-licence picture chosen to match its question (credited on screen).
     var QUESTIONS = [
-      ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.', 'assets/img/purpose-hero.jpg'],
-      ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.', 'assets/img/card-significance.jpg'],
-      ['Have you participated in activities like lake cleaning, planting drives etc.?', 'With increasing concerns over environment, it is no longer sufficient to depend solely on governments or enterprise to address these questions. Thus it becomes important to have vigilant and involved communities for collective action towards strengthening conservation efforts.', 'assets/img/about-hero.jpg'],
-      ['Do you like country chicken?', 'Commercial meat industries e.g. poultry is among the least nutritious sources of meat. Commercial poultry is also one of the most polluting forms of animal rearing. In contrast, country chickens are reared and managed around common pool resources.', 'assets/img/card-what.jpg'],
-      ['Have you ever had wild berries, kashayam (kadha)?', 'Home remedies like kashayams and kadhas are often passed on from one generation to the next, and represent commonly held knowledge of the communities. Similarly, things like wild berries and medicinal herbs are mostly found and procured from common spaces like pastures, forests, ponds.', 'assets/img/card-commoning.jpg'],
-      ['Have you been on a wildlife safari?', 'For most part, wildlife reserves have been carved out from community forests. The entire wildlife tourism industry owes a huge debt to the communities who have managed and protected these spaces.', 'assets/img/card-types.jpg'],
-      ['Do you live in a house built with sand, stones, bricks and wood?', 'All the materials that go into building a house are sourced from common spaces or from common spaces that have now been privatized.', 'assets/img/governing-hero.jpg']
+      ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.', 'assets/img/survey/q1.jpg'],
+      ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.', 'assets/img/survey/q2.jpg'],
+      ['Have you participated in activities like lake cleaning, planting drives etc.?', 'With increasing concerns over environment, it is no longer sufficient to depend solely on governments or enterprise to address these questions. Thus it becomes important to have vigilant and involved communities for collective action towards strengthening conservation efforts.', 'assets/img/survey/q3.jpg'],
+      ['Do you like country chicken?', 'Commercial meat industries e.g. poultry is among the least nutritious sources of meat. Commercial poultry is also one of the most polluting forms of animal rearing. In contrast, country chickens are reared and managed around common pool resources.', 'assets/img/survey/q4.jpg'],
+      ['Have you ever had wild berries, kashayam (kadha)?', 'Home remedies like kashayams and kadhas are often passed on from one generation to the next, and represent commonly held knowledge of the communities. Similarly, things like wild berries and medicinal herbs are mostly found and procured from common spaces like pastures, forests, ponds.', 'assets/img/survey/q5.jpg'],
+      ['Have you been on a wildlife safari?', 'For most part, wildlife reserves have been carved out from community forests. The entire wildlife tourism industry owes a huge debt to the communities who have managed and protected these spaces.', 'assets/img/survey/q6.jpg'],
+      ['Do you live in a house built with sand, stones, bricks and wood?', 'All the materials that go into building a house are sourced from common spaces or from common spaces that have now been privatized.', 'assets/img/survey/q7.jpg']
     ];
+    // Photo credits (Wikimedia Commons, free licences): [author, licence, page]
+    var CREDITS = [["Goumisao", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Curd_in_a_traditional_Manipuri_earthen_pot.JPG"], ["Biswarup Ganguly", "CC BY 3.0", "https://commons.wikimedia.org/wiki/File:Playful_Schoolchildren_-_Science_City_-_Kolkata_2011-01-28_0293.JPG"], ["നിരക്ഷരൻ", "CC BY 3.0", "https://commons.wikimedia.org/wiki/File:Cleaning_a_village_pond.jpg"], ["Hanan techc", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Hen_and_it%27s_chick.jpg"], ["Picofolkujur", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Complete_Local_herbal_medicine.jpg"], ["Ashishmahaur", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:Jungle_safari_-_Kanha_National_Park.jpg"], ["পাপৰি বৰা", "CC BY-SA 4.0", "https://commons.wikimedia.org/wiki/File:A_traditional_Assam-type_mud_and_bamboo_house_in_rural_Assam,India(Goalpara_District).jpg"]];
     var N = QUESTIONS.length;
     var back = document.createElement('div');
     back.className = 'sv-back'; back.setAttribute('aria-hidden', 'true');
@@ -1000,7 +1002,8 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
-          '<div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span></div>' +
+          '<div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
+          '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
           '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans
