@@ -1004,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', function () {
         body.innerHTML =
           '<div class="sv-top"><button type="button" class="sv-x2 sv-bk" data-a="prev" aria-label="Previous question" title="Previous question"><i data-lucide="arrow-left"></i></button><div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<button type="button" class="sv-x2" data-a="close" aria-label="Close survey"><i data-lucide="x"></i></button></div>' +
-          '<div class="sv-qwrap"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
+          '<div class="sv-qwrap"><div class="sv-figure"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""></div>' +
           '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans

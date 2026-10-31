@@ -3291,3 +3291,9 @@ body.nd-lock{overflow:hidden}
 .sv-top{gap:.8rem}
 
 .sv-actions.between{justify-content:space-between;align-items:center}
+
+/* survey photo: nothing on top of the picture; the licence credit sits quietly beneath it */
+.sv-figure{display:flex;flex-direction:column;align-items:center;gap:.45rem}
+.sv-qwrap .sv-photo::after{display:none}
+.sv-figure .sv-credit{position:static;max-width:100%;background:none;color:var(--muted-2);font:600 .68rem/1.3 var(--sans);padding:0;white-space:normal;text-align:center;text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(0,0,0,.2)}
+.sv-figure .sv-credit:hover{background:none;color:var(--green-d)}
