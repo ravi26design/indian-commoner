@@ -984,7 +984,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<button type="button" class="sv-x" aria-label="Close survey"><i data-lucide="x"></i></button>' +
       '<div class="sv-body" id="sv-body"></div></div>';
     document.body.appendChild(back);
-    var body = back.querySelector('#sv-body'), answers = [], step = -1;   // -1 = intro
+    var body = back.querySelector('#sv-body'), answers = [], prior = [], step = -1;   // -1 = intro
     QUESTIONS.forEach(function (q) { var im = new Image(); im.src = q[2]; });   // warm the cache so each question's photo shows at once
 
     function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -998,25 +998,25 @@ document.addEventListener('DOMContentLoaded', function () {
           '<h2 id="sv-title">Are you a Commoner?</h2></div></div>' +
           '<div class="sv-pad"><p class="sv-lead">Take this quiz to find out how much of a ‘commoner’ you are</p>' +
           '<p class="sv-sub">' + N + ' short questions about everyday life.</p>' +
-          '<div class="sv-actions end"><button type="button" class="sv-btn ghost" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey <i data-lucide="arrow-right"></i></button></div></div>';
+          '<div class="sv-actions end"><button type="button" class="sv-btn ghost" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey <i data-lucide="arrow-right"></i></button></div>' +
+          '<p class="sv-credits">Photos via Wikimedia Commons: ' + CREDITS.map(function (c) { return '<a href="' + esc(c[2]) + '" target="_blank" rel="noopener noreferrer">' + esc(c[0]) + '</a> (' + esc(c[1]) + ')'; }).join(', ') + '.</p></div>';
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
           '<div class="sv-top"><button type="button" class="sv-x2 sv-bk" data-a="prev" aria-label="Previous question" title="Previous question"><i data-lucide="arrow-left"></i></button><div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<button type="button" class="sv-x2" data-a="close" aria-label="Close survey"><i data-lucide="x"></i></button></div>' +
-          '<div class="sv-qwrap"><div class="sv-figure"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""></div>' +
-          '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
+          '<div class="sv-qwrap"><div class="sv-figure"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""></div></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans
             ? '<div class="sv-note"><span class="sv-ans ' + ans + '">You said ' + (ans === 'yes' ? 'Yes' : 'No') + '</span>' + esc(q[1]) + '</div>' +
-              '<div class="sv-actions end between"><button type="button" class="sv-link" data-a="change"><i data-lucide="rotate-ccw"></i> Change answer</button><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
-            : '<div class="sv-choices"><button type="button" class="sv-choice no" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
+              '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
+            : '<div class="sv-choices"><button type="button" class="sv-choice no' + (prior[step] === 'no' ? ' was' : '') + '" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes' + (prior[step] === 'yes' ? ' was' : '') + '" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
           '</div></div>';
       }
       if (window.lucide) lucide.createIcons();
       var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
     }
-    function open() { step = -1; answers = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); }
+    function open() { step = -1; answers = []; prior = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); }
     function close() { back.classList.remove('open'); back.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); }
     body.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return;
@@ -1025,8 +1025,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (a === 'skip') return go();
       if (a === 'start') { step = 0; return render(); }
       if (a === 'yes' || a === 'no') { answers[step] = a; return render(); }
-      if (a === 'prev') { step = Math.max(-1, step - 1); return render(); }      // from question 1 back to the intro
-      if (a === 'change') { delete answers[step]; return render(); }
+      if (a === 'prev') {                                   // from question 1 back to the intro
+        step = Math.max(-1, step - 1);
+        if (step >= 0 && answers[step]) { prior[step] = answers[step]; delete answers[step]; }   // re-answer; the earlier choice stays highlighted
+        return render();
+      }
       if (a === 'next') { if (step >= N - 1) { save(); return go(); } step++; return render(); }
     });
     back.querySelector('.sv-x').addEventListener('click', close);
@@ -1034,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (e) {
       if (!back.classList.contains('open')) return;
       if (e.key === 'Escape') close();
-      else if (e.key === 'ArrowLeft' && step >= 0) { step--; render(); }
+      else if (e.key === 'ArrowLeft' && step >= 0) { step--; if (step >= 0 && answers[step]) { prior[step] = answers[step]; delete answers[step]; } render(); }
     });
     // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
     document.addEventListener('click', function (e) {

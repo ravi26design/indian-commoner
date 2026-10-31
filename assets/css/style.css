@@ -3297,3 +3297,8 @@ body.nd-lock{overflow:hidden}
 .sv-qwrap .sv-photo::after{display:none}
 .sv-figure .sv-credit{position:static;max-width:100%;background:none;color:var(--muted-2);font:600 .68rem/1.3 var(--sans);padding:0;white-space:normal;text-align:center;text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(0,0,0,.2)}
 .sv-figure .sv-credit:hover{background:none;color:var(--green-d)}
+
+.sv-choice.was{border-color:var(--green);box-shadow:0 0 0 3px rgba(1,121,111,.14);color:var(--green-d)}
+.sv-credits{margin:1.1rem 0 0;font-size:.66rem;line-height:1.5;color:var(--muted-2);text-align:center}
+.sv-credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.2);text-underline-offset:2px}
+.sv-credits a:hover{color:var(--green-d)}
