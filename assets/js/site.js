@@ -1002,7 +1002,8 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
-          '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
+          '<div class="sv-top"><div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
+          '<button type="button" class="sv-x2" data-a="close" aria-label="Close survey"><i data-lucide="x"></i></button></div>' +
           '<div class="sv-qwrap"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
           '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
@@ -1021,6 +1022,7 @@ document.addEventListener('DOMContentLoaded', function () {
     body.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return;
       var a = b.getAttribute('data-a');
+      if (a === 'close') return close();
       if (a === 'skip') return go();
       if (a === 'start') { step = 0; return render(); }
       if (a === 'yes' || a === 'no') { answers[step] = a; return render(); }
