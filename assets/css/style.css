@@ -3427,3 +3427,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .rg-done-ic i,.rg-done-ic svg.lucide{width:28px;height:28px}
 .rg-done h2{margin:0 0 .4rem;font-size:1.5rem}
 .rg-done p{color:var(--muted);margin:0}
+
+/* Login / register: secondary buttons keep their secondary look on hover */
+.ssocard .btn-outline:hover{background:var(--green-soft);color:var(--green-d);border-color:var(--green-line)}
