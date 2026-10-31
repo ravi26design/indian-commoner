@@ -31,44 +31,58 @@
       <p style="color:var(--muted);margin:-.6rem 0 1.5rem;font-size:.92rem">Sign up to join discussions and contribute to the forum.</p>
 
       <div id="rg-form-step">
-        <div class="lgf">
-          <label for="rg-user">Username</label>
-          <div class="lg-input">
-            <span class="lg-ic"><i data-lucide="user"></i></span>
-            <input id="rg-user" type="text" placeholder="Choose a username" autocomplete="username">
+        <div class="rg-row">
+          <div class="lgf">
+            <label for="rg-fname">First Name</label>
+            <div class="lg-input">
+              <span class="lg-ic"><i data-lucide="id-card"></i></span>
+              <input id="rg-fname" type="text" placeholder="Your first name" autocomplete="given-name">
+            </div>
+          </div>
+          <div class="lgf">
+            <label for="rg-lname">Last Name</label>
+            <div class="lg-input">
+              <span class="lg-ic"><i data-lucide="id-card"></i></span>
+              <input id="rg-lname" type="text" placeholder="Your last name" autocomplete="family-name">
+            </div>
           </div>
         </div>
         <div class="lgf">
-          <label for="rg-email">Email Address</label>
-          <div class="lg-input">
-            <span class="lg-ic"><i data-lucide="mail"></i></span>
-            <input id="rg-email" type="email" placeholder="you@example.com" autocomplete="email">
-          </div>
-        </div>
-        <div class="lgf">
-          <label for="rg-mobile">Mobile number</label>
+          <label for="rg-mobile">Mobile Number</label>
           <div class="lg-input">
             <span class="lg-ic"><i data-lucide="smartphone"></i></span>
             <span class="lg-cc">+91</span>
             <input id="rg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
           </div>
+        </div>
+        <div class="lgf">
+          <label for="rg-email">Email ID</label>
+          <div class="lg-input">
+            <span class="lg-ic"><i data-lucide="mail"></i></span>
+            <input id="rg-email" type="email" placeholder="you@example.com" autocomplete="email">
+          </div>
           <p class="lg-hint">We'll send the same one-time code to your mobile and email to verify both.</p>
         </div>
-
-        <span class="kicker" style="display:block;margin:1.5rem 0 1rem">Profile Details</span>
         <div class="lgf">
-          <label for="rg-fname">First Name</label>
+          <label for="rg-user">User Name</label>
           <div class="lg-input">
-            <span class="lg-ic"><i data-lucide="id-card"></i></span>
-            <input id="rg-fname" type="text" placeholder="Your first name" autocomplete="given-name">
+            <span class="lg-ic"><i data-lucide="at-sign"></i></span>
+            <input id="rg-user" type="text" maxlength="24" placeholder="Created from your name — you can change it" autocomplete="username">
+            <span class="rg-ustate" id="rg-ustate" hidden></span>
           </div>
+          <p class="lg-hint" id="rg-uhint">Generated from your first and last name. Edit it to choose your own unique user name.</p>
+          <div class="rg-sugs" id="rg-sugs" hidden></div>
         </div>
 
-        <label class="captcha">
-          <input type="checkbox">
-          <span class="cb-box"><i data-lucide="check"></i></span>
-          <span class="cb-tx">I'm not a robot</span>
-        </label>
+        <div class="lgf">
+          <label for="rg-cap-in">Captcha</label>
+          <div class="rg-cap">
+            <canvas id="rg-cap-img" width="170" height="52" aria-label="Captcha image"></canvas>
+            <button type="button" class="rg-cap-new" id="rg-cap-new" aria-label="New captcha" title="New captcha"><i data-lucide="refresh-cw"></i></button>
+            <div class="lg-input"><input id="rg-cap-in" type="text" maxlength="5" placeholder="Type the characters" autocomplete="off" autocapitalize="characters"></div>
+          </div>
+          <p class="lg-hint" id="rg-cap-hint">Type the characters shown in the image.</p>
+        </div>
 
         <button type="button" class="btn btn-primary block lg-btn" id="rg-signup" style="margin-top:1.35rem">Create account</button>
         <a class="btn btn-outline block lg-btn" href="login.html" style="margin-top:.75rem;border-color:transparent">Log In</a>
@@ -121,9 +135,102 @@
 
   if (mobile) { mobile.addEventListener('input', function () { mobile.value = mobile.value.replace(/\D/g, '').slice(0, 10); }); }
 
+  var fname = document.getElementById('rg-fname');
+  var lname = document.getElementById('rg-lname');
+  var user = document.getElementById('rg-user');
+  var ustate = document.getElementById('rg-ustate');
+  var uhint = document.getElementById('rg-uhint');
+  var sugs = document.getElementById('rg-sugs');
+  var capIn = document.getElementById('rg-cap-in');
+  var capImg = document.getElementById('rg-cap-img');
+  var capHint = document.getElementById('rg-cap-hint');
+  var userTouched = false;
+  // Demo only: a few names pretend to be already taken so the uniqueness check can be seen
+  var TAKEN = ['admin', 'commoner', 'indiancommoner', 'ravisharma', 'priyasingh', 'amitkumar', 'anitadevi'];
+
+  function clean(t) { return (t || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  function isTaken(u) { return TAKEN.indexOf(u) !== -1; }
+  function unique(base) {
+    if (!isTaken(base)) return base;
+    for (var n = 2; n < 100; n++) { if (!isTaken(base + n)) return base + n; }
+    return base + Math.floor(Math.random() * 900 + 100);
+  }
+  function checkUser() {
+    var v = clean(user.value);
+    sugs.hidden = true; sugs.innerHTML = '';
+    if (!v) { ustate.hidden = true; user.classList.remove('bad'); return false; }
+    ustate.hidden = false;
+    if (v.length < 4) { ustate.className = 'rg-ustate no'; ustate.textContent = 'Too short'; uhint.textContent = 'Use at least 4 letters or numbers.'; return false; }
+    if (isTaken(v)) {
+      ustate.className = 'rg-ustate no'; ustate.textContent = 'Taken';
+      uhint.textContent = 'This user name is already in use. Try one of these or type your own:';
+      var base = clean((fname.value || '') + (lname.value || '')) || v;
+      var picks = [unique(v), unique(clean(fname.value) + '.' + clean(lname.value)).replace('.', '_'), unique(base + Math.floor(Math.random() * 90 + 10))];
+      sugs.innerHTML = picks.filter(function (x, i) { return x && picks.indexOf(x) === i; }).map(function (x) { return '<button type="button" class="rg-sug">' + x + '</button>'; }).join('');
+      sugs.hidden = false;
+      return false;
+    }
+    ustate.className = 'rg-ustate ok'; ustate.textContent = 'Available';
+    uhint.textContent = userTouched ? 'Great — this user name is available.' : 'Generated from your first and last name. Edit it to choose your own unique user name.';
+    return true;
+  }
+  function autoUser() {
+    if (userTouched) return;
+    var base = clean(fname.value) + clean(lname.value);
+    user.value = base ? unique(base).slice(0, 24) : '';
+    checkUser();
+  }
+  [fname, lname].forEach(function (el) { el.addEventListener('input', autoUser); });
+  user.addEventListener('input', function () { userTouched = true; user.value = user.value.replace(/[^A-Za-z0-9_.]/g, ''); checkUser(); });
+  user.addEventListener('blur', function () { if (!user.value) { userTouched = false; autoUser(); } });
+  sugs.addEventListener('click', function (e) {
+    var b = e.target.closest('.rg-sug'); if (!b) return;
+    userTouched = true; user.value = b.textContent; checkUser();
+  });
+
+  // Captcha: random characters drawn on a canvas with noise (demo, checked in the page)
+  var capCode = '';
+  function newCaptcha() {
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', i;
+    capCode = '';
+    for (i = 0; i < 5; i++) capCode += chars.charAt(Math.floor(Math.random() * chars.length));
+    var c = capImg.getContext('2d'), w = capImg.width, h = capImg.height;
+    c.clearRect(0, 0, w, h);
+    var g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#e6efe9'); g.addColorStop(1, '#f6f1e2');
+    c.fillStyle = g; c.fillRect(0, 0, w, h);
+    for (i = 0; i < 6; i++) { c.strokeStyle = 'rgba(1,92,84,' + (0.25 + Math.random() * 0.3) + ')'; c.lineWidth = 1 + Math.random() * 1.4; c.beginPath(); c.moveTo(Math.random() * w, Math.random() * h); c.bezierCurveTo(Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h); c.stroke(); }
+    for (i = 0; i < 40; i++) { c.fillStyle = 'rgba(60,40,20,' + (Math.random() * 0.35) + ')'; c.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    var colors = ['#015c54', '#8a4410', '#2a4fa0', '#6b3fa3', '#b33a2b'];
+    for (i = 0; i < capCode.length; i++) {
+      c.save();
+      c.translate(16 + i * 30, h / 2 + (Math.random() * 8 - 4));
+      c.rotate((Math.random() - 0.5) * 0.6);
+      c.font = '800 ' + (28 + Math.floor(Math.random() * 6)) + 'px Nunito, sans-serif';
+      c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+      c.fillText(capCode.charAt(i), 0, 0);
+      c.restore();
+    }
+    capIn.value = ''; capIn.parentNode.classList.remove('bad');
+    capHint.textContent = 'Type the characters shown in the image.'; capHint.classList.remove('err');
+  }
+  document.getElementById('rg-cap-new').addEventListener('click', function () { newCaptcha(); capIn.focus(); });
+  newCaptcha();
+
+  function bad(el, wrap) { (wrap || el.parentNode).classList.add('bad'); el.focus(); }
+  [fname, lname, mobile, email, user, capIn].forEach(function (el) { el.addEventListener('input', function () { el.parentNode.classList.remove('bad'); }); });
+
   function startVerify() {
-    if (!mobile || mobile.value.length !== 10) { if (mobile) mobile.focus(); return; }
-    if (!email || !email.value.trim()) { if (email) email.focus(); return; }
+    if (!fname.value.trim()) { bad(fname); return; }
+    if (!lname.value.trim()) { bad(lname); return; }
+    if (!mobile || mobile.value.length !== 10) { bad(mobile); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) { bad(email); return; }
+    if (!checkUser()) { bad(user); return; }
+    if (capIn.value.trim().toUpperCase() !== capCode) {
+      newCaptcha();
+      capHint.textContent = 'The characters did not match — please try the new captcha.'; capHint.classList.add('err'); capIn.parentNode.classList.add('bad'); capIn.focus();
+      return;
+    }
     if (toMobile) toMobile.textContent = '+91 ' + mobile.value;
     if (toEmail) toEmail.textContent = email.value.trim();
     if (formStep) formStep.hidden = true;

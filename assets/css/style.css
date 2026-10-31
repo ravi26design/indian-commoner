@@ -3384,3 +3384,24 @@ footer.site .legal-link:hover{color:var(--green-d)}
 
 /* Login: mobile / email toggle */
 .lgf[hidden]{display:none!important}
+
+/* Register: name row, user name check, captcha */
+.rg-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:520px){.rg-row{grid-template-columns:1fr;gap:0}}
+.lg-input.bad{border-color:#c93a2b;box-shadow:0 0 0 3px rgba(201,58,43,.12)}
+.rg-ustate{flex:none;font-size:.74rem;font-weight:800;padding:.18rem .55rem;border-radius:999px}
+.rg-ustate[hidden]{display:none}
+.rg-ustate.ok{background:var(--green-soft);color:var(--green-d)}
+.rg-ustate.no{background:#fbe5e1;color:#a5301f}
+.rg-sugs{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.5rem}
+.rg-sugs[hidden]{display:none}
+.rg-sug{border:1px solid var(--green-line);background:var(--green-soft);color:var(--green-d);font:700 .82rem var(--sans);padding:.3rem .75rem;border-radius:999px;cursor:pointer}
+.rg-sug:hover{background:#fff}
+.rg-cap{display:flex;align-items:center;gap:.6rem}
+.rg-cap canvas{width:170px;height:52px;border-radius:12px;border:1px solid var(--line-2);flex:none;display:block}
+.rg-cap-new{flex:none;width:2.4rem;height:2.4rem;border-radius:50%;border:1px solid var(--line-2);background:#fff;color:var(--green-d);display:grid;place-items:center;cursor:pointer}
+.rg-cap-new:hover{background:var(--green-soft)}
+.rg-cap-new i,.rg-cap-new svg.lucide{width:16px;height:16px}
+.rg-cap .lg-input{flex:1;min-width:0}
+.lg-hint.err{color:#a5301f}
+@media(max-width:520px){.rg-cap{flex-wrap:wrap}.rg-cap .lg-input{flex:1 1 100%}}
