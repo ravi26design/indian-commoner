@@ -3439,8 +3439,8 @@ footer.site .legal-link:hover{color:var(--green-d)}
 /* Login: the single "Create account" link is centred */
 .sso-links{justify-content:center}
 
-/* Login: illustrated feature icons on a larger light circle */
+/* Login: outline feature icons on a larger circle */
 .sso-feats{gap:1.1rem}
 .sso-feats li{gap:1rem}
-.sso-feat-ic{width:3.6rem;height:3.6rem;background:#eaf5f2;box-shadow:0 0 0 4px rgba(255,255,255,.14)}
-.sso-feat-ic svg{width:2.15rem;height:2.15rem;display:block}
+.sso-feat-ic{width:3.6rem;height:3.6rem;background:rgba(255,255,255,.16);box-shadow:none}
+.sso-feat-ic i,.sso-feat-ic svg{width:1.7rem;height:1.7rem;color:#fff;stroke-width:1.7}
