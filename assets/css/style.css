@@ -3360,3 +3360,5 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .cp-card,.cp-card .cp-head,.cp-card .cp-field{text-align:left}
 .cp-card .cp-done{text-align:center}
 .cp-head h3{text-align:left}
+
+.cp-head{display:block}
