@@ -3276,3 +3276,16 @@ body.nd-lock{overflow:hidden}
 .sv-card:has(.sv-qwrap) .sv-x{display:none}
 .sv-top+.sv-qwrap{padding-top:1.1rem}
 @media(max-width:700px){.sv-top{padding:1.1rem 1.1rem 0}.sv-top+.sv-qwrap{padding-top:.9rem}}
+
+/* survey question: square photo on top, centred, with the question and answers below it */
+.sv-card:has(.sv-qwrap){width:min(40rem,100%)}
+.sv-qwrap{grid-template-columns:1fr;gap:1.2rem;padding:1.1rem 1.6rem 1.5rem}
+.sv-qwrap .sv-photo{width:min(16rem,100%);margin:0 auto}
+.sv-qwrap .sv-pad{padding:0}
+.sv-qwrap .sv-q{text-align:center;margin:.1rem 0 1.2rem}
+.sv-qwrap .sv-actions.end{padding-top:1rem}
+@media(max-width:700px){.sv-qwrap{padding:.9rem 1.1rem 1.3rem}.sv-qwrap .sv-photo{width:min(13.5rem,100%)}}
+
+.sv-top .sv-bk{background:var(--green-soft);color:var(--green-d)}
+.sv-top .sv-bk:hover{background:var(--green);color:#fff}
+.sv-top{gap:.8rem}

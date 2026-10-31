@@ -1002,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
-          '<div class="sv-top"><div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
+          '<div class="sv-top"><button type="button" class="sv-x2 sv-bk" data-a="prev" aria-label="Previous question" title="Previous question"><i data-lucide="arrow-left"></i></button><div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<button type="button" class="sv-x2" data-a="close" aria-label="Close survey"><i data-lucide="x"></i></button></div>' +
           '<div class="sv-qwrap"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
           '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
@@ -1011,8 +1011,8 @@ document.addEventListener('DOMContentLoaded', function () {
             ? '<div class="sv-note"><span class="sv-ans ' + ans + '">You said ' + (ans === 'yes' ? 'Yes' : 'No') + '</span>' + esc(q[1]) + '</div>' +
               '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
             : '<div class="sv-choices"><button type="button" class="sv-choice no" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
-          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"' + (step === 0 ? ' style="visibility:hidden"' : '') + '><i data-lucide="arrow-left"></i> Prev</button>' +
-          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div></div>';
+          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"><i data-lucide="arrow-left"></i> ' + (step === 0 ? 'Back' : 'Prev') + '</button>' +
+          (ans ? '<button type="button" class="sv-link" data-a="change"><i data-lucide="rotate-ccw"></i> Change answer</button>' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div></div>';
       }
       if (window.lucide) lucide.createIcons();
       var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
@@ -1026,12 +1026,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (a === 'skip') return go();
       if (a === 'start') { step = 0; return render(); }
       if (a === 'yes' || a === 'no') { answers[step] = a; return render(); }
-      if (a === 'prev') { step = Math.max(0, step - 1); return render(); }
+      if (a === 'prev') { step = Math.max(-1, step - 1); return render(); }      // from question 1 back to the intro
+      if (a === 'change') { delete answers[step]; return render(); }
       if (a === 'next') { if (step >= N - 1) { save(); return go(); } step++; return render(); }
     });
     back.querySelector('.sv-x').addEventListener('click', close);
     back.addEventListener('click', function (e) { if (e.target === back) close(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && back.classList.contains('open')) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (!back.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft' && step >= 0) { step--; render(); }
+    });
     // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
