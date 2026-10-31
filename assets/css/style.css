@@ -3248,3 +3248,20 @@ body.nd-lock{overflow:hidden}
 .sv-photo~.sv-pad,.sv-prog~.sv-photo~.sv-pad{padding-top:1.5rem}
 .sv-card:has(.sv-photo) .sv-x{top:1.9rem;right:1.9rem}
 @media(max-width:560px){.sv-photo{margin:.8rem .8rem 0;height:9.5rem}.sv-card:has(.sv-photo) .sv-x{top:1.5rem;right:1.5rem}}
+
+/* survey question: square photo on the left, question and answers on the right */
+.sv-card:has(.sv-qwrap){width:min(54rem,100%)}
+.sv-qwrap{display:grid;grid-template-columns:minmax(14rem,19rem) minmax(0,1fr);gap:1.6rem;padding:1.3rem 1.3rem 1.4rem;align-items:start}
+.sv-qwrap .sv-photo{margin:0;height:auto;aspect-ratio:1/1;border-radius:1.1rem}
+.sv-qwrap .sv-pad{padding:.4rem .4rem 0 0}
+.sv-qwrap .sv-q{margin-top:.2rem}
+.sv-qwrap .sv-credit{left:.7rem;right:.7rem;bottom:.6rem;max-width:none;text-align:center}
+.sv-qwrap .sv-count{left:.8rem;top:.8rem;bottom:auto}
+.sv-card:has(.sv-qwrap) .sv-x{top:.95rem;right:.95rem;background:rgba(0,0,0,.08);color:var(--ink)}
+.sv-card:has(.sv-qwrap) .sv-x:hover{background:rgba(0,0,0,.16)}
+@media(max-width:700px){
+  .sv-qwrap{grid-template-columns:1fr;gap:1.1rem;padding:1.1rem}
+  .sv-qwrap .sv-photo{width:min(15rem,100%);margin:0 auto}
+  .sv-qwrap .sv-pad{padding:0}
+  .sv-card:has(.sv-qwrap) .sv-x{top:1.2rem;right:1.2rem;background:rgba(0,0,0,.45);color:#fff}
+}

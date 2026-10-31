@@ -1003,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
           '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
-          '<div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
+          '<div class="sv-qwrap"><div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
           '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans
@@ -1011,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', function () {
               '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
             : '<div class="sv-choices"><button type="button" class="sv-choice no" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
           '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"' + (step === 0 ? ' style="visibility:hidden"' : '') + '><i data-lucide="arrow-left"></i> Prev</button>' +
-          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div>';
+          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div></div>';
       }
       if (window.lucide) lucide.createIcons();
       var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
