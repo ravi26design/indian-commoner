@@ -3432,3 +3432,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .ssocard .btn-outline:hover{background:transparent;color:var(--green-d);border-color:transparent;text-decoration:underline;text-underline-offset:4px}
 .rg-opt{font-weight:600;color:var(--muted);font-size:.8rem}
 .rg-otpbox[hidden]{display:none}
+
+/* Login / register: primary buttons have no shadow */
+.ssocard .btn-primary,.ssocard .btn-primary:hover{box-shadow:none}
