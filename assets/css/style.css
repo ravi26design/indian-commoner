@@ -3405,3 +3405,25 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .rg-cap .lg-input{flex:1;min-width:0}
 .lg-hint.err{color:#a5301f}
 @media(max-width:520px){.rg-cap{flex-wrap:wrap}.rg-cap .lg-input{flex:1 1 100%}}
+
+/* Register: separate mobile and email OTP */
+#rg-done[hidden]{display:none!important}
+.rg-otpbox{border:1px solid var(--line-2);border-radius:var(--r-md,16px);padding:1rem 1.1rem;margin-bottom:.9rem;background:#fff}
+.rg-otpbox.done{border-color:var(--green-line);background:var(--green-soft)}
+.rg-otphead{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem}
+.rg-otphead>div{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.rg-otphead b{font-size:.92rem;color:var(--ink)}
+.rg-otphead span{font-size:.82rem;color:var(--muted)}
+.rg-otphead em{font-style:normal;font-weight:700;color:var(--ink-2);word-break:break-all}
+.rg-otpic{flex:none;width:2.2rem;height:2.2rem;border-radius:50%;background:var(--green-soft);color:var(--green-d);display:grid;place-items:center}
+.rg-otpbox.done .rg-otpic{background:#fff}
+.rg-otpic i,.rg-otpic svg.lucide{width:16px;height:16px}
+.rg-otpok{flex:none;display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem!important;font-weight:800;color:var(--green-d)!important}
+.rg-otpok[hidden]{display:none}
+.rg-otpok i,.rg-otpok svg.lucide{width:14px;height:14px}
+.rg-otpbox .lg-otp-note{margin:.7rem 0 0}
+.rg-done{text-align:center;padding:2.5rem 0}
+.rg-done-ic{display:inline-grid;place-items:center;width:4rem;height:4rem;border-radius:50%;background:var(--green);color:#fff;margin-bottom:1rem}
+.rg-done-ic i,.rg-done-ic svg.lucide{width:28px;height:28px}
+.rg-done h2{margin:0 0 .4rem;font-size:1.5rem}
+.rg-done p{color:var(--muted);margin:0}

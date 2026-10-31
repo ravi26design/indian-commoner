@@ -93,27 +93,28 @@
           <span class="rg-verify-ic"><i data-lucide="shield-check"></i></span>
           <div>
             <h2 class="rg-verify-h">Verify your mobile &amp; email</h2>
-            <p class="lg-otp-note" style="margin:.25rem 0 0">We sent the same 6-digit code to both:</p>
+            <p class="lg-otp-note" style="margin:.25rem 0 0">We sent a separate 6-digit code to each. Enter both to create your account.</p>
           </div>
         </div>
-        <ul class="rg-verify-to">
-          <li><i data-lucide="smartphone"></i> <b id="rg-otp-mobile"></b></li>
-          <li><i data-lucide="mail"></i> <b id="rg-otp-email"></b></li>
-        </ul>
-        <div class="lgf">
-          <label for="rg-otp-0">Enter OTP</label>
-          <div class="lg-otp" id="rg-otp">
-            <input class="lg-otp-box" id="rg-otp-0" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 1">
-            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
-            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
-            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
-            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
-            <input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
-          </div>
-          <p class="lg-otp-note">Didn't receive it? <button type="button" class="lg-linkbtn" id="rg-resend">Resend code</button></p>
+        <div class="rg-otpbox" id="rg-g-m">
+          <div class="rg-otphead"><span class="rg-otpic"><i data-lucide="smartphone"></i></span><div><b>Mobile OTP</b><span>Sent to <em id="rg-otp-mobile"></em></span></div><span class="rg-otpok" hidden><i data-lucide="check"></i> Verified</span></div>
+          <div class="lg-otp"><input class="lg-otp-box" id="rg-m-0" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 1"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 2"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 3"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 4"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 5"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Mobile OTP digit 6"></div>
+          <p class="lg-otp-note">Didn't receive it? <button type="button" class="lg-linkbtn rg-resend">Resend code</button></p>
         </div>
-        <a class="btn btn-primary block lg-btn" id="rg-verify" href="member-profile.html">Verify &amp; Create Account</a>
+        <div class="rg-otpbox" id="rg-g-e">
+          <div class="rg-otphead"><span class="rg-otpic"><i data-lucide="mail"></i></span><div><b>Email OTP</b><span>Sent to <em id="rg-otp-email"></em></span></div><span class="rg-otpok" hidden><i data-lucide="check"></i> Verified</span></div>
+          <div class="lg-otp"><input class="lg-otp-box" id="rg-e-0" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 1"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 2"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 3"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 4"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 5"><input class="lg-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Email OTP digit 6"></div>
+          <p class="lg-otp-note">Didn't receive it? <button type="button" class="lg-linkbtn rg-resend">Resend code</button></p>
+        </div>
+        <p class="lg-hint err" id="rg-otp-err" hidden>Enter both 6-digit codes to continue.</p>
+        <button type="button" class="btn btn-primary block lg-btn" id="rg-verify">Verify &amp; Create Account</button>
         <button type="button" class="btn btn-outline block lg-btn" id="rg-back" style="margin-top:.75rem;border-color:transparent">Back to edit details</button>
+      </div>
+
+      <div id="rg-done" class="rg-done" hidden>
+        <span class="rg-done-ic"><i data-lucide="check"></i></span>
+        <h2>Account created</h2>
+        <p>Welcome to the forum, <b id="rg-done-name"></b>. Taking you to your profile…</p>
       </div>
     </div>
   </div>
@@ -128,10 +129,15 @@
   var otpStep = document.getElementById('rg-otp-step');
   var signup = document.getElementById('rg-signup');
   var back = document.getElementById('rg-back');
-  var resend = document.getElementById('rg-resend');
   var toMobile = document.getElementById('rg-otp-mobile');
   var toEmail = document.getElementById('rg-otp-email');
-  var boxes = Array.prototype.slice.call(document.querySelectorAll('#rg-otp .lg-otp-box'));
+  var groups = ['m', 'e'].map(function (k) {
+    var el = document.getElementById('rg-g-' + k);
+    return { el: el, boxes: Array.prototype.slice.call(el.querySelectorAll('.lg-otp-box')), ok: el.querySelector('.rg-otpok'), resend: el.querySelector('.rg-resend') };
+  });
+  var verifyBtn = document.getElementById('rg-verify');
+  var otpErr = document.getElementById('rg-otp-err');
+  var doneBox = document.getElementById('rg-done');
 
   if (mobile) { mobile.addEventListener('input', function () { mobile.value = mobile.value.replace(/\D/g, '').slice(0, 10); }); }
 
@@ -235,20 +241,36 @@
     if (toEmail) toEmail.textContent = email.value.trim();
     if (formStep) formStep.hidden = true;
     if (otpStep) otpStep.hidden = false;
-    if (boxes[0]) boxes[0].focus();
+    groups.forEach(function (g) { g.boxes.forEach(function (b) { b.value = ''; }); g.ok.hidden = true; g.el.classList.remove('done'); });
+    otpErr.hidden = true;
+    groups[0].boxes[0].focus();
   }
   if (signup) signup.addEventListener('click', startVerify);
   if (back) back.addEventListener('click', function () { if (otpStep) otpStep.hidden = true; if (formStep) formStep.hidden = false; });
-  if (resend) resend.addEventListener('click', function () { boxes.forEach(function (b) { b.value = ''; }); if (boxes[0]) boxes[0].focus(); });
-
-  boxes.forEach(function (box, i) {
-    box.addEventListener('input', function () {
-      box.value = box.value.replace(/\D/g, '').slice(0, 1);
-      if (box.value && boxes[i + 1]) { boxes[i + 1].focus(); }
+  function filled(g) { return g.boxes.every(function (b) { return b.value; }); }
+  groups.forEach(function (g, gi) {
+    g.resend.addEventListener('click', function () { g.boxes.forEach(function (b) { b.value = ''; }); g.ok.hidden = true; g.el.classList.remove('done'); g.boxes[0].focus(); });
+    g.boxes.forEach(function (box, i) {
+      box.addEventListener('input', function () {
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        if (box.value && g.boxes[i + 1]) { g.boxes[i + 1].focus(); }
+        var done = filled(g);
+        g.ok.hidden = !done; g.el.classList.toggle('done', done);
+        otpErr.hidden = true;
+        if (done && groups[gi + 1] && !filled(groups[gi + 1])) { groups[gi + 1].boxes[0].focus(); }
+      });
+      box.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !box.value && g.boxes[i - 1]) { g.boxes[i - 1].focus(); }
+      });
     });
-    box.addEventListener('keydown', function (e) {
-      if (e.key === 'Backspace' && !box.value && boxes[i - 1]) { boxes[i - 1].focus(); }
-    });
+  });
+  verifyBtn.addEventListener('click', function () {
+    var first = groups.filter(function (g) { return !filled(g); })[0];
+    if (first) { otpErr.hidden = false; first.boxes[0].focus(); return; }
+    document.getElementById('rg-done-name').textContent = fname.value.trim();
+    otpStep.hidden = true; doneBox.hidden = false;
+    if (window.lucide) lucide.createIcons();
+    setTimeout(function () { location.href = 'member-profile.html'; }, 2200);
   });
 })();
 </script>
