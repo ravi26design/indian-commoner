@@ -3241,3 +3241,10 @@ body.nd-lock{overflow:hidden}
 .sv-credit{position:absolute;right:.8rem;bottom:.7rem;z-index:2;max-width:55%;font:600 .66rem/1.2 var(--sans);color:rgba(255,255,255,.92);background:rgba(0,0,0,.45);padding:.3rem .55rem;border-radius:.4rem;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sv-credit:hover{background:rgba(0,0,0,.7);color:#fff}
 @media(max-width:560px){.sv-credit{max-width:62%;font-size:.6rem}}
+
+/* survey question: progress on top, photo inset with white space on top, left and right */
+.sv-prog{height:.5rem}
+.sv-photo{margin:1.1rem 1.1rem 0;border-radius:1rem;height:13.5rem}
+.sv-photo~.sv-pad,.sv-prog~.sv-photo~.sv-pad{padding-top:1.5rem}
+.sv-card:has(.sv-photo) .sv-x{top:1.9rem;right:1.9rem}
+@media(max-width:560px){.sv-photo{margin:.8rem .8rem 0;height:9.5rem}.sv-card:has(.sv-photo) .sv-x{top:1.5rem;right:1.5rem}}

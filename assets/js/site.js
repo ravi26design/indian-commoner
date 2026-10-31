@@ -1002,9 +1002,9 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
+          '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span>' +
           '<a class="sv-credit" href="' + esc(CREDITS[step][2]) + '" target="_blank" rel="noopener noreferrer" title="Photo credit and licence">Photo: ' + esc(CREDITS[step][0]) + ' · ' + esc(CREDITS[step][1]) + '</a></div>' +
-          '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
           '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
           (ans
             ? '<div class="sv-note"><span class="sv-ans ' + ans + '">You said ' + (ans === 'yes' ? 'Yes' : 'No') + '</span>' + esc(q[1]) + '</div>' +
