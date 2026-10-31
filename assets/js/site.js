@@ -1018,8 +1018,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
       var a = e.target.closest && e.target.closest('a[href]');
       if (!a || a.target === '_blank') return;
-      var href = a.getAttribute('href') || '';
-      if (href.split('#')[0].split('?')[0].replace(/^\.\//, '') !== TARGET) return;
+      var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].replace(/^\.\//, '');
+      // the "Who Is a Commoner" links and the home page's "Take a test! Are you a commoner?" card both start with the survey
+      if (href !== TARGET && href !== 'are-you-a-commoner.html') return;
       e.preventDefault(); open();
     });
   })();
