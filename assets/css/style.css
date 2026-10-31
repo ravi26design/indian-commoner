@@ -3381,3 +3381,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 
 .sv-photo svg.sv-ill{width:100%;height:100%;display:block}
 .sv-qwrap .sv-photo{background:#e6f3f1}
+
+/* Login: mobile / email toggle */
+.lgf[hidden]{display:none!important}

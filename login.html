@@ -33,14 +33,26 @@
           <h1 class="lg-h1" style="margin-top:.3rem">Sign in</h1>
         </div>
       </div>
-      <p style="color:var(--muted);margin:-.4rem 0 1.4rem;font-size:.92rem">Enter your mobile number and we'll send you a one-time password.</p>
+      <p style="color:var(--muted);margin:-.4rem 0 1.2rem;font-size:.92rem" id="lg-sub">Enter your mobile number and we'll send you a one-time password.</p>
 
-      <div class="lgf">
+      <div class="lg-methods" role="tablist" aria-label="Sign in with">
+        <button type="button" class="lg-method on" role="tab" aria-selected="true" data-m="mobile"><i data-lucide="smartphone"></i> Mobile number</button>
+        <button type="button" class="lg-method" role="tab" aria-selected="false" data-m="email"><i data-lucide="mail"></i> Email</button>
+      </div>
+
+      <div class="lgf" id="lg-f-mobile">
         <label for="lg-mobile">Mobile number</label>
         <div class="lg-input">
           <span class="lg-ic"><i data-lucide="smartphone"></i></span>
           <span class="lg-cc">+91</span>
           <input id="lg-mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel">
+        </div>
+      </div>
+      <div class="lgf" id="lg-f-email" hidden>
+        <label for="lg-email">Email address</label>
+        <div class="lg-input">
+          <span class="lg-ic"><i data-lucide="mail"></i></span>
+          <input id="lg-email" type="email" inputmode="email" placeholder="you@example.com" autocomplete="email">
         </div>
       </div>
       <button type="button" class="btn btn-primary block lg-btn" id="lg-send-otp">Send OTP</button>
@@ -79,6 +91,23 @@
   var otpTo = document.getElementById('lg-otp-to');
   var boxes = Array.prototype.slice.call(document.querySelectorAll('.lg-otp-box'));
   var resend = document.getElementById('lg-resend');
+  var email = document.getElementById('lg-email');
+  var fMobile = document.getElementById('lg-f-mobile');
+  var fEmail = document.getElementById('lg-f-email');
+  var sub = document.getElementById('lg-sub');
+  var method = 'mobile';
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.lg-method'));
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      method = t.getAttribute('data-m');
+      tabs.forEach(function (x) { var on = x === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); });
+      fMobile.hidden = method !== 'mobile';
+      fEmail.hidden = method !== 'email';
+      sub.textContent = method === 'mobile' ? "Enter your mobile number and we'll send you a one-time password." : "Enter your email address and we'll send you a one-time password.";
+      if (otpStep) { otpStep.hidden = true; }
+      (method === 'mobile' ? mobile : email).focus();
+    });
+  });
 
   if (mobile) {
     mobile.addEventListener('input', function () {
@@ -86,11 +115,10 @@
     });
   }
   function sendOtp() {
-    if (!mobile || mobile.value.length !== 10) {
-      if (mobile) { mobile.focus(); }
-      return;
-    }
-    if (otpTo) { otpTo.textContent = '+91 ' + mobile.value; }
+    var field = method === 'mobile' ? mobile : email;
+    var ok = method === 'mobile' ? field.value.length === 10 : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(field.value.trim());
+    if (!ok) { field.focus(); return; }
+    if (otpTo) { otpTo.textContent = method === 'mobile' ? '+91 ' + field.value : field.value.trim(); }
     if (otpStep) { otpStep.hidden = false; }
     if (boxes[0]) { boxes[0].focus(); }
   }
