@@ -991,7 +991,18 @@ document.addEventListener('DOMContentLoaded', function () {
     function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function go() { location.href = TARGET; }
     function save() { try { localStorage.setItem('ic_commoner_survey', JSON.stringify({ answers: answers, yes: answers.filter(function (a) { return a === 'yes'; }).length, at: Date.now() })); } catch (e) {} }
+    var doneTimer = null;
     function render() {
+      if (step >= N) {                                   // finished: a thank-you message, no navigation
+        var yes = answers.filter(function (a) { return a === 'yes'; }).length;
+        body.innerHTML = '<div class="sv-done"><span class="sv-done-ic"><i data-lucide="check"></i></span>' +
+          '<h2 id="sv-title">Thank you!</h2><p class="sv-done-p">Your survey has been submitted.</p>' +
+          '<p class="sv-done-score">You answered <b>Yes</b> to ' + yes + ' of ' + N + ' everyday ways of commoning.</p>' +
+          '<button type="button" class="sv-btn" data-a="close">Close</button><p class="sv-done-note">This window closes by itself in a few seconds.</p></div>';
+        if (window.lucide) lucide.createIcons();
+        clearTimeout(doneTimer); doneTimer = setTimeout(close, 5000);
+        return;
+      }
       if (step < 0) {
         body.innerHTML =
           '<div class="sv-hero" style="background-image:url(assets/img/ic-panel-who.jpg)"><div class="sv-hero-in">' +
@@ -1016,8 +1027,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (window.lucide) lucide.createIcons();
       var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
     }
-    function open() { step = -1; answers = []; prior = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); }
-    function close() { back.classList.remove('open'); back.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); }
+    function open() { clearTimeout(doneTimer); step = -1; answers = []; prior = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); }
+    function close() { clearTimeout(doneTimer); back.classList.remove('open'); back.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); }
     body.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return;
       var a = b.getAttribute('data-a');
@@ -1030,14 +1041,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (step >= 0 && answers[step]) { prior[step] = answers[step]; delete answers[step]; }   // re-answer; the earlier choice stays highlighted
         return render();
       }
-      if (a === 'next') { if (step >= N - 1) { save(); return go(); } step++; return render(); }
+      if (a === 'next') { if (step >= N - 1) { save(); step = N; return render(); } step++; return render(); }
     });
     back.querySelector('.sv-x').addEventListener('click', close);
     back.addEventListener('click', function (e) { if (e.target === back) close(); });
     document.addEventListener('keydown', function (e) {
       if (!back.classList.contains('open')) return;
       if (e.key === 'Escape') close();
-      else if (e.key === 'ArrowLeft' && step >= 0) { step--; if (step >= 0 && answers[step]) { prior[step] = answers[step]; delete answers[step]; } render(); }
+      else if (e.key === 'ArrowLeft' && step >= 0 && step < N) { step--; if (step >= 0 && answers[step]) { prior[step] = answers[step]; delete answers[step]; } render(); }
     });
     // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
     document.addEventListener('click', function (e) {
