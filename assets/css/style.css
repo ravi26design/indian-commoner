@@ -3435,3 +3435,6 @@ footer.site .legal-link:hover{color:var(--green-d)}
 
 /* Login / register: primary buttons have no shadow */
 .ssocard .btn-primary,.ssocard .btn-primary:hover{box-shadow:none}
+
+/* Login: the single "Create account" link is centred */
+.sso-links{justify-content:center}
