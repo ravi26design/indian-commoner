@@ -3192,24 +3192,48 @@ body.nd-lock{overflow:hidden}
 .ehero-img{width:100%;max-width:none;margin:0;border-radius:0}
 @media(max-width:700px){.ehero-img{width:100%}}
 
-/* "Who Is a Commoner" survey */
-.sv-back{position:fixed;inset:0;background:rgba(10,18,16,.62);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000}
+/* Commoner survey */
+.sv-back{position:fixed;inset:0;background:rgba(10,18,16,.68);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:1rem;z-index:1000}
 .sv-back.open{display:flex}
-.sv-card{width:min(40rem,100%);background:#fff;border-radius:.9rem;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.4)}
-.sv-head{display:flex;justify-content:space-between;align-items:center;background:var(--green);color:#fff;padding:1.15rem 1.5rem}
-.sv-head b{font-size:1.5rem;font-weight:500;font-family:var(--sans)}
-.sv-x{border:0;background:none;color:#fff;cursor:pointer;display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%}
-.sv-x:hover{background:rgba(255,255,255,.18)}
-.sv-x svg,.sv-x i{width:1.4rem;height:1.4rem}
-.sv-body{padding:1.5rem 1.5rem 1.6rem;min-height:15.5rem;display:flex;flex-direction:column}
-.sv-q{font-size:1.2rem;line-height:1.55;margin:.4rem 0 1.4rem;color:#111}
-.sv-note{background:#e6e6e3;border-left:4px solid #8e8e8a;border-radius:.4rem;padding:.9rem 1.1rem;font-size:.95rem;line-height:1.55;margin-bottom:1.4rem}
-.sv-actions{display:flex;gap:1.1rem}
-.sv-actions.mid{justify-content:center}
-.sv-actions.end{justify-content:flex-end;margin-top:auto;padding-top:2.2rem}
-.sv-btn{border:0;background:var(--green);color:#fff;font:600 1.05rem/1 var(--sans);padding:1.05rem 2.1rem;border-radius:999px;cursor:pointer;transition:background .15s}
-.sv-btn:hover{background:var(--green-d)}
-.sv-nav{display:flex;justify-content:space-between;margin-top:1.4rem}
-.sv-link{border:0;background:none;color:var(--green);font:500 1.15rem/1 var(--sans);cursor:pointer;padding:.3rem 0}
-.sv-link:hover{color:var(--green-d)}
-@media(max-width:520px){.sv-head b{font-size:1.25rem}.sv-q{font-size:1.08rem}.sv-btn{padding:.95rem 1.6rem}}
+.sv-card{position:relative;width:min(44rem,100%);max-height:calc(100vh - 2rem);overflow:auto;background:#fff;border-radius:1.5rem;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:svIn .25s ease}
+@keyframes svIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.sv-x{position:absolute;top:.9rem;right:.9rem;z-index:3;border:0;background:rgba(0,0,0,.45);color:#fff;cursor:pointer;display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;backdrop-filter:blur(4px)}
+.sv-x:hover{background:rgba(0,0,0,.65)}
+.sv-x svg,.sv-x i{width:1.2rem;height:1.2rem}
+.sv-hero{height:15rem;background:#1c1c1a center/cover no-repeat;position:relative}
+.sv-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,40,36,.78))}
+.sv-hero-in{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;color:#fff;text-align:center;padding:1rem}
+.sv-camel{width:7rem;height:auto;display:block}
+.sv-hero h2{font-family:var(--sans);font-weight:700;font-size:clamp(1.6rem,4vw,2.2rem);margin:0;letter-spacing:-.01em;color:#fff}
+.sv-photo{position:relative;height:13rem;background:#cfd6d2;overflow:hidden}
+.sv-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.sv-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.05) 40%,rgba(0,0,0,.45))}
+.sv-count{position:absolute;left:1.25rem;bottom:1rem;z-index:2;background:rgba(1,121,111,.95);color:#fff;font:800 .74rem/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:.5rem .85rem;border-radius:999px}
+.sv-prog{height:.4rem;background:#e3ece9}
+.sv-prog i{display:block;height:100%;background:var(--green);border-radius:0 999px 999px 0;transition:width .35s ease}
+.sv-pad{padding:1.6rem 1.9rem 1.7rem}
+.sv-lead{font-size:1.2rem;line-height:1.55;margin:0 0 .4rem;color:#111;text-align:center}
+.sv-sub{margin:0;text-align:center;color:var(--muted);font-size:.9rem}
+.sv-q{font-family:var(--sans);font-weight:700;font-size:clamp(1.2rem,2.6vw,1.5rem);line-height:1.4;margin:0 0 1.3rem;color:#111;letter-spacing:-.005em}
+.sv-choices{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.sv-choice{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:2px solid var(--line-2);background:#fff;border-radius:999px;padding:1rem 1.2rem;font:700 1.1rem/1 var(--sans);color:var(--ink);cursor:pointer;transition:all .15s}
+.sv-choice svg,.sv-choice i{width:1.2rem;height:1.2rem}
+.sv-choice.yes:hover{background:var(--green);border-color:var(--green);color:#fff}
+.sv-choice.no:hover{background:#3a3d39;border-color:#3a3d39;color:#fff}
+.sv-note{background:var(--green-soft);border:1px solid var(--green-line);border-left:5px solid var(--green);border-radius:.8rem;padding:1rem 1.2rem;font-size:.97rem;line-height:1.6;color:#1b2b28;margin-bottom:1.3rem}
+.sv-ans{display:inline-block;margin-bottom:.45rem;font:800 .72rem/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:.3rem .6rem;border-radius:999px;background:var(--green);color:#fff}
+.sv-ans.no{background:#3a3d39}
+.sv-note .sv-ans{display:block;width:max-content}
+.sv-actions{display:flex;gap:1rem}
+.sv-actions.end{justify-content:flex-end;padding-top:1.5rem}
+.sv-note+.sv-actions.end{padding-top:0}
+.sv-btn{display:inline-flex;align-items:center;gap:.5rem;border:0;background:var(--green);color:#fff;font:700 1.02rem/1 var(--sans);padding:1rem 1.8rem;border-radius:999px;cursor:pointer;transition:background .15s,transform .15s;box-shadow:0 8px 20px -8px rgba(1,121,111,.7)}
+.sv-btn:hover{background:var(--green-d);transform:translateY(-1px)}
+.sv-btn svg,.sv-btn i{width:1.1rem;height:1.1rem}
+.sv-btn.ghost{background:#fff;color:var(--green-d);box-shadow:inset 0 0 0 2px var(--green-line)}
+.sv-btn.ghost:hover{background:var(--green-soft)}
+.sv-nav{display:flex;justify-content:space-between;margin-top:1.3rem}
+.sv-link{display:inline-flex;align-items:center;gap:.4rem;border:0;background:none;color:var(--green-d);font:700 .95rem/1 var(--sans);cursor:pointer;padding:.3rem 0}
+.sv-link:hover{color:var(--ink)}
+.sv-link svg,.sv-link i{width:1rem;height:1rem}
+@media(max-width:560px){.sv-card{border-radius:1.2rem}.sv-hero{height:12rem}.sv-photo{height:9.5rem}.sv-pad{padding:1.25rem 1.2rem 1.35rem}.sv-choices{gap:.7rem}.sv-choice{padding:.9rem 1rem}.sv-btn{padding:.9rem 1.4rem}}

@@ -965,40 +965,55 @@ document.addEventListener('DOMContentLoaded', function () {
   // ---- Commoner survey: opened by the "Take a test! Are you a commoner?" card; Skip or Submit continues to Who Is a Commoner ----
   (function () {
     var TARGET = 'who-is-a-commoner.html';
+    // [question, explanation, photo]. The photos are the site's own pictures, used as illustrations for each question.
     var QUESTIONS = [
-      ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.'],
-      ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.'],
-      ['Have you participated in activities like lake cleaning, planting drives etc.?', 'With increasing concerns over environment, it is no longer sufficient to depend solely on governments or enterprise to address these questions. Thus it becomes important to have vigilant and involved communities for collective action towards strengthening conservation efforts.'],
-      ['Do you like country chicken?', 'Commercial meat industries e.g. poultry is among the least nutritious sources of meat. Commercial poultry is also one of the most polluting forms of animal rearing. In contrast, country chickens are reared and managed around common pool resources.'],
-      ['Have you ever had wild berries, kashayam (kadha)?', 'Home remedies like kashayams and kadhas are often passed on from one generation to the next, and represent commonly held knowledge of the communities. Similarly, things like wild berries and medicinal herbs are mostly found and procured from common spaces like pastures, forests, ponds.'],
-      ['Have you been on a wildlife safari?', 'For most part, wildlife reserves have been carved out from community forests. The entire wildlife tourism industry owes a huge debt to the communities who have managed and protected these spaces.'],
-      ['Do you live in a house built with sand, stones, bricks and wood?', 'All the materials that go into building a house are sourced from common spaces or from common spaces that have now been privatized.']
+      ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.', 'assets/img/purpose-hero.jpg'],
+      ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.', 'assets/img/card-significance.jpg'],
+      ['Have you participated in activities like lake cleaning, planting drives etc.?', 'With increasing concerns over environment, it is no longer sufficient to depend solely on governments or enterprise to address these questions. Thus it becomes important to have vigilant and involved communities for collective action towards strengthening conservation efforts.', 'assets/img/about-hero.jpg'],
+      ['Do you like country chicken?', 'Commercial meat industries e.g. poultry is among the least nutritious sources of meat. Commercial poultry is also one of the most polluting forms of animal rearing. In contrast, country chickens are reared and managed around common pool resources.', 'assets/img/card-what.jpg'],
+      ['Have you ever had wild berries, kashayam (kadha)?', 'Home remedies like kashayams and kadhas are often passed on from one generation to the next, and represent commonly held knowledge of the communities. Similarly, things like wild berries and medicinal herbs are mostly found and procured from common spaces like pastures, forests, ponds.', 'assets/img/card-commoning.jpg'],
+      ['Have you been on a wildlife safari?', 'For most part, wildlife reserves have been carved out from community forests. The entire wildlife tourism industry owes a huge debt to the communities who have managed and protected these spaces.', 'assets/img/card-types.jpg'],
+      ['Do you live in a house built with sand, stones, bricks and wood?', 'All the materials that go into building a house are sourced from common spaces or from common spaces that have now been privatized.', 'assets/img/governing-hero.jpg']
     ];
+    var N = QUESTIONS.length;
     var back = document.createElement('div');
     back.className = 'sv-back'; back.setAttribute('aria-hidden', 'true');
-    back.innerHTML = '<div class="sv-card" role="dialog" aria-modal="true" aria-labelledby="sv-title"><div class="sv-head"><b id="sv-title">Survey</b>' +
-      '<button type="button" class="sv-x" aria-label="Close survey"><i data-lucide="x"></i></button></div><div class="sv-body" id="sv-body"></div></div>';
+    back.innerHTML = '<div class="sv-card" role="dialog" aria-modal="true" aria-labelledby="sv-title">' +
+      '<button type="button" class="sv-x" aria-label="Close survey"><i data-lucide="x"></i></button>' +
+      '<div class="sv-body" id="sv-body"></div></div>';
     document.body.appendChild(back);
     var body = back.querySelector('#sv-body'), answers = [], step = -1;   // -1 = intro
+    QUESTIONS.forEach(function (q) { var im = new Image(); im.src = q[2]; });   // warm the cache so each question's photo shows at once
 
     function esc(t) { return String(t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
     function go() { location.href = TARGET; }
     function save() { try { localStorage.setItem('ic_commoner_survey', JSON.stringify({ answers: answers, yes: answers.filter(function (a) { return a === 'yes'; }).length, at: Date.now() })); } catch (e) {} }
     function render() {
       if (step < 0) {
-        body.innerHTML = '<p class="sv-q">Take this quiz to find out how much of a ‘commoner’ you are</p>' +
-          '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey</button></div>';
+        body.innerHTML =
+          '<div class="sv-hero" style="background-image:url(assets/img/ic-panel-who.jpg)"><div class="sv-hero-in">' +
+          '<img class="sv-camel" src="assets/img/ic-camel.png" alt="">' +
+          '<h2 id="sv-title">Are you a Commoner?</h2></div></div>' +
+          '<div class="sv-pad"><p class="sv-lead">Take this quiz to find out how much of a ‘commoner’ you are</p>' +
+          '<p class="sv-sub">' + N + ' short questions about everyday life.</p>' +
+          '<div class="sv-actions end"><button type="button" class="sv-btn ghost" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey <i data-lucide="arrow-right"></i></button></div></div>';
       } else {
-        var q = QUESTIONS[step], ans = answers[step], last = step === QUESTIONS.length - 1;
-        body.innerHTML = '<p class="sv-q">' + esc(q[0]) + '</p>' +
-          (ans ? '<div class="sv-note">' + esc(q[1]) + '</div><div class="sv-actions mid"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + '</button></div>'
-               : '<div class="sv-actions mid"><button type="button" class="sv-btn" data-a="no">No</button><button type="button" class="sv-btn" data-a="yes">Yes</button></div>') +
-          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"' + (step === 0 ? ' style="visibility:hidden"' : '') + '>Prev</button>' +
-          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Next') + '</button>') + '</div>';
+        var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
+        body.innerHTML =
+          '<div class="sv-photo"><img src="' + esc(q[2]) + '" alt=""><span class="sv-count">Question ' + (step + 1) + ' of ' + N + '</span></div>' +
+          '<div class="sv-prog"><i style="width:' + Math.round(((step + (ans ? 1 : 0)) / N) * 100) + '%"></i></div>' +
+          '<div class="sv-pad"><h2 class="sv-q" id="sv-title">' + esc(q[0]) + '</h2>' +
+          (ans
+            ? '<div class="sv-note"><span class="sv-ans ' + ans + '">You said ' + (ans === 'yes' ? 'Yes' : 'No') + '</span>' + esc(q[1]) + '</div>' +
+              '<div class="sv-actions end"><button type="button" class="sv-btn" data-a="next">' + (last ? 'Submit' : 'Next') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button></div>'
+            : '<div class="sv-choices"><button type="button" class="sv-choice no" data-a="no"><i data-lucide="x"></i> No</button><button type="button" class="sv-choice yes" data-a="yes"><i data-lucide="check"></i> Yes</button></div>') +
+          '<div class="sv-nav"><button type="button" class="sv-link" data-a="prev"' + (step === 0 ? ' style="visibility:hidden"' : '') + '><i data-lucide="arrow-left"></i> Prev</button>' +
+          (ans ? '' : '<button type="button" class="sv-link" data-a="next">' + (last ? 'Submit' : 'Skip question') + ' <i data-lucide="' + (last ? 'check' : 'arrow-right') + '"></i></button>') + '</div></div>';
       }
-      var f = body.querySelector('.sv-btn'); if (f) f.focus();
+      if (window.lucide) lucide.createIcons();
+      var f = body.querySelector('.sv-btn, .sv-choice'); if (f) f.focus();
     }
-    function open() { step = -1; answers = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); if (window.lucide) lucide.createIcons(); }
+    function open() { step = -1; answers = []; render(); back.classList.add('open'); back.setAttribute('aria-hidden', 'false'); document.body.classList.add('nd-lock'); }
     function close() { back.classList.remove('open'); back.setAttribute('aria-hidden', 'true'); document.body.classList.remove('nd-lock'); }
     body.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return;
@@ -1007,18 +1022,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (a === 'start') { step = 0; return render(); }
       if (a === 'yes' || a === 'no') { answers[step] = a; return render(); }
       if (a === 'prev') { step = Math.max(0, step - 1); return render(); }
-      if (a === 'next') { if (step >= QUESTIONS.length - 1) { save(); return go(); } step++; return render(); }
+      if (a === 'next') { if (step >= N - 1) { save(); return go(); } step++; return render(); }
     });
     back.querySelector('.sv-x').addEventListener('click', close);
     back.addEventListener('click', function (e) { if (e.target === back) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && back.classList.contains('open')) close(); });
-    // any link to the Who Is a Commoner page asks the survey first (a new-tab click keeps its normal behaviour)
+    // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
       var a = e.target.closest && e.target.closest('a[href]');
       if (!a || a.target === '_blank') return;
       var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].replace(/^\.\//, '');
-      // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
       if (href !== 'are-you-a-commoner.html') return;
       e.preventDefault(); open();
     });
