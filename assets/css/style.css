@@ -3444,3 +3444,9 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .sso-feats li{gap:1rem}
 .sso-feat-ic{width:3.6rem;height:3.6rem;background:rgba(255,255,255,.16);box-shadow:none}
 .sso-feat-ic i,.sso-feat-ic svg{width:1.7rem;height:1.7rem;color:#fff;stroke-width:1.7}
+
+/* menu dropdown icons: outline (line) style, like the camel line icon */
+.navdrop-in .nd-ic{width:2.8rem;height:2.8rem}
+.navdrop-in .nd-ic i,.navdrop-in .nd-ic svg.lucide{width:1.4rem;height:1.4rem;stroke-width:1.6}
+.navdrop-in a .nd-ic{background:var(--green-soft)!important;color:var(--green-d)!important}
+.navdrop-in a:hover .nd-ic{background:var(--green)!important;color:#fff!important}
