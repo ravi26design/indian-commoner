@@ -286,44 +286,64 @@
 </div>
 
 <div class="modal-back" id="changePasswordModal">
-  <div class="modal-card">
-    <div class="fm-head">
-      <div><span class="kicker">Security</span><b>Change password</b></div>
-      <button class="modal-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
-    </div>
-    <div class="fm-body">
-      <p class="acct-sub" style="margin-top:0">Passwords follow the platform's OWASP-aligned policy.</p>
+  <div class="modal-card cp-card" role="dialog" aria-modal="true" aria-labelledby="cp-title">
+    <button class="cp-x" data-close-modal aria-label="Close"><i data-lucide="x"></i></button>
 
-      <div class="field">
+    <div class="cp-head">
+      <span class="cp-badge-ic"><i data-lucide="shield-check"></i></span>
+      <div>
+        <h3 id="cp-title">Change password</h3>
+        <p>Choose a strong password you don&rsquo;t use anywhere else.</p>
+      </div>
+    </div>
+
+    <form class="cp-form" id="cp-form" novalidate>
+      <div class="cp-field">
         <label for="cp-current">Current password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="lock"></i>
-          <input id="cp-current" type="password" value="••••••••" style="padding-left:2.4rem">
+        <div class="cp-input">
+          <i class="cp-ico" data-lucide="lock"></i>
+          <input id="cp-current" type="password" autocomplete="current-password" placeholder="Enter your current password">
+          <button type="button" class="cp-eye" data-eye="cp-current" aria-label="Show password"><i data-lucide="eye"></i></button>
         </div>
       </div>
 
-      <div class="field">
+      <div class="cp-field">
         <label for="cp-new">New password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="key-round"></i>
-          <input id="cp-new" type="password" placeholder="At least 12 characters" style="padding-left:2.4rem" autocomplete="new-password">
+        <div class="cp-input">
+          <i class="cp-ico" data-lucide="key-round"></i>
+          <input id="cp-new" type="password" placeholder="At least 12 characters" autocomplete="new-password">
+          <button type="button" class="cp-eye" data-eye="cp-new" aria-label="Show password"><i data-lucide="eye"></i></button>
         </div>
         <div class="pw-meter"><span id="pwMeterBar"></span></div>
         <p class="hint" id="pwMeterHint">Use 12+ characters with a mix of letters, numbers and symbols.</p>
+        <ul class="cp-rules" id="cp-rules">
+          <li data-rule="len"><i data-lucide="circle"></i> At least 12 characters</li>
+          <li data-rule="case"><i data-lucide="circle"></i> Upper and lower case letters</li>
+          <li data-rule="num"><i data-lucide="circle"></i> A number</li>
+          <li data-rule="sym"><i data-lucide="circle"></i> A symbol (for example ! ? # %)</li>
+        </ul>
       </div>
 
-      <div class="field">
+      <div class="cp-field">
         <label for="cp-confirm">Confirm new password</label>
-        <div class="withic">
-          <i class="ico" data-lucide="key-round"></i>
-          <input id="cp-confirm" type="password" style="padding-left:2.4rem" autocomplete="new-password">
+        <div class="cp-input">
+          <i class="cp-ico" data-lucide="key-round"></i>
+          <input id="cp-confirm" type="password" placeholder="Type the new password again" autocomplete="new-password">
+          <button type="button" class="cp-eye" data-eye="cp-confirm" aria-label="Show password"><i data-lucide="eye"></i></button>
         </div>
+        <p class="cp-match" id="cp-match" hidden></p>
       </div>
 
-      <div class="row" style="margin-top:.5rem">
-        <button class="btn btn-primary" data-close-modal>Update password</button>
-        <button class="btn btn-outline" data-close-modal>Cancel</button>
+      <div class="cp-actions">
+        <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="cp-submit" disabled><i data-lucide="check"></i> Update password</button>
       </div>
+    </form>
+
+    <div class="cp-done" id="cp-done" hidden>
+      <span class="cp-done-ic"><i data-lucide="check"></i></span>
+      <h3>Password updated</h3>
+      <p>Use your new password the next time you sign in.</p>
     </div>
   </div>
 </div>
@@ -887,6 +907,50 @@
         if (cpHint) cpHint.textContent = lvl.text;
       });
     }
+
+    // Change password window: show/hide, live rule checklist, match check, Update enabled only when valid.
+    (function () {
+      var form = document.getElementById('cp-form'); if (!form) return;
+      var cur = document.getElementById('cp-current'), nw = document.getElementById('cp-new'), cf = document.getElementById('cp-confirm');
+      var btn = document.getElementById('cp-submit'), match = document.getElementById('cp-match'), done = document.getElementById('cp-done');
+      var rules = { len: function (v) { return v.length >= 12; }, 'case': function (v) { return /[A-Z]/.test(v) && /[a-z]/.test(v); }, num: function (v) { return /[0-9]/.test(v); }, sym: function (v) { return /[^A-Za-z0-9]/.test(v); } };
+      form.querySelectorAll('[data-eye]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var inp = document.getElementById(b.getAttribute('data-eye')), show = inp.type === 'password';
+          inp.type = show ? 'text' : 'password';
+          b.innerHTML = '<i data-lucide="' + (show ? 'eye-off' : 'eye') + '"></i>';
+          b.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+          if (window.lucide) lucide.createIcons();
+        });
+      });
+      function check() {
+        var v = nw.value, all = true;
+        Object.keys(rules).forEach(function (k) {
+          var li = document.querySelector('#cp-rules [data-rule="' + k + '"]'), ok = rules[k](v);
+          if (!ok) all = false;
+          if (li.classList.contains('ok') !== ok) {
+            li.classList.toggle('ok', ok);
+            li.innerHTML = '<i data-lucide="' + (ok ? 'check-circle-2' : 'circle') + '"></i>' + li.textContent;
+          }
+        });
+        var same = cf.value.length > 0 && cf.value === v;
+        match.hidden = cf.value.length === 0;
+        match.className = 'cp-match ' + (same ? 'ok' : 'bad');
+        match.textContent = same ? 'Passwords match.' : 'Passwords do not match yet.';
+        btn.disabled = !(all && same && cur.value.length > 0);
+        if (window.lucide) lucide.createIcons();
+      }
+      [cur, nw, cf].forEach(function (i) { i.addEventListener('input', check); });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault(); check(); if (btn.disabled) return;
+        form.hidden = true; document.querySelector('#changePasswordModal .cp-head').hidden = true; done.hidden = false;
+        setTimeout(function () {
+          document.getElementById('changePasswordModal').classList.remove('open');
+          form.reset(); form.hidden = false; document.querySelector('#changePasswordModal .cp-head').hidden = false; done.hidden = true; check();
+        }, 1600);
+      });
+      check();
+    })();
 
     if (window.lucide) lucide.createIcons();
   })();
