@@ -998,8 +998,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<h2 id="sv-title">Are you a Commoner?</h2></div></div>' +
           '<div class="sv-pad"><p class="sv-lead">Take this quiz to find out how much of a ‘commoner’ you are</p>' +
           '<p class="sv-sub">' + N + ' short questions about everyday life.</p>' +
-          '<div class="sv-actions end"><button type="button" class="sv-btn ghost" data-a="skip">Skip</button><button type="button" class="sv-btn" data-a="start">Take Survey <i data-lucide="arrow-right"></i></button></div>' +
-          '<p class="sv-credits">Photos via Wikimedia Commons: ' + CREDITS.map(function (c) { return '<a href="' + esc(c[2]) + '" target="_blank" rel="noopener noreferrer">' + esc(c[0]) + '</a> (' + esc(c[1]) + ')'; }).join(', ') + '.</p></div>';
+          '<div class="sv-actions mid"><button type="button" class="sv-btn" data-a="start">Take Survey <i data-lucide="arrow-right"></i></button></div></div>';
       } else {
         var q = QUESTIONS[step], ans = answers[step], last = step === N - 1;
         body.innerHTML =
