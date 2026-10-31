@@ -962,10 +962,9 @@ document.addEventListener('DOMContentLoaded', function () {
     paint();
   })();
 
-  // ---- "Who Is a Commoner" survey: shown first when a member opens that page from any link ----
+  // ---- Commoner survey: opened by the "Take a test! Are you a commoner?" card; Skip or Submit continues to Who Is a Commoner ----
   (function () {
     var TARGET = 'who-is-a-commoner.html';
-    if (/who-is-a-commoner\.html$/.test(location.pathname)) return;
     var QUESTIONS = [
       ['Have you ever borrowed curd from a neighbour to set your curd?', 'The bacteria of the curd is not owned by any individual, sharing is the norm that governs this common pool resource.'],
       ['Have you ever asked your neighbour to pick up your child from school when you weren’t able to?', 'The act of your neighbor picking up your child is based on practices of commoning. Such customs assume a shared and secured space for children that is guaranteed by the norms of a community.'],
@@ -1019,8 +1018,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var a = e.target.closest && e.target.closest('a[href]');
       if (!a || a.target === '_blank') return;
       var href = (a.getAttribute('href') || '').split('#')[0].split('?')[0].replace(/^\.\//, '');
-      // the "Who Is a Commoner" links and the home page's "Take a test! Are you a commoner?" card both start with the survey
-      if (href !== TARGET && href !== 'are-you-a-commoner.html') return;
+      // only the "Take a test! Are you a commoner?" card starts the survey; Who Is a Commoner links open the page directly
+      if (href !== 'are-you-a-commoner.html') return;
       e.preventDefault(); open();
     });
   })();
