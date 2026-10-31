@@ -3362,3 +3362,9 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .cp-head h3{text-align:left}
 
 .cp-head{display:block}
+
+/* the Chat with us illustration (same as the Discuss menu) in the welcome message and in search suggestions */
+.convo-empty .ce-ic{width:5.2rem;height:5.2rem;border-radius:1.4rem;background:var(--green-soft);color:var(--green-d);box-shadow:none}
+.convo-empty .ce-svg{width:3.9rem;height:3.9rem;display:block}
+.ns-item .ns-svg{width:1.6rem;height:1.6rem;flex:none;color:var(--green-d)}
+.convo-empty .ce-ic svg.ce-svg{width:3.9rem;height:3.9rem}

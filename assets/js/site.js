@@ -470,7 +470,8 @@ document.addEventListener('DOMContentLoaded', function () {
         html += '<div class="ns-grp">' + g.label + '</div>';
         g.items.forEach(function (it) {
           items.push(it.h);
-          html += '<a class="ns-item" role="option" href="' + esc(it.h) + '" data-i="' + (items.length - 1) + '"><i data-lucide="' + it.i + '"></i><span class="ns-t">' + hl(it.t, res.tokens) + '</span>' + (it.sub ? '<small>' + esc(it.sub) + '</small>' : '') + '</a>';
+          var chatSvg = (it.h === 'start-conversation.html' && document.querySelector('#start-convo-link .nd-svg')) ? document.querySelector('#start-convo-link .nd-svg').outerHTML.replace('class="nd-svg"', 'class="ns-svg"') : '';
+          html += '<a class="ns-item" role="option" href="' + esc(it.h) + '" data-i="' + (items.length - 1) + '">' + (chatSvg || '<i data-lucide="' + it.i + '"></i>') + '<span class="ns-t">' + hl(it.t, res.tokens) + '</span>' + (it.sub ? '<small>' + esc(it.sub) + '</small>' : '') + '</a>';
         });
       });
       var all = 'forum.html?q=' + encodeURIComponent(q.trim());
