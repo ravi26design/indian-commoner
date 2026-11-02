@@ -3450,3 +3450,8 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .navdrop-in .nd-ic i,.navdrop-in .nd-ic svg.lucide{width:1.4rem;height:1.4rem;stroke-width:1.6}
 .navdrop-in a .nd-ic{background:var(--green-soft)!important;color:var(--green-d)!important}
 .navdrop-in a:hover .nd-ic{background:var(--green)!important;color:#fff!important}
+
+/* Purpose page: the title sits in the same column (same width) as the text below the banner */
+.ehero.col .in{width:min(42rem,calc(100% - 4rem));max-width:none;margin:0 auto;grid-template-columns:1fr;padding:3rem 0 2.25rem}
+.ehero.col h1{max-width:none}
+@media(max-width:560px){.ehero.col .in{width:calc(100% - 2.3rem);padding:2.25rem 0 1.75rem}}
