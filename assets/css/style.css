@@ -3455,3 +3455,4 @@ footer.site .legal-link:hover{color:var(--green-d)}
 .ehero.col .in{width:min(42rem,calc(100% - 4rem));max-width:none;margin:0 auto;grid-template-columns:1fr;padding:3rem 0 2.25rem}
 .ehero.col h1{max-width:none}
 @media(max-width:560px){.ehero.col .in{width:calc(100% - 2.3rem);padding:2.25rem 0 1.75rem}}
+.ehero.col.center h1{text-align:center}
